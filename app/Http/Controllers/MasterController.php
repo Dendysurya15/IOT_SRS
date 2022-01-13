@@ -50,6 +50,667 @@ class MasterController extends Controller
         }
         return $hari_ini;
     }
+
+    public function store_weather_list(Request $request)
+    {
+        $response = array();
+        $response = (object)$response;
+
+        $rain_cal     = '';
+        $loc     = '';
+        $lat     = '';
+        $lon     = '';
+        $desc     = '';
+
+        if (empty($request->rain_cal) || empty($request->loc) || empty($request->lat) || empty($request->lon) || empty($request->desc)) {
+            $response->success = 0;
+            $response->message = 'Kolom tidak boleh kosong';
+        } elseif (
+            isset($request->rain_cal) || isset($request->loc) || isset($request->lat) || isset($request->lon) || isset($request->desc)
+        ) {
+            $rain_cal  = $request->rain_cal;
+            $loc  = $request->loc;
+            $lat  = $request->lat;
+            $lon  = $request->lon;
+            $desc = $request->desc;
+        }
+
+        $arr_kategori = [
+            'rain_cal'                  => $request->rain_cal,
+            'loc'                  => $request->loc,
+            'lat'                  => $request->lat,
+            'lon'                  => $request->lon,
+            'desc'                  => $request->desc,
+        ];
+
+        $rules   = [
+            'rain_cal'                  => 'required|numeric',
+            'loc'                  => 'required|string|min:3|max:50',
+            'lat'                  => 'required|numeric',
+            'lon'                  => 'required|numeric',
+            'desc'                  => 'required|string|min:3|max:50',
+        ];
+
+        $messages = [
+            'rain_cal.required'                 => 'LOKASI WAJIB DIISI',
+            'rain_cal.numeric'                  => 'RAIN CAL HARUS BERUPA ANGKA',
+            'loc.required'                 => 'LOKASI WAJIB DIISI',
+            'loc.min'                      => 'MINIMAL PENGISIAN NAMA ADALAH 3 KARAKTER',
+            'loc.max'                      => 'MAXIMAL PENGISISAN NAMA ADALAH 50 KARAKTER',
+            'lat.required'                 => 'LATITIDE WAJIB DIISI',
+            'lat.numeric'                  => 'LATITUDE HARUS BERUPA ANGKA',
+            'lon.required'                 => 'LONGITUDE WAJIB DIISI',
+            'lon.numeric'                  => 'LONGITUDE HARUS BERUPA ANGKA',
+            'desc.required'                 => 'DESKRIPSI WAJIB DIISI',
+            'desc.min'                      => 'MINIMAL PENGISIAN NAMA ADALAH 3 KARAKTER',
+            'desc.max'                      => 'MAXIMAL PENGISISAN NAMA ADALAH 50 KARAKTER',
+        ];
+
+        $validator = Validator::make($arr_kategori, $rules, $messages);
+
+        if ($validator->fails()) {
+            $response->success = 0;
+            $response->message = $validator->errors()->first();
+        } else {
+            try {
+                $newWeatherListID = DB::table('weather_station_list')->insertGetId(array(
+                    'rain_cal' => $rain_cal,
+                    'loc' => $loc,
+                    'lat' => $lat,
+                    'lon' => $lon,
+                    'desc' => $desc,
+                ));
+
+                $response->id = $newWeatherListID;
+                $response->Rain_Cal = $rain_cal;
+                $response->Location = $loc;
+                $response->Latitude = $lat;
+                $response->Longitude = $lon;
+                $response->Description = $desc;
+
+                $response->success = 1;
+                $response->message = 'BERHASIL MELAKUKAN INSERT KE TABLE WEATHER STATION LIST';
+            } catch (Exception $e) {
+                $response->success = 0;
+                $response->message = 'GAGAL MELAKUKAN INSERT DATA, PESAN KESALAHAN : ' . $e->getMessage();
+            }
+        }
+        return json_encode($response);
+    }
+
+    #Insert Weather Station List
+    /**
+     * @OA\Post(
+     *      path="/api/insert_weather_station_list/{rain_cal}/{loc}/{lat}/{lon}/{desc}",
+     *      tags={"Weather Station"},
+     *      summary="Insert Weather Station List ke table database",
+     *      description="Insert Weather Station List  ke table database",
+     * @OA\Parameter(
+     *          name="rain_cal",
+     *          description="rain_cal",
+     *          required=true,
+     *          in="path",
+     *          @OA\Schema(
+     *              type="number",
+     *              format="float"
+     *          )
+     *      ),
+     *   @OA\Parameter(
+     *          name="loc",
+     *          description="loc",
+     *          required=true,
+     *          in="path",
+     *          @OA\Schema(
+     *              type="string",
+     *          )
+     *      ),
+     *   @OA\Parameter(
+     *          name="lat",
+     *          description="lat",
+     *          required=true,
+     *          in="path",
+     *          @OA\Schema(
+     *              type="number",
+     *              format="float",
+     *          )
+     *      ),
+     *   @OA\Parameter(
+     *          name="lon",
+     *          description="lon",
+     *          required=true,
+     *          in="path",
+     *          @OA\Schema(
+     *              type="number",
+     *              format="float"
+     *          )
+     *      ),
+     *   @OA\Parameter(
+     *          name="desc",
+     *          description="desc",
+     *          required=true,
+     *          in="path",
+     *          @OA\Schema(
+     *              type="string",
+     *          )
+     *      ),
+     *      @OA\Response(
+     *          response=200,
+     *          description="successful operation"
+     *       ),
+     *       @OA\Response(response=400, description="Bad request"),
+     *       security={
+     *           {"api_key_security_example": {}}
+     *       }
+     *     )
+     *
+     * Returns list of projects
+     */
+
+    public function store_weather(Request $request)
+    {
+        $response = array();
+        $response = (object)$response;
+
+
+
+        $idws     = '';
+        $datetime     = '';
+        $ws     = '';
+        $wd     = '';
+        $wc     = '';
+        $t     = '';
+        $h     = '';
+        $r     = '';
+
+        // return json_encode($response->test = DB::table('weather_station')->where('id', 3554)->get());
+        if (empty($request->idws) || empty($request->datetime) || empty($request->ws) || empty($request->wd) || empty($request->wc) || empty($request->t) || empty($request->h) || empty($request->r)) {
+            $response->success = 0;
+            $response->message = 'Kolom tidak boleh kosong';
+        } elseif (
+            isset($request->idws) || isset($request->datetime) || isset($request->ws) || isset($request->wd) || isset($request->wc) || isset($request->t) || isset($request->h) || isset($request->r)
+        ) {
+            $idws  = $request->idws;
+            $datetime  = $request->datetime;
+            $ws  = $request->ws;
+            $wd  = $request->wd;
+            $wc = $request->wc;
+            $t = $request->t;
+            $h = $request->h;
+            $r = $request->r;
+        }
+
+        $arr_kategori = [
+            'idws'                  => $request->idws,
+            'datetime'                  => $request->datetime,
+            'ws'                  => $request->ws,
+            'wd'                  => $request->wd,
+            'wc'                  => $request->wc,
+            't'                  => $request->t,
+            'h'                  => $request->h,
+            'r'                  => $request->r,
+        ];
+
+        $rules   = [
+            'idws'                  => 'required|numeric',
+            'datetime'              => 'required|date',
+            'ws'                  => 'required|numeric',
+            'wd'                  => 'required|numeric',
+            'wc'                  => 'required|string|min:3|max:50',
+            't'                  => 'required|numeric',
+            'h'                  => 'required|numeric',
+            'r'                  => 'required|numeric|',
+        ];
+
+        $messages = [
+            'idws.required'                 => 'LOKASI WAJIB DIISI',
+            'idws.numeric'                  => 'IDWS HARUS BERUPA ANGKA',
+            'datetime.required'                 => 'DATETIME WAJIB DIISI',
+            'datetime.date'                  => 'DATETIME HARUS BERUPA TANGGAL & WAKTU',
+            'ws.required'                 => 'WS WAJIB DIISI',
+            'ws.numeric'                  => 'WS HARUS BERUPA ANGKA',
+            'wd.required'                 => 'WD WAJIB DIISI',
+            'wd.numeric'                  => 'WD HARUS BERUPA ANGKA',
+            'wc.required'                 => 'WC WAJIB DIISI',
+            'wc.min'                      => 'MINIMAL PENGISIAN WC ADALAH 3 KARAKTER',
+            'wc.max'                      => 'MAXIMAL PENGISISAN WC ADALAH 50 KARAKTER',
+            't.required'                 => 'T WAJIB DIISI',
+            't.numeric'                  => 'T HARUS BERUPA ANGKA',
+            'h.required'                 => 'H WAJIB DIISI',
+            'h.numeric'                  => 'H HARUS BERUPA ANGKA',
+            'r.required'                 => 'R WAJIB DIISI',
+            'r.numeric'                  => 'R HARUS BERUPA ANGKA',
+        ];
+
+        $validator = Validator::make($arr_kategori, $rules, $messages);
+
+        if ($validator->fails()) {
+            $response->success = 0;
+            $response->message = $validator->errors()->first();
+        } else {
+            try {
+                $newWeatherListID = DB::table('weather_station')->insertGetId(array(
+                    'idws' => $idws,
+                    'datetime' => $datetime,
+                    'ws' => $ws,
+                    'wd' => $wd,
+                    'wc' => $wc,
+                    't' => $t,
+                    'h' => $h,
+                    'r' => $r,
+                ));
+
+                $response->id = $newWeatherListID;
+                $response->idws = $idws;
+                $response->datetime = $datetime;
+                $response->ws = $ws;
+                $response->wd = $wd;
+                $response->wc = $wc;
+                $response->t = $t;
+                $response->h = $h;
+                $response->r = $r;
+
+                $response->success = 1;
+                $response->message = 'BERHASIL MELAKUKAN INSERT KE TABLE WEATHER STATION LIST';
+            } catch (Exception $e) {
+                $response->success = 0;
+                $response->message = 'GAGAL MELAKUKAN INSERT DATA, PESAN KESALAHAN : ' . $e->getMessage();
+            }
+        }
+        return json_encode($response);
+    }
+
+    #Insert Weather Station
+    /**
+     * @OA\Post(
+     *      path="/api/insert_weather_station/{idws}/{datetime}/{ws}/{wd}/{wc}/{t}/{h}/{r}",
+     *      tags={"Weather Station"},
+     *      summary="Insert Weather Station ke table database",
+     *      description="Insert Weather Station  ke table database",
+     * @OA\Parameter(
+     *          name="idws",
+     *          description="idws",
+     *          required=true,
+     *          in="path",
+     *          @OA\Schema(
+     *              type="integer",
+     *              format="int32",
+     *          )
+     *      ),
+     *   @OA\Parameter(
+     *          name="datetime",
+     *          description="datetime",
+     *          required=true,
+     *          in="path",
+     *          @OA\Schema(
+     *              type="string",
+     *              format="date-time",
+     *          )
+     *      ),
+     *   @OA\Parameter(
+     *          name="ws",
+     *          description="ws",
+     *          required=true,
+     *          in="path",
+     *          @OA\Schema(
+     *              type="number",
+     *              format="float",
+     *          )
+     *      ),
+     *   @OA\Parameter(
+     *          name="wd",
+     *          description="wd",
+     *          required=true,
+     *          in="path",
+     *          @OA\Schema(
+     *              type="integer",
+     *              format="int32",
+     *          )
+     *      ),
+     *   @OA\Parameter(
+     *          name="wc",
+     *          description="wc",
+     *          required=true,
+     *          in="path",
+     *          @OA\Schema(
+     *              type="string",
+     *          )
+     *      ),
+     *   @OA\Parameter(
+     *          name="t",
+     *          description="t",
+     *          required=true,
+     *          in="path",
+     *          @OA\Schema(
+     *              type="number",
+     *              format="float",
+     *          )
+     *      ),
+     *   @OA\Parameter(
+     *          name="h",
+     *          description="h",
+     *          required=true,
+     *          in="path",
+     *          @OA\Schema(
+     *              type="number",
+     *              format="float", 
+     *          )
+     *      ),
+     *     @OA\Parameter(
+     *          name="r",
+     *          description="r",
+     *          required=true,
+     *          in="path",
+     *          @OA\Schema(
+     *              type="number",
+     *              format="float"
+     *          )
+     *      ),
+     *      @OA\Response(
+     *          response=200,
+     *          description="successful operation"
+     *       ),
+     *       @OA\Response(response=400, description="Bad request"),
+     *       security={
+     *           {"api_key_security_example": {}}
+     *       }
+     *     )
+     *
+     * Returns list of projects
+     */
+
+    public function store_water_list(Request $request)
+    {
+        $response = array();
+        $response = (object)$response;
+
+        $location     = '';
+        $lat     = '';
+        $long     = '';
+        $desc     = '';
+
+        // return json_encode($response->location = $request->location);
+
+        if (empty($request->location) || empty($request->lat) || empty($request->long) || empty($request->desc)) {
+            $response->success = 0;
+            $response->message = 'Kolom tidak boleh kosong';
+        } elseif (
+            isset($request->location) || isset($request->lat) || isset($request->long) || isset($request->desc)
+        ) {
+            $location  = $request->location;
+            $lat  = $request->lat;
+            $long  = $request->long;
+            $desc = $request->desc;
+        }
+
+        $arr_kategori = [
+            'location'                => $request->location,
+            'lat'                  => $request->lat,
+            'long'                  => $request->long,
+            'desc'                  => $request->desc,
+        ];
+
+        $rules   = [
+            'location'                  => 'required|string|min:3|max:50',
+            'lat'                  => 'required|numeric',
+            'long'                  => 'required|numeric',
+            'desc'                  => 'required|string|min:3|max:50',
+        ];
+
+        $messages = [
+            'location.required'                 => 'LOKASI WAJIB DIISI',
+            'location.min'                      => 'MINIMAL PENGISIAN NAMA ADALAH 3 KARAKTER',
+            'location.max'                      => 'MAXIMAL PENGISISAN NAMA ADALAH 50 KARAKTER',
+            'lat.required'                 => 'LATITUDE WAJIB DIISI',
+            'lat.numeric'                  => 'LATITUDE HARUS BERUPA ANGKA',
+            'long.required'                 => 'LONGITUDE WAJIB DIISI',
+            'long.numeric'                  => 'LONGITUDE HARUS BERUPA ANGKA',
+            'desc.required'                 => 'DESKRIPSI WAJIB DIISI',
+            'desc.min'                      => 'MINIMAL PENGISIAN NAMA ADALAH 3 KARAKTER',
+            'desc.max'                      => 'MAXIMAL PENGISISAN NAMA ADALAH 50 KARAKTER',
+        ];
+
+        $validator = Validator::make($arr_kategori, $rules, $messages);
+
+        if ($validator->fails()) {
+            $response->success = 0;
+            $response->message = $validator->errors()->first();
+        } else {
+            try {
+                $newWaterListID = DB::table('water_level_list')->insertGetId(array(
+                    'location' => $location,
+                    'lat' => $lat,
+                    'long' => $long,
+                    'desc' => $desc,
+                ));
+
+                $response->Id = $newWaterListID;
+                $response->Location = $location;
+                $response->Latitude = $lat;
+                $response->Longitude = $long;
+                $response->Description = $desc;
+
+                $response->success = 1;
+                $response->message = 'BERHASIL MELAKUKAN INSERT KE TABLE WATER LEVEL LIST';
+            } catch (Exception $e) {
+                $response->success = 0;
+                $response->message = 'GAGAL MELAKUKAN INSERT DATA, PESAN KESALAHAN : ' . $e->getMessage();
+            }
+        }
+        return json_encode($response);
+    }
+
+    #Insert Water Level List
+    /**
+     * @OA\Post(
+     *      path="/api/insert_water_level_list/{location}/{lat}/{long}/{desc}",
+     *      tags={"Water Level"},
+     *      summary="Insert Water Level List ke table database",
+     *      description="Insert Water Level List  ke table database",
+     *   @OA\Parameter(
+     *          name="location",
+     *          description="location",
+     *          required=true,
+     *          in="path",
+     *          @OA\Schema(
+     *              type="string",
+     *          )
+     *      ),
+     *   @OA\Parameter(
+     *          name="lat",
+     *          description="lat",
+     *          required=true,
+     *          in="path",
+     *          @OA\Schema(
+     *              type="number",
+     *              format="float",
+     *          )
+     *      ),
+     *   @OA\Parameter(
+     *          name="long",
+     *          description="long",
+     *          required=true,
+     *          in="path",
+     *          @OA\Schema(
+     *              type="number",
+     *              format="float"
+     *          )
+     *      ),
+     *   @OA\Parameter(
+     *          name="desc",
+     *          description="desc",
+     *          required=true,
+     *          in="path",
+     *          @OA\Schema(
+     *              type="string",
+     *          )
+     *      ),
+     *      @OA\Response(
+     *          response=200,
+     *          description="successful operation"
+     *       ),
+     *       @OA\Response(response=400, description="Bad request"),
+     *       security={
+     *           {"api_key_security_example": {}}
+     *       }
+     *     )
+     *
+     * Returns list of projects
+     */
+
+    public function store_water(Request $request)
+    {
+        $response = array();
+        $response = (object)$response;
+
+        $idwl     = '';
+        $datetime     = '';
+        $lvl_in     = '';
+        $lvl_out     = '';
+        $lvl_act     = '';
+
+        // return json_encode($response->test = DB::table('weather_station')->where('id', 3554)->get());
+        if (empty($request->idwl) || empty($request->datetime) || empty($request->lvl_in) || empty($request->lvl_out) || empty($request->lvl_act)) {
+            $response->success = 0;
+            $response->message = 'Kolom tidak boleh kosong';
+        } elseif (
+            isset($request->idwl) || isset($request->datetime) || isset($request->lvl_in) || isset($request->lvl_out) || isset($request->lvl_act)
+        ) {
+            $idwl  = $request->idwl;
+            $datetime  = $request->datetime;
+            $lvl_in  = $request->lvl_in;
+            $lvl_out  = $request->lvl_out;
+            $lvl_act = $request->lvl_act;
+        }
+
+        $arr_water_level = [
+            'idwl'                  => $request->idwl,
+            'datetime'                  => $request->datetime,
+            'lvl_in'                  => $request->lvl_in,
+            'lvl_out'                  => $request->lvl_out,
+            'lvl_act'                  => $request->lvl_act,
+        ];
+
+        $rules   = [
+            'idwl'                  => 'numeric',
+            'datetime'              => 'required|date',
+            'lvl_in'                  => 'required|numeric',
+            'lvl_out'                  => 'required|numeric',
+            'lvl_act'                  => 'required',
+
+        ];
+
+        $messages = [
+            'idwl.required'                 => 'IDWL WAJIB DIISI',
+            'idwl.numeric'                  => 'idwl HARUS BERUPA ANGKA',
+            'datetime.required'                 => 'DATETIME WAJIB DIISI',
+            'lvl_in.required'                 => 'lvl_in WAJIB DIISI',
+            'lvl_in.numeric'                  => 'lvl_in HARUS BERUPA ANGKA',
+            'lvl_out.required'                 => 'lvl_out WAJIB DIISI',
+            'lvl_out.numeric'                  => 'lvl_out HARUS BERUPA ANGKA',
+            'lvl_act.required'                 => 'lvl_act WAJIB DIISI',
+        ];
+
+        $validator = Validator::make($arr_water_level, $rules, $messages);
+
+        if ($validator->fails()) {
+            $response->success = 0;
+            $response->message = $validator->errors()->first();
+        } else {
+            try {
+                $newWaterLevelID = DB::table('water_level')->insertGetId(array(
+                    'idwl' => $idwl,
+                    'datetime' => $datetime,
+                    'lvl_in' => $lvl_in,
+                    'lvl_out' => $lvl_out,
+                    'lvl_act' => $lvl_act,
+                ));
+
+                $response->id = $newWaterLevelID;
+                $response->idwl = $idwl;
+                $response->datetime = $datetime;
+                $response->lvl_in = $lvl_in;
+                $response->lvl_out = $lvl_out;
+                $response->lvl_act = $lvl_act;
+
+                $response->success = 1;
+                $response->message = 'BERHASIL MELAKUKAN INSERT KE TABLE WEATHER STATION LIST';
+            } catch (Exception $e) {
+                $response->success = 0;
+                $response->message = 'GAGAL MELAKUKAN INSERT DATA, PESAN KESALAHAN : ' . $e->getMessage();
+            }
+        }
+        return json_encode($response);
+    }
+
+    #Insert Water Level
+    /**
+     * @OA\Post(
+     *      path="/api/insert_water_level/{idwl}/{datetime}/{lvl_in}/{lvl_out}/{lvl_act}",
+     *      tags={"Water Level"},
+     *      summary="Insert Water Level ke table database",
+     *      description="Insert Water Level  ke table database",
+     * @OA\Parameter(
+     *          name="idwl",
+     *          description="idwl",
+     *          required=true,
+     *          in="path",
+     *          @OA\Schema(
+     *              type="integer",
+     *              format="int32",
+     *          )
+     *      ),
+     *   @OA\Parameter(
+     *          name="datetime",
+     *          description="datetime",
+     *          required=true,
+     *          in="path",
+     *          @OA\Schema(
+     *              type="string",
+     *          )
+     *      ),
+     *   @OA\Parameter(
+     *          name="lvl_in",
+     *          description="lvl_in",
+     *          required=true,
+     *          in="path",
+     *          @OA\Schema(
+     *              type="number",
+     *              format="float",
+     *          )
+     *      ),
+     *   @OA\Parameter(
+     *          name="lvl_out",
+     *          description="lvl_out",
+     *          required=true,
+     *          in="path",
+     *          @OA\Schema(
+     *              type="number",
+     *              format="float",
+     *          )
+     *      ),
+     *   @OA\Parameter(
+     *          name="lvl_act",
+     *          description="lvl_act",
+     *          required=false,
+     *          in="path",
+     *          @OA\Schema(
+     *              type="number",
+     *              format="float",
+     *          )
+     *      ),
+
+     *      @OA\Response(
+     *          response=200,
+     *          description="successful operation"
+     *       ),
+     *       @OA\Response(response=400, description="Bad request"),
+     *       security={
+     *           {"api_key_security_example": {}}
+     *       }
+     *     )
+     *
+     * Returns list of projects
+     */
     //
     public static function Dashboard()
     {

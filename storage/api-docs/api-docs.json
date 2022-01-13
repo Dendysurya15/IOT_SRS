@@ -1,0 +1,340 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "APLIKASI AWS IOT API",
+        "description": "LIST SEMUA API",
+        "contact": {
+            "email": "darius@matulionis.lt"
+        },
+        "license": {
+            "name": "Apache 2.0",
+            "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+        },
+        "version": "8.0.0"
+    },
+    "servers": [
+        {
+            "url": "http://127.0.0.1:8000",
+            "description": "L5 Swagger OpenApi dynamic host server"
+        }
+    ],
+    "paths": {
+        "/api/insert_weather_station_list/{rain_cal}/{loc}/{lat}/{lon}/{desc}": {
+            "post": {
+                "tags": [
+                    "Weather Station"
+                ],
+                "summary": "Insert Weather Station List ke table database",
+                "description": "Insert Weather Station List  ke table database",
+                "operationId": "0ba83eb4b02a312206a1c60683e21740",
+                "parameters": [
+                    {
+                        "name": "rain_cal",
+                        "in": "path",
+                        "description": "rain_cal",
+                        "required": true,
+                        "schema": {
+                            "type": "number",
+                            "format": "float"
+                        }
+                    },
+                    {
+                        "name": "loc",
+                        "in": "path",
+                        "description": "loc",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "lat",
+                        "in": "path",
+                        "description": "lat",
+                        "required": true,
+                        "schema": {
+                            "type": "number",
+                            "format": "float"
+                        }
+                    },
+                    {
+                        "name": "lon",
+                        "in": "path",
+                        "description": "lon",
+                        "required": true,
+                        "schema": {
+                            "type": "number",
+                            "format": "float"
+                        }
+                    },
+                    {
+                        "name": "desc",
+                        "in": "path",
+                        "description": "desc",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation"
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    }
+                },
+                "security": [
+                    {
+                        "api_key_security_example": []
+                    }
+                ]
+            }
+        },
+        "/api/insert_weather_station/{idws}/{datetime}/{ws}/{wd}/{wc}/{t}/{h}/{r}": {
+            "post": {
+                "tags": [
+                    "Weather Station"
+                ],
+                "summary": "Insert Weather Station ke table database",
+                "description": "Insert Weather Station  ke table database",
+                "operationId": "9229de5168f00a30cb19532b8eb66e3b",
+                "parameters": [
+                    {
+                        "name": "idws",
+                        "in": "path",
+                        "description": "idws",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int32"
+                        }
+                    },
+                    {
+                        "name": "datetime",
+                        "in": "path",
+                        "description": "datetime",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "date-time"
+                        }
+                    },
+                    {
+                        "name": "ws",
+                        "in": "path",
+                        "description": "ws",
+                        "required": true,
+                        "schema": {
+                            "type": "number",
+                            "format": "float"
+                        }
+                    },
+                    {
+                        "name": "wd",
+                        "in": "path",
+                        "description": "wd",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int32"
+                        }
+                    },
+                    {
+                        "name": "wc",
+                        "in": "path",
+                        "description": "wc",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "t",
+                        "in": "path",
+                        "description": "t",
+                        "required": true,
+                        "schema": {
+                            "type": "number",
+                            "format": "float"
+                        }
+                    },
+                    {
+                        "name": "h",
+                        "in": "path",
+                        "description": "h",
+                        "required": true,
+                        "schema": {
+                            "type": "number",
+                            "format": "float"
+                        }
+                    },
+                    {
+                        "name": "r",
+                        "in": "path",
+                        "description": "r",
+                        "required": true,
+                        "schema": {
+                            "type": "number",
+                            "format": "float"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation"
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    }
+                },
+                "security": [
+                    {
+                        "api_key_security_example": []
+                    }
+                ]
+            }
+        },
+        "/api/insert_water_level_list/{location}/{lat}/{long}/{desc}": {
+            "post": {
+                "tags": [
+                    "Water Level"
+                ],
+                "summary": "Insert Water Level List ke table database",
+                "description": "Insert Water Level List  ke table database",
+                "operationId": "0fc0f62d1871d8fe94a7b6951dce01d7",
+                "parameters": [
+                    {
+                        "name": "location",
+                        "in": "path",
+                        "description": "location",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "lat",
+                        "in": "path",
+                        "description": "lat",
+                        "required": true,
+                        "schema": {
+                            "type": "number",
+                            "format": "float"
+                        }
+                    },
+                    {
+                        "name": "long",
+                        "in": "path",
+                        "description": "long",
+                        "required": true,
+                        "schema": {
+                            "type": "number",
+                            "format": "float"
+                        }
+                    },
+                    {
+                        "name": "desc",
+                        "in": "path",
+                        "description": "desc",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation"
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    }
+                },
+                "security": [
+                    {
+                        "api_key_security_example": []
+                    }
+                ]
+            }
+        },
+        "/api/insert_water_level/{idwl}/{datetime}/{lvl_in}/{lvl_out}/{lvl_act}": {
+            "post": {
+                "tags": [
+                    "Water Level"
+                ],
+                "summary": "Insert Water Level ke table database",
+                "description": "Insert Water Level  ke table database",
+                "operationId": "f7ab9ad4c202935b068fcc32f3a5aa90",
+                "parameters": [
+                    {
+                        "name": "idwl",
+                        "in": "path",
+                        "description": "idwl",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int32"
+                        }
+                    },
+                    {
+                        "name": "datetime",
+                        "in": "path",
+                        "description": "datetime",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "lvl_in",
+                        "in": "path",
+                        "description": "lvl_in",
+                        "required": true,
+                        "schema": {
+                            "type": "number",
+                            "format": "float"
+                        }
+                    },
+                    {
+                        "name": "lvl_out",
+                        "in": "path",
+                        "description": "lvl_out",
+                        "required": true,
+                        "schema": {
+                            "type": "number",
+                            "format": "float"
+                        }
+                    },
+                    {
+                        "name": "lvl_act",
+                        "in": "path",
+                        "description": "lvl_act",
+                        "required": false,
+                        "schema": {
+                            "type": "number",
+                            "format": "float"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation"
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    }
+                },
+                "security": [
+                    {
+                        "api_key_security_example": []
+                    }
+                ]
+            }
+        }
+    },
+    "security": [
+        []
+    ]
+}
