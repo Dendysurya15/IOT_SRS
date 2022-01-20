@@ -19,7 +19,8 @@ use Illuminate\Support\Facades\Route;
 // });
 
 //weather_station route
-Route::get('/', [MasterController::class, 'Dashboard']);
+Route::get('/', [MasterController::class, 'homepage']);
+Route::get('/dashboard_ws', [MasterController::class, 'dashboard_ws']);
 Route::get('/grafik', [MasterController::class, 'Grafik']);
 Route::get('/tabel', [MasterController::class, 'Tabel']);
 

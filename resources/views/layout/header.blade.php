@@ -7,7 +7,7 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>AWS DASHBOARD</title>
+    <title>IoT DASHBOARD</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="shortcut icon" type="image/x-icon" href="{{ asset('/img/CBI-logo.png') }}">
     <link rel="stylesheet" href="{{ asset('/plugins/fontawesome-free/css/all.min.css') }}">
@@ -68,10 +68,11 @@
         <nav class="main-header navbar navbar-expand navbar-white navbar-light">
             <ul class="navbar-nav">
                 <li class="nav-item">
-                    <a class="nav-link" data-widget="pushmenu" href="#" role="hover"><i class="fas fa-bars"></i></a>
+                    <a class="nav-link" data-widget="pushmenu" href="#" role="hover"><i class="fas fa-bars"></i>
+                    </a>
                 </li>
                 <li class="nav-item d-none d-sm-inline-block">
-                    <a class="nav-link">Selamat datang!</a>
+                    <a class="nav-link"> Selamat Datang!</a>
                 </li>
             </ul>
 
@@ -85,7 +86,7 @@
             <a href="{{ url('/') }}" class="brand-link">
                 <img src="{{ asset('/img/CBI-logo.png') }}" alt="Covid Tracker"
                     class="brand-image img-circle elevation-3" style="opacity: .8">
-                <span class="brand-text font-weight-light">AWS</span>
+                <span class="brand-text font-weight-light">IoT</span>
             </a>
             <div class="sidebar">
                 <nav class="mt-2">
@@ -93,10 +94,38 @@
                         data-accordion="false">
                         <!-- USER LAB -->
 
+
                         <!-- TABEL -->
                         <li class="nav-item">
-                            <a href="{{ url('/') }}" class="nav-link">
-                                <i class="nav-icon fa fa-tachometer-alt"></i>
+                            <a href="{{ url('/dashboard_wl') }}" class="nav-link">
+                                <i class="nav-icon fa fa-water"></i>
+                                <p>
+                                    Dashboard Water Level
+                                </p>
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a href="{{ url('/grafik_wl') }}" class="nav-link">
+                                <i class="nav-icon fa fa-chart-area"></i>
+                                <p>
+                                    Grafik Water Level
+                                </p>
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a href="{{ url('/tabel_wl') }}" class="nav-link">
+                                <i class="nav-icon fa fa-border-all"></i>
+                                <p>
+                                    Tabel Water Level
+                                </p>
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a href="{{ url('/dashboard_ws') }}" class="nav-link">
+                                <i class="nav-icon fa fa-cloud"></i>
                                 <p>
                                     Dashboard AWS
                                 </p>
@@ -106,7 +135,7 @@
                         <!-- TABEL -->
                         <li class="nav-item">
                             <a href="{{ url('/grafik') }}" class="nav-link">
-                                <i class="nav-icon fa fa-chart-area"></i>
+                                <i class="nav-icon fa fa-chart-pie"></i>
                                 <p>
                                     Grafik AWS
                                 </p>
@@ -123,32 +152,7 @@
                             </a>
                         </li>
 
-                        <li class="nav-item">
-                            <a href="{{ url('/dashboard_wl') }}" class="nav-link">
-                                <i class="nav-icon fa fa-columns"></i>
-                                <p>
-                                    Dashboard Water Level
-                                </p>
-                            </a>
-                        </li>
 
-                        <li class="nav-item">
-                            <a href="{{ url('/grafik_wl') }}" class="nav-link">
-                                <i class="nav-icon fa fa-chart-pie"></i>
-                                <p>
-                                    Grafik Water Level
-                                </p>
-                            </a>
-                        </li>
-
-                        <li class="nav-item">
-                            <a href="{{ url('/tabel_wl') }}" class="nav-link">
-                                <i class="nav-icon fa fa-table"></i>
-                                <p>
-                                    Tabel Water Level
-                                </p>
-                            </a>
-                        </li>
                     </ul>
                 </nav>
             </div>

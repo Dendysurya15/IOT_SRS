@@ -712,7 +712,13 @@ class MasterController extends Controller
      * Returns list of projects
      */
     //
-    public static function Dashboard()
+
+    public static function homepage()
+    {
+        return view('layout/homepage');
+    }
+
+    public static function dashboard_ws()
     {
         $sel_aws = DB::table('weather_station_list')
             ->join('weather_station', 'weather_station_list.id', '=', 'weather_station.idws')
