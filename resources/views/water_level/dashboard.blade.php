@@ -41,7 +41,7 @@
                 <div class="col-md-4">
                     <div class="card card-primary">
                         <div class="card-header">
-                            <div class="card-title">Rata-rata Level In</div>
+                            <div class="card-title" style="text-transform: uppercase;">Rata-rata Level In</div>
                         </div>
                         <div class="card-body">
                             <div class="row no-gutters align-items-center">
@@ -63,7 +63,7 @@
                 <div class="col-md-4">
                     <div class="card card-primary">
                         <div class="card-header">
-                            <div class="card-title">Rata-rata Level Out</div>
+                            <div class="card-title" style="text-transform: uppercase;">Rata-rata Level Out</div>
                         </div>
                         <div class="card-body">
                             <div class="row no-gutters align-items-center">
@@ -86,7 +86,7 @@
                 <div class="col-md-4">
                     <div class="card card-primary">
                         <div class="card-header">
-                            <div class="card-title">Rata-rata Level Actual</div>
+                            <div class="card-title" style="text-transform: uppercase;">Rata-rata Level Actual</div>
                         </div>
                         <div class="card-body">
                             <div class="row no-gutters align-items-center">
@@ -108,6 +108,42 @@
 
             </div>
             <!-- /.row -->
+
+
+            <div class="row">
+
+                <div class="col-md-6">
+                    <div class="card">
+                        @if (!is_null($maps->foto_udara))
+                        <div class=" card-header text-center">
+                            <span class="font-weight-bold" style="text-transform: uppercase;">
+                                Lokasi Pompa Air {{$listLoc[Request()->id ?: $defaultId]}} view Satelit
+                            </span>
+                        </div>
+                        <div class="card-body">
+                            <a href="https://maps.google.com/maps?t=k&q={{$maps->lat}},{{$maps->long}}" target=”_blank”>
+                                <img src="{{ asset('/img/'.$maps->foto_udara) }}" class="img-fluid"
+                                    alt="Responsive image">
+                            </a>
+                        </div>
+                        @endif
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card">
+                        @if (!is_null($maps->foto_udara))
+                        <div class="card-header text-center">
+                            <span class="font-weight-bold" style="text-transform: uppercase;">
+                                Foto di lokasi {{$listLoc[Request()->id ?: $defaultId]}}
+                            </span>
+                        </div>
+                        <div class="card-body">
+                            <img src="{{ asset('/img/pompa_air_q23.jpg') }}" class="img-fluid" alt="Responsive image">
+                        </div>
+                        @endif
+                    </div>
+                </div>
+            </div>
         </div><!-- /.container-fluid -->
     </section>
 

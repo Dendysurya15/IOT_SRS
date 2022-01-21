@@ -842,7 +842,7 @@ class MasterController extends Controller
     {
         $dataWlperhari = '';
         $defaultId = '';
-        $idLoc = $request->has('id') ? $request->input('id') : $defaultId = 1;
+        $idLoc = $request->has('id') ? $request->input('id') : $defaultId = 99;
         $listLoc = DB::table('water_level_list')->pluck('location', 'id');
         $dateToday = Carbon::now();
         $avg = '';
@@ -853,6 +853,12 @@ class MasterController extends Controller
             ->where(DB::raw("(DATE_FORMAT(water_level.datetime,'%Y-%m-%d'))"), '=', $dateToday->format('Y-m-d'))
             ->where('water_level_list.id', '=', $idLoc)
             ->get();
+
+        $queryMaps = DB::table('water_level_list')
+            ->select('water_level_list.*')
+            ->where('water_level_list.id', '=', $idLoc)
+            ->first();
+        // dd($queryFoto->foto_udara);
 
         if (!$dataWlperhari->isEmpty()) {
             $sumlvl_in = 0;
@@ -873,12 +879,12 @@ class MasterController extends Controller
             $dataWlperhari = json_decode(json_encode($dataWlperhari), true);
         }
 
-
         return view('water_level/dashboard', [
             'dataWlperhari' => $dataWlperhari,
             'avg' => $avg,
             'timeToday' =>  Carbon::now()->format('d-m-Y H:i:s'),
             'listLoc' => $listLoc,
+            'maps' => $queryMaps,
             'defaultId' => $defaultId,
         ]);
     }
@@ -914,7 +920,7 @@ class MasterController extends Controller
         ];;
 
         //mendapatkan id lokasi di table water level list atau default id record paling pertama
-        $idLoc = $request->has('id') ? $request->input('id') : $defaultId = 1;
+        $idLoc = $request->has('id') ? $request->input('id') : $defaultId = 99;
 
         $dateToday = Carbon::now();
 
@@ -1108,7 +1114,7 @@ class MasterController extends Controller
     public function tabel_wl(Request $request)
     {
         $defaultId = '';
-        $idLoc = $request->has('id') ? $request->input('id') : $defaultId = 1;
+        $idLoc = $request->has('id') ? $request->input('id') : $defaultId = 99;
 
         $data =  DB::table('water_level_list')
             ->join('water_level', 'water_level_list.id', '=', 'water_level.idwl')
