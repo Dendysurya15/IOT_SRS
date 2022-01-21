@@ -9,11 +9,18 @@
         color: inherit;
     }
 
+    .inner {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+    }
+
     /* .cardHead {
         height: 500px;
         background-image: url('../img/bgHome.png');
         background-repeat: no-repeat;
-        background-position: 0px 150px;
+        background-position: 0px 150px; margin:auto
         background-size: 500px;
     } */
 
@@ -23,9 +30,6 @@
         background-position: 350px 0px;
         background-size: 850px;
     } */
-    .card {
-        height: 100%;
-    }
 
     .selectCard:hover {
         transform: scale(1.05);
@@ -55,8 +59,8 @@
 
                                 <div class="col-sm-6">
                                     <div class="col-sm-12">
-                                        <h3> <span> IoT (Weather Station dan Water
-                                                Level)</span></h3>
+                                        <h2> <span> IoT (Weather Station dan Water
+                                                Level)</span></h2>
                                     </div>
                                     <div class="col-sm-12">
                                         {{-- <h3>Dashboard, visualisasi dan tabel dari data pengamatan cuaca dan
@@ -95,93 +99,123 @@
 
                                     </div>
                                 </div>
-                                <div class="col-sm-6" style="">
-                                    <h6>
-                                        Fitur Utama :
-                                    </h6>
-
+                                <div class="col-sm-6">
+                                    <h5>
+                                        Fitur yang tersedia :
+                                    </h5>
                                     <ul class="list-inline">
-                                        <li class="list-inline-item col-sm-3">
-                                            <a href="{{ url('/dashboard_wl') }}">
-                                                <div class="card h-100 selectCard">
-                                                    <div class="card-body" style="text-align: center">
-                                                        <i class="fa fa-water fa-2x" style="color:#5797E6;"></i>
-                                                        <br>
-                                                        <span style="font-size: 15px; "> Dashboard Water
-                                                            Level</span>
+                                        <div class="row">
+                                            <li class="col-md-4">
+                                                <a href="{{ url('/dashboard_wl') }}">
+                                                    <div class="card  selectCard text-center"
+                                                        style="height: 150px; margin:auto">
+                                                        <div class="card-body">
+                                                            <div class="inner">
+
+                                                                <i class=" fa fa-water fa-2x"
+                                                                    style="color:#5797E6;"></i>
+                                                                <br>
+                                                                <span style="font-size: 15px; "> Dashboard Water
+                                                                    Level</span>
+                                                            </div>
+                                                        </div>
                                                     </div>
-                                                </div>
-                                            </a>
-                                        </li>
-                                        <li class="list-inline-item col-sm-3">
-                                            <a href="{{ url('/grafik_wl') }}">
-                                                <div class="card h-100 selectCard">
-                                                    <div class="card-body" style="text-align: center">
-                                                        <i class="fa fa-chart-area fa-2x" style="color:#D24141;"></i>
-                                                        <br>
-                                                        <span style="font-size: 16px"> Grafik Water
-                                                            Level</span>
+                                                </a>
+                                            </li>
+                                            <li class="col-md-4">
+                                                <a href="{{ url('/grafik_wl') }}">
+                                                    <div class="card selectCard text-center"
+                                                        style="height: 150px; margin:auto">
+                                                        <div class="card-body">
+                                                            <div class="inner">
+                                                                <i class=" fa fa-chart-area fa-2x"
+                                                                    style="color:#D24141;">
+                                                                </i>
+                                                                <br>
+                                                                <span style="font-size: 16px"> Grafik Water
+                                                                    Level</span>
+                                                            </div>
+                                                        </div>
                                                     </div>
-                                                </div>
-                                            </a>
-                                        </li>
-                                        <li class="list-inline-item col-sm-3">
-                                            <a href="{{ url('/tabel_wl') }}">
-                                                <div class="card h-100 selectCard">
-                                                    <div class="card-body" style="text-align: center">
-                                                        <i class="fa fa-border-all fa-2x" style="color:#3C3B4C;"></i>
-                                                        <br>
-                                                        <span style="font-size: 15px"> Tabel Water
-                                                            Level</span>
+                                                </a>
+                                            </li>
+                                            <li class="col-md-4">
+                                                <a href="{{ url('/tabel_wl') }}">
+                                                    <div class="card  selectCard text-center" style="height: 150px">
+                                                        <div class="card-body">
+                                                            <div class="inner">
+
+                                                                <i class=" fa fa-border-all fa-2x"
+                                                                    style="color:#3C3B4C;">
+                                                                </i>
+                                                                <br>
+                                                                <span style="font-size: 15px"> Tabel Water
+                                                                    Level</span>
+                                                            </div>
+                                                        </div>
                                                     </div>
-                                                </div>
-                                            </a>
-                                        </li>
-                                        <li class="list-inline-item col-sm-3">
-                                            <a href="{{ url('/dashboard_ws') }}">
-                                                <div class="card h-100 selectCard">
-                                                    <div class="card-body" style="text-align: center">
-                                                        <i class="fa fa-cloud fa-2x" style="color:#0D6287;"></i>
-                                                        <br>
-                                                        <span style="font-size: 15px"> Dashboard AWS
-                                                        </span>
-                                                    </div>
-                                                </div>
-                                            </a>
-                                        </li>
-                                        <li class="list-inline-item col-sm-3">
-                                            <a href="{{ url('/grafik') }}">
-                                                <div class="card h-100 selectCard">
-                                                    <div class="card-body" style="text-align: center">
-                                                        <i class="fa fa-chart-pie fa-2x" style="color:#E2870B;"></i>
-                                                        <br>
-                                                        <span style="font-size: 15px"> Grafik AWS
-                                                        </span>
+                                                </a>
+                                            </li>
+                                        </div>
+
+                                        <div class="row">
+                                            <li class=" col-md-4">
+                                                <a href="{{ url('/dashboard_ws') }}">
+                                                    <div class="card selectCard text-center"
+                                                        style="height: 150px; margin:auto">
+                                                        <div class="card-body">
+                                                            <div class="inner">
+
+                                                                <i class=" fa fa-cloud fa-2x"
+                                                                    style="color:#0D6287;"></i>
+                                                                <br>
+                                                                <span style="font-size: 15px"> Dashboard AWS
+                                                                </span>
+                                                            </div>
+                                                        </div>
 
                                                     </div>
-                                                </div>
-                                            </a>
-                                        </li>
-                                        <li class="list-inline-item col-sm-3">
-                                            <a href="{{ url('/tabel') }}">
-                                                <div class="card h-100 selectCard ">
-                                                    <div class="card-body" style="text-align: center">
-                                                        <i class=" fa fa-table fa-2x" style="color:#69B585;"></i>
-                                                        <br>
-                                                        <span style="font-size: 15px"> Tabel AWS
-                                                        </span>
+                                                </a>
+                                            </li>
+                                            <li class=" col-md-4">
+                                                <a href="{{ url('/grafik') }}">
+                                                    <div class="card selectCard text-center"
+                                                        style="height: 150px; margin:auto">
+                                                        <div class=" card-body">
+                                                            <div class="inner">
+                                                                <i class=" fa fa-chart-pie fa-2x"
+                                                                    style="color:#E2870B;">
+                                                                </i>
+                                                                <br>
+                                                                <span style="font-size: 15px"> Grafik AWS
+                                                                </span>
+                                                            </div>
 
+                                                        </div>
                                                     </div>
-                                                </div>
-                                            </a>
-                                        </li>
+                                                </a>
+                                            </li>
+                                            <li class=" col-md-4">
+                                                <a href="{{ url('/tabel') }}">
+                                                    <div class="card selectCard text-center"
+                                                        style=" height: 150px; margin:auto ">
+                                                        <div class=" card-body ">
+                                                            <div class="inner">
+                                                                <i class=" fa fa-table fa-2x"
+                                                                    style="color:#69B585;"></i>
+                                                                <br>
+                                                                <span style="font-size: 15px"> Tabel AWS
+                                                                </span>
+                                                            </div>
 
+                                                        </div>
+                                                    </div>
+                                                </a>
+                                            </li>
+                                        </div>
                                     </ul>
                                 </div>
-
                             </div>
-
-
                         </div>
                     </div>
                 </div>
