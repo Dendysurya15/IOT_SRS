@@ -138,7 +138,8 @@
                             </span>
                         </div>
                         <div class="card-body">
-                            <img src="{{ asset('/img/pompa_air_q23.jpg') }}" class="img-fluid" alt="Responsive image">
+                            <img src="{{ asset('../img/'.$maps->foto_lokasi) }}" class="img-fluid"
+                                alt="Responsive image">
                         </div>
                         @endif
                     </div>

@@ -115,7 +115,7 @@
     var judul = 'DATA AWS';
     $(function() {
         $('#rekapWaterLevel').DataTable({
-            "searching": false,
+            "searching": true,
             dom: 'Bfrtip',
             buttons: [{
                 extend : 'excelHtml5',

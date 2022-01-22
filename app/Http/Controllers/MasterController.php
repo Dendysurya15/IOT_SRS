@@ -1119,7 +1119,7 @@ class MasterController extends Controller
         $data =  DB::table('water_level_list')
             ->join('water_level', 'water_level_list.id', '=', 'water_level.idwl')
             ->select('water_level.*')
-            ->orderBy('water_level.id', 'desc')
+            ->orderBy('water_level.datetime', 'desc')
             ->where('water_level_list.id', '=', $idLoc)
             ->get();
 
