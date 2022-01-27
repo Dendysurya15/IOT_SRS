@@ -897,6 +897,7 @@ class MasterController extends Controller
         $wlperminggu = '';
         $wlperbulan = '';
         $latestDataToday = '';
+        $avgLvlActHariIni = '';
         $arrWlPerhariiniView = [
             'plot1'     => '',
             'plot2'     => '',
@@ -936,19 +937,34 @@ class MasterController extends Controller
             ->where('water_level_list.id', '=', $idLoc)
             ->get();
 
-
+        $totalHariIni = 0;
+        $counterLvlAct = 0;
         if (!$dataWlperhari->isEmpty()) {
+
+            //mencari lvl act max
+            foreach ($dataWlperhari as  $value) {
+                $query[] = $value->lvl_act;
+            }
+            $maxValueLvlAct = max($query);
             $dataWlperhari = json_decode(json_encode($dataWlperhari), true);
-            foreach ($dataWlperhari as $value) {
+
+            foreach ($dataWlperhari as  $value) {
 
                 //Perhari
                 $jam        = date('H:i', strtotime($value['datetime']));
                 $wlhariini .=
                     "[{v:'" . $jam . "'}, {v:" . $value['lvl_in'] . ", f:'" . $value['lvl_in'] . "'},
-                         {v:" . $value['lvl_out'] . ", f:'" . $value['lvl_out'] . "'},
-                         {v:" . $value['lvl_act'] . ", f:'" . $value['lvl_act'] . "'}                                      
-                     ],";
+                         {v:" . $value['lvl_out'] . ", f:'" . $value['lvl_out'] . "'";
+                if ($maxValueLvlAct == 0) {
+                    $wlhariini .= "}],";
+                } else {
+                    $wlhariini .= "},{v:" . $value['lvl_act'] . ", f:'" . $value['lvl_act'] . "'}],";
+                }
+
+                $counterLvlAct += $value['lvl_act'];
+                $totalHariIni++;
             }
+            $avgLvlActHariIni = $counterLvlAct / $totalHariIni;
 
             $arrWlPerhariiniView = [
                 'plot1'     => 'Level_in (cm)',
@@ -1105,6 +1121,7 @@ class MasterController extends Controller
             'arrWlPerhariiniView' => $arrWlPerhariiniView,
             'arrWlPermingguView' => $arrWlPermingguView,
             'arrWlPerbulanView' => $arrWlPerbulanView,
+            'avgLvlActHariIni' => $avgLvlActHariIni,
             'dateToday' => $latestDataToday ?: Carbon::now()->format('d-m-Y H:i:s'),
             'listLoc' => $listLoc,
             'defaultId' => $defaultId

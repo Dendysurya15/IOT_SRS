@@ -122,7 +122,7 @@
                         </div>
                         <div class="card-body">
                             <a href="https://maps.google.com/maps?t=k&q={{$maps->lat}},{{$maps->long}}" target=”_blank”>
-                                <img src="{{ asset('/img/'.$maps->foto_udara) }}" class="img-fluid"
+                                <img src="{{ asset('../img/'.$maps->foto_udara) }}" class="img-fluid"
                                     alt="Responsive image">
                             </a>
                         </div>

@@ -111,12 +111,18 @@
     var plotlvl_in = '<?php echo $arrWlPerhariiniView['plot1']; ?>';
     var plotlvl_out = '<?php echo $arrWlPerhariiniView['plot2']; ?>';
     var plotlvl_act = '<?php echo $arrWlPerhariiniView['plot3']; ?>';
+    var avgLvlAct = '<?php echo $avgLvlActHariIni; ?>'
     
+
     var dataWlPerHariIni = new google.visualization.DataTable();
     dataWlPerHariIni.addColumn('string', 'Name');
     dataWlPerHariIni.addColumn('number', plotlvl_in);
     dataWlPerHariIni.addColumn('number', plotlvl_out);
+
+    if(avgLvlAct != 0){
     dataWlPerHariIni.addColumn('number', plotlvl_act);
+    }
+
     dataWlPerHariIni.addRows([
       <?php echo $arrWlPerhariiniView['data']; ?>
     ]);
