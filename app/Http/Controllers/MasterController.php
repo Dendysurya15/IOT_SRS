@@ -718,46 +718,236 @@ class MasterController extends Controller
         return view('layout/homepage');
     }
 
-    public static function dashboard_ws()
+    public static function getDay(Request $request)
     {
+        return view('weather_station/forecastDay');
+    }
+
+    public static function dashboard_ws(Request $request)
+    {
+
+        $dateToday = Carbon::now()->format('Y-m-d');
+
+        $convert = new DateTime($dateToday);
+
+        // $convert->add(new DateInterval('PT7H'));
+
+        $from = $convert->format('Y-m-d H:i:s');
+        // 
+        $from2 = Carbon::parse($from)->subMinutes();
+
+        $from2 = $from2->format('Y-m-d H:i:s');
+        // dd($to);
+        $dateTo = Carbon::parse($from2)->addDays();
+
+        // $dateFrom->add(new DateInterval('PT0H'));
+        // dd($dateTo);
+        $dateTo = $dateTo->format('Y-m-d H:i:s');
+
+        $to = date($dateTo);
+
         $sel_aws = DB::table('weather_station_list')
-            ->join('weather_station', 'weather_station_list.id', '=', 'weather_station.idws')
-            ->select('weather_station.*', 'weather_station_list.rain_cal as rain_cal', 'weather_station_list.loc as loc')
-            ->orderByDesc('weather_station.id')
+            ->join('db_aws_bke', 'weather_station_list.id', '=', 'db_aws_bke.idws')
+            ->select('db_aws_bke.*', 'weather_station_list.rain_cal as rain_cal', 'weather_station_list.loc as loc')
+            ->whereBetween('db_aws_bke.datetime', [$from2, $to])
+            ->orderByDesc('db_aws_bke.id')
+            ->where('db_aws_bke.idws', '=', 99)
             ->take(1)
             ->get();
-        $sel_aws = json_decode(json_encode($sel_aws), true);
 
+        // dd($sel_aws);
+
+        foreach ($sel_aws as $data) {
+            if ($data->rain_forecast >= 0 && $data->rain_forecast < 10) {
+                $icon = 'cloudy-day.png';
+                $title = 'Cerah Panas';
+            } else if ($data->rain_forecast >= 10 && $data->rain_forecast < 20) {
+                $icon = 'cloudy.png';
+                $title = 'Cerah berawan';
+            } else if ($data->rain_forecast >= 20) {
+                $icon = 'rainy.png';
+                $title = 'Hujan Lebat';
+            }
+            $data->titleIcon = $title;
+            $data->icon = $icon;
+        }
+
+        // dd($sel_aws);
         $aws_loc = DB::table('weather_station_list')->get();
         $aws_loc = json_decode(json_encode($aws_loc), true);
 
-        $aws_tanggal    = '';
-        $aws_jam        = '';
-        $aws_hari       = '';
-        foreach ($sel_aws as $value) {
-            $aws_tanggal    = date('d-m-Y', strtotime($value['datetime']));
-            $aws_jam        = date('H:i:s', strtotime($value['datetime']));
-            $aws_hari       = date('D', strtotime($value['datetime']));
+        $dateNow = Carbon::now()->format('d M H:i');
+        // dd($aws_loc);
+        $idws = 0;
+        $tglData = $request->has('tgl') ? $request->input('tgl') : $defaultHari = $dateToday;
+
+        $date =  Carbon::now()->format('Y-m-d');
+
+        $formatted = new DateTime($date);
+        $formatted = $formatted->format('Y-m-d');
+
+        $convert = $formatted . ' 00:00:00';;
+        $convert = new DateTime($convert);
+
+        $from =  $convert->format('Y-m-d H:i:s');
+
+        $from = Carbon::parse($from)->addDays();
+
+        $from =  $convert->format('Y-m-d H:i:s');
+
+        $dateParse = Carbon::parse($from)->addDays(4);
+
+        $dateParse = $dateParse->format('Y-m-d');
+
+        $dateParse = $dateParse . ' 23:59:59';
+        $to = new DateTime($dateParse);
+        $to = $to->format('Y-m-d H:i:s');
+
+        $queryPrediction =  DB::table('weather_station_list')
+            ->join('db_aws_bke', 'weather_station_list.id', '=', 'db_aws_bke.idws')
+            ->select('db_aws_bke.*', 'weather_station_list.rain_cal as rain_cal', 'weather_station_list.loc as loc', DB::raw("DATE_FORMAT(db_aws_bke.datetime,'%d-%m-%Y') as hari"))
+            ->whereBetween('db_aws_bke.datetime', [$from, $to])
+            ->get()
+            ->groupBy('hari');
+
+        $arrPred = array();
+        $inc1 = 0;
+        foreach ($queryPrediction as $key => $data) {
+            $sum_rain_forecast = 0;
+            $sum_temp_forecast = 0;
+            $sum_hum_forecast = 0;
+            $inc2 = 0;
+            foreach ($data as $key2 => $value) {
+                $sum_rain_forecast += round($value->rain_forecast, 2);
+                $sum_temp_forecast += round($value->temp_forecast, 2);
+                $sum_hum_forecast += round($value->hum_forecast, 2);
+                $inc2++;
+            }
+            $avgRFbyDay =  round($sum_rain_forecast / $inc2, 2);
+            $avgTFbyDay =  round($sum_temp_forecast / $inc2, 2);
+            $avgHFbyDay =  round($sum_hum_forecast / $inc2, 2);
+            $arrPred[$inc1]['hari'] =  Carbon::parse($key)->format('D d');
+            $arrPred[$inc1]['predHujan'] = $avgRFbyDay;
+            $arrPred[$inc1]['predSuhu'] = $avgTFbyDay;
+            $arrPred[$inc1]['predKel'] = $avgHFbyDay;
+
+            if ($avgRFbyDay >= 0.5 && $avgRFbyDay < 20) {
+                $icon = 'cloudy-day.png';
+            } else if ($avgRFbyDay >= 20 && $avgRFbyDay < 50) {
+                $icon = 'cloudy.png';
+            } else if ($avgRFbyDay >= 50 && $avgRFbyDay < 100) {
+                $icon = 'rainy.png';
+            } else if ($avgRFbyDay >= 100 && $avgRFbyDay < 150) {
+                $icon = 'rainy.png';
+            } else if ($avgRFbyDay >= 150) {
+                $icon = 'rainy.png';
+            } else if ($avgRFbyDay < 0.5) {
+                $icon = 'sunny.png';
+            }
+            $value->icon = $icon;
+            $arrPred[$inc1]['icon'] = $icon;
+            $inc1++;
         }
-        $aws_hari       = app('App\Http\Controllers\MasterController')->hari_ini($sel_aws);
-        $aws_terakhir   = [
-            'tanggal'   => $aws_tanggal,
-            'jam'       => $aws_jam,
-            'hari'      => $aws_hari
-        ];
-        return view('weather_station/dashboard', ['aws' => $sel_aws, 'aws_loc' => $aws_loc, 'updateterakhir' => $aws_terakhir, '']);
+
+        return view('weather_station/dashboard', ['aws_loc' => $aws_loc, 'aktual' => $sel_aws[0], 'date' => $dateNow, 'forecasting' => $arrPred]);
+    }
+
+    public function getDataDashboard(Request $request)
+    {
+        $id_loc = $request->get('id_loc');
+
+        $tglData = $request->get('tgl');
+
+        $convert = new DateTime($tglData);
+
+        // $convert->add(new DateInterval('PT7H'));
+
+        $from = $convert->format('Y-m-d H:i:s');
+        // 
+        $from2 = Carbon::parse($from)->subMinutes();
+
+        $from2 = $from2->format('Y-m-d H:i:s');
+        // dd($to);
+        $dateTo = Carbon::parse($from2)->addDays();
+
+        // $dateFrom->add(new DateInterval('PT0H'));
+        // dd($dateTo);
+        $dateTo = $dateTo->format('Y-m-d H:i:s');
+
+        $to = date($dateTo);
+
+        $sel_aws = DB::table('weather_station_list')
+            ->join('db_aws_bke', 'weather_station_list.id', '=', 'db_aws_bke.idws')
+            ->select('db_aws_bke.*', 'weather_station_list.rain_cal as rain_cal', 'weather_station_list.loc as loc')
+            ->whereBetween('db_aws_bke.datetime', [$from, $to])
+            ->orderByDesc('db_aws_bke.id')
+            ->where('db_aws_bke.idws', '=', $id_loc)
+            ->take(1)
+            ->get();
+
+        if ($sel_aws->first() != null) {
+            echo json_encode($sel_aws[0]);
+        } else {
+            echo 'no data';
+        };
+        exit();
     }
 
     public static function Grafik()
     {
         $sel_aws = DB::table('weather_station_list')
-            ->join('weather_station', 'weather_station_list.id', '=', 'weather_station.idws')
-            ->select('weather_station.*', 'weather_station_list.rain_cal as rain_cal', 'weather_station_list.loc as loc')
-            ->orderByDesc('weather_station.id')
+            ->join('db_aws_bke', 'weather_station_list.id', '=', 'db_aws_bke.idws')
+            ->select('db_aws_bke.*', 'weather_station_list.rain_cal as rain_cal', 'weather_station_list.loc as loc')
+            ->orderByDesc('db_aws_bke.id')
             ->get();
+
+        $date =  Carbon::now()->format('Y-m-d');
+
+        $formatted = new DateTime($date);
+        $formatted = $formatted->format('Y-m-d');
+
+        $date = $formatted . ' 00:00:00';
+
+        $convert = new DateTime($date);
+
+        $from = $convert->format('Y-m-d H:i:s');
+
+        $parse = Carbon::parse($from)->subDays(6);
+        $parse = $parse->format('Y-m-d');
+
+        $pastWeek = $parse . ' 00:00:00';
+        $toToday = $formatted . ' 23:59:59';
+        // dd($toToday);
+        $dateParse = Carbon::parse($from)->addDays(6);
+        $dateParse = $dateParse->format('Y-m-d');
+
+        $dateParse = $dateParse . ' 23:59:59';
+        $to = new DateTime($dateParse);
+        $to = $to->format('Y-m-d H:i:s');
+
+        $queryPrediction =  DB::table('weather_station_list')
+            ->join('db_aws_bke', 'weather_station_list.id', '=', 'db_aws_bke.idws')
+            ->select('db_aws_bke.*', 'weather_station_list.rain_cal as rain_cal', 'weather_station_list.loc as loc')
+            ->whereBetween('db_aws_bke.datetime', [$from, $to])
+            // ->orderByDesc('db_aws_bke.id')
+            ->get();
+
+        $queryPrediction = json_decode(json_encode($queryPrediction), true);
+
+        // dd($queryPrediction);
+        $queryHistory =  DB::table('weather_station_list')
+            ->join('db_aws_bke', 'weather_station_list.id', '=', 'db_aws_bke.idws')
+            ->select('db_aws_bke.*', 'weather_station_list.rain_cal as rain_cal', 'weather_station_list.loc as loc')
+            ->whereBetween('db_aws_bke.datetime', [$pastWeek, $toToday])
+            ->get();
+
+        $queryHistory = json_decode(json_encode($queryHistory), true);
+
+        $dateToday = Carbon::now()->format('Y-m-d');
+
         $sel_aws = json_decode(json_encode($sel_aws), true);
-
-
+        $forecastMingguan = '';
+        $AktualPastWeekRF = '';
         #PERBULAN
         $awsPerbulan        = '';
         $arrAwsPerbulan     = '';
@@ -771,7 +961,23 @@ class MasterController extends Controller
         #PERHARIINI
         $awsPerhariini      = '';
         $arrAwsPerhariini   = '';
-        $filHariini         = date('d-m-Y', strtotime("2021-11-13"));
+        // $filHariini         = date('d-m-Y', strtotime("2021-11-13"));
+
+        foreach ($queryPrediction as $key => $value) {
+            $formatted = new DateTime($value['datetime']);
+            $tanggal = $formatted->format('d M');
+            $jam        = date('H:i', strtotime($value['datetime']));
+            $forecastMingguan .= "[{v: '" . $tanggal . "', f:'" . $tanggal . "'}, {v:" . $value['rain_forecast'] . ", f:'" . $value['rain_forecast'] . " mm " . "'}                                
+                            ],";
+        }
+
+        foreach ($queryHistory as $key => $value) {
+            $formatted = new DateTime($value['datetime']);
+            $tanggal = $formatted->format('d M');
+            $jam        = date('H:i', strtotime($value['datetime']));
+            $AktualPastWeekRF .= "[{v: '" . $tanggal . "', f:'" . $tanggal . "'}, {v:" . $value['rain_fall'] . ", f:'" . $value['rain_fall'] . " mm " . "'}                                
+                            ],";
+        }
 
         foreach ($sel_aws as $value) {
             $perBulan   = date('m', strtotime($value['datetime']));
@@ -779,11 +985,11 @@ class MasterController extends Controller
             #PERHARIINI            
             $perHariini  = date('d-m-Y', strtotime($value['datetime']));
 
-            if (strtotime($perHariini) > strtotime($filHariini)) {
+            if (strtotime($perHariini) > strtotime($dateToday)) {
 
                 $tanggal    = date('H:i d-m-Y', strtotime($value['datetime']));
                 $jam        = date('H:i', strtotime($value['datetime']));
-                $awsPerhariini .= "[{v: '" . $jam . "', f:'" . $tanggal . "'}, {v:" . $value['t'] . ", f:'" . $value['t'] . " °C " . $value['loc'] . "'}                                      
+                $awsPerhariini .= "[{v: '" . $jam . "', f:'" . $tanggal . "'}, {v:" . $value['temperature'] . ", f:'" . $value['temperature'] . " °C " . $value['loc'] . "'}                                      
                                 ],";
             }
 
@@ -792,7 +998,7 @@ class MasterController extends Controller
             if (strtotime($perMinggu) > strtotime($filMinggu)) {
                 $tanggal    = date('H:i d-m-Y', strtotime($value['datetime']));
                 $jam        = date('H:i', strtotime($value['datetime']));
-                $awsPerminggu .= "[{v: '" . $jam . "', f:'" . $tanggal . "'}, {v:" . $value['t'] . ", f:'" . $value['t'] . " °C " . $value['loc'] . "'}                                
+                $awsPerminggu .= "[{v: '" . $jam . "', f:'" . $tanggal . "'}, {v:" . $value['temperature'] . ", f:'" . $value['temperature'] . " °C " . $value['loc'] . "'}                                
                                 ],";
             }
 
@@ -800,7 +1006,7 @@ class MasterController extends Controller
             if ($filBulan == $perBulan) {
                 $tanggal    = date('H:i d-m-Y', strtotime($value['datetime']));
                 $jam        = date('H:i', strtotime($value['datetime']));
-                $awsPerbulan .= "[{v: '" . $jam . "', f:'" . $tanggal . "'}, {v:" . $value['t'] . ", f:'" . $value['t'] . " °C " . $value['loc'] . "'}                                     
+                $awsPerbulan .= "[{v: '" . $jam . "', f:'" . $tanggal . "'}, {v:" . $value['temperature'] . ", f:'" . $value['temperature'] . " °C " . $value['loc'] . "'}                                     
                                 ],";
             }
         }
@@ -819,10 +1025,23 @@ class MasterController extends Controller
             'data'      => $awsPerbulan
         ];
 
+        $arrForecast = [
+            'title' => 'Prediksi Curah Hujan',
+            'data' => $forecastMingguan,
+        ];
+
+        $arrPastWeekRF = [
+            'title' => 'Aktual Curah Hujan',
+            'data' => $AktualPastWeekRF,
+        ];
+
+        // dd($arrForecast);
         return view('weather_station/grafik', [
             'arrAwsHariIni'     => $arrAwsPerhariini,
             'arrAwsPerminggu'   => $arrAwsPerminggu,
             'arrAwsPerbulan'    => $arrAwsPerbulan,
+            'arrForecast' => $arrForecast,
+            'arrPastWeekRF' => $arrPastWeekRF,
         ]);
     }
 
@@ -841,6 +1060,7 @@ class MasterController extends Controller
     public function dashboard_wl(Request $request)
     {
         $dataWlperhari = '';
+        $lastDataInDay = '';
         $defaultId = '';
         $idLoc = $request->has('id') ? $request->input('id') : $defaultId = 99;
         $listLoc = DB::table('water_level_list')->pluck('location', 'id');
@@ -858,7 +1078,6 @@ class MasterController extends Controller
             ->select('water_level_list.*')
             ->where('water_level_list.id', '=', $idLoc)
             ->first();
-        // dd($queryFoto->foto_udara);
 
         if (!$dataWlperhari->isEmpty()) {
             $sumlvl_in = 0;
@@ -876,8 +1095,19 @@ class MasterController extends Controller
                 'lvl_act' =>  round(($sumlvl_act / count($dataWlperhari)), 2),
             ];
 
+            //get last data in day
+            $lastDataInDay = DB::table('water_level_list')
+                ->join('water_level', 'water_level_list.id', '=', 'water_level.idwl')
+                ->select('water_level.*', 'water_level_list.location as location')
+                ->orderBy('water_level.datetime', 'desc')
+                ->where(DB::raw("(DATE_FORMAT(water_level.datetime,'%Y-%m-%d'))"), '=', $dateToday->format('Y-m-d'))
+                ->where('water_level_list.id', '=', $idLoc)
+                ->first();
+
             $dataWlperhari = json_decode(json_encode($dataWlperhari), true);
         }
+
+        // dd($dataWlperhari);
 
         return view('water_level/dashboard', [
             'dataWlperhari' => $dataWlperhari,
@@ -886,6 +1116,7 @@ class MasterController extends Controller
             'listLoc' => $listLoc,
             'maps' => $queryMaps,
             'defaultId' => $defaultId,
+            'lastDataInDay' => $lastDataInDay,
         ]);
     }
 
@@ -912,7 +1143,6 @@ class MasterController extends Controller
             'data'      => $wlperminggu
         ];
 
-
         $arrWlPerbulanView = [
             'plot1'     => 'Level In',
             'plot2'     => 'Level Out',
@@ -928,14 +1158,36 @@ class MasterController extends Controller
         //get all list lokasi
         $listLoc = DB::table('water_level_list')->pluck('location', 'id');
 
-        //get all data per hari
+        $lastData = DB::table('water_level_list')
+            ->join('water_level', 'water_level_list.id', '=', 'water_level.idwl')
+            ->select('water_level.*', 'water_level_list.location as location')
+            ->orderBy('water_level.datetime', 'desc')
+            // ->where(DB::raw("(DATE_FORMAT(water_level.datetime,'%Y-%m-%d'))"), '=', $dateToday->format('Y-m-d'))
+            ->where('water_level_list.id', '=', $idLoc)
+            ->first();
+
+        // dd($lastData);
+        $to = $lastData->datetime;
+
+        $convert = new DateTime($to);
+        $to = $convert->format('Y-m-d H:i:s');
+
+        $dateFrom = Carbon::parse($to)->subDays();
+        $dateFrom = $dateFrom->format('Y-m-d H:i:s');
+
+        $from = date($dateFrom);
+        $to = date($lastData->datetime);
+
         $dataWlperhari = DB::table('water_level_list')
             ->join('water_level', 'water_level_list.id', '=', 'water_level.idwl')
             ->select('water_level.*', 'water_level_list.location as location')
             ->orderBy('water_level.datetime')
-            ->where(DB::raw("(DATE_FORMAT(water_level.datetime,'%Y-%m-%d'))"), '=', $dateToday->format('Y-m-d'))
+            ->whereBetween('water_level.datetime', [$from, $to])
+            // ->where(DB::raw("(DATE_FORMAT(water_level.datetime,'%Y-%m-%d'))"), '=', $dateToday->format('Y-m-d'))
             ->where('water_level_list.id', '=', $idLoc)
             ->get();
+
+        // dd($dataWlperhari[0  ]);
 
         $totalHariIni = 0;
         $counterLvlAct = 0;
@@ -982,15 +1234,19 @@ class MasterController extends Controller
                 ->limit(1)
                 ->first();
 
-            $latestDataToday =  Carbon::parse($latestDataToday->datetime)->format('d-m-Y H:i:s');
+            // $latestDataToday =  Carbon::parse($latestDataToday->datetime)->format('d-m-Y H:i:s');
         }
 
+        $dateParse = Carbon::parse($to)->subDays(7);
+        $dateParse = $dateParse->format('Y-m-d H:i:s');
+
+        $pastWeek = date($dateParse);
         $dataWlperminggu = DB::table('water_level_list')
             ->join('water_level', 'water_level_list.id', '=', 'water_level.idwl')
             ->select('water_level.*', 'water_level_list.location as location', DB::raw("DATE_FORMAT(water_level.datetime,'%d-%m-%Y') as datetime"))
-            ->whereBetween('water_level.datetime', [$dateToday->startOfWeek()->format('Y-m-d'), $dateToday->endOfWeek()->format('Y-m-d')])
+            ->whereBetween('water_level.datetime', [$pastWeek, $to])
+            // ->whereBetween('water_level.datetime', [$dateToday->startOfWeek()->format('Y-m-d'), $dateToday->endOfWeek()->format('Y-m-d')])
             ->where('water_level_list.id', '=', $idLoc)
-            ->orderBy('datetime', 'asc')
             ->get()
             ->groupBy(function ($item) {
                 return $item->datetime;
@@ -999,7 +1255,7 @@ class MasterController extends Controller
         if (!$dataWlperminggu->isEmpty()) {
             foreach ($dataWlperminggu as $sub_array) {
                 foreach ($sub_array as $data) {
-                    $data->nameDay = Carbon::parse($data->datetime)->format('l');
+                    $data->nameDay = Carbon::parse($data->datetime)->format('D d M');
                 }
             }
 
@@ -1031,14 +1287,22 @@ class MasterController extends Controller
                 }
             }
 
+            $sumLvlActMinggu = 0;
+            foreach ($arrDataPerminggu as $key => $value) {
+                $sumLvlActMinggu += $value['lvl_act'];
+            }
+
             //ubah skema array per minggu menjadi ploting pada grafik
             foreach ($arrDataPerminggu as $key => $data) {
                 $hari = $data['nameDay'];
                 $wlperminggu .=
                     "[{v:'" . $hari . "'}, {v:" . $data['lvl_in'] . ", f:'" . $data['lvl_in'] . "'},
-                {v:" . $data['lvl_out'] . ", f:'" . $data['lvl_out'] . "'},
-                {v:" . $data['lvl_act'] . ", f:'" . $data['lvl_act'] . "'}
-            ],";
+                {v:" . $data['lvl_out'] . ", f:'" . $data['lvl_out'] .  "'";
+                if ($sumLvlActMinggu == 0) {
+                    $wlperminggu .= "}],";
+                } else {
+                    $wlperminggu .= "},{v:" . $data['lvl_act'] . ", f:'" . $data['lvl_act'] . "'}],";
+                }
             }
 
             $arrWlPermingguView = [
@@ -1049,13 +1313,16 @@ class MasterController extends Controller
             ];
         }
 
+        $dateParse = Carbon::parse($to)->subDays(30);
+        $dateParse = $dateParse->format('Y-m-d H:i:s');
+
+        $pastMonth = date($dateParse);
 
         $dataWlperbulan = DB::table('water_level_list')
             ->join('water_level', 'water_level_list.id', '=', 'water_level.idwl')
             ->select('water_level.*', 'water_level_list.location as location',  DB::raw("DATE_FORMAT(water_level.datetime,'%d-%m') as day_month"))
             ->where('water_level_list.id', '=', $idLoc)
-            ->whereYear('water_level.datetime', $dateToday->format('Y'))
-            ->whereMonth('water_level.datetime', $dateToday->format('m'))
+            ->whereBetween('water_level.datetime', [$pastMonth, $to])
             ->orderBy('water_level.datetime', 'asc')
             ->get()
             ->groupBy('day_month');
@@ -1097,15 +1364,23 @@ class MasterController extends Controller
                 }
             }
 
+            // dd($arrDataPerbulan);
+            // $sumLvlActBulan = 0;
+            // foreach ($arrDataPerbulan as $key => $value) {
+            //     $sumLvlActBulan += $value['lvl_act'];
+            // }
+
+            // dd($sumLvlActBulan);
+            // dd($sumLvlActBulan);
             //ubah skema array per bulan menjadi ploting pada grafik
             foreach ($arrDataPerbulan as $key => $data) {
                 //
                 $hari = $data['datetime'];
                 $wlperbulan .=
                     "[{v:'" . $hari . "'}, {v:" . $data['lvl_in'] . ", f:'" . $data['lvl_in'] . "'},
-                {v:" . $data['lvl_out'] . ", f:'" . $data['lvl_out'] . "'},
-                {v:" . $data['lvl_act'] . ", f:'" . $data['lvl_act'] . "'}
-            ],";
+                    {v:" . $data['lvl_out'] . ", f:'" . $data['lvl_out'] . "'},
+                    {v:" . $data['lvl_act'] . ", f:'" . $data['lvl_act'] . "'}
+                ],";
             }
 
             $arrWlPerbulanView = [
@@ -1122,10 +1397,91 @@ class MasterController extends Controller
             'arrWlPermingguView' => $arrWlPermingguView,
             'arrWlPerbulanView' => $arrWlPerbulanView,
             'avgLvlActHariIni' => $avgLvlActHariIni,
-            'dateToday' => $latestDataToday ?: Carbon::now()->format('d-m-Y H:i:s'),
+            'sumLvlActMinggu' => $sumLvlActMinggu,
+            // 'sumLvlActBulan' => $sumLvlActBulan,
+            'dateToday' =>  Carbon::now()->format('d-m-Y H:i:s'),
             'listLoc' => $listLoc,
-            'defaultId' => $defaultId
+            'defaultId' => $defaultId,
         ]);
+    }
+
+    public function month_weather_forecast()
+    {
+        $monthNow = Carbon::now()->month;
+        $aws_loc = DB::table('weather_station_list')->get();
+        $aws_loc = json_decode(json_encode($aws_loc), true);
+
+        $dateNow =  Carbon::createFromFormat('Y-m-d H:i:s', Carbon::now()->format('Y-m-d H:i:s'))->isoFormat('MMMM');
+
+        // $query = DB::table("db_aws_bke")
+        //     ->whereMonth('db_aws_bke.datetime', Carbon::now()->month)
+        //     ->whereYear('db_aws_bke.datetime', '=', Carbon::now()->year)
+        //     // ->take(4)
+        //     ->get();
+
+
+        $dataLog = DB::table('db_aws_bke')
+            ->select('db_aws_bke.*',  DB::raw("DATE_FORMAT(db_aws_bke.datetime,'%Y-%d-%m') as hari"))
+            ->orderBy('db_aws_bke.datetime', 'DESC')
+            ->whereMonth('db_aws_bke.datetime', Carbon::now()->month)
+            ->whereYear('db_aws_bke.datetime', Carbon::now()->year)
+            ->get()
+            ->groupBy('hari');
+
+        // dd($dataLog);
+        $arrMonth = array();
+
+        foreach ($dataLog as $inc =>  $value) {
+            $count = 0;
+
+            $sumRainF = 0;
+            $sumTempF = 0;
+            $sumHumF  = 0;
+            foreach ($value as $key => $data) {
+                $sumRainF += round($data->rain_forecast, 2);
+                $sumTempF += round($data->temp_forecast, 2);
+                $sumHumF += round($data->hum_forecast, 2);
+                $count++;
+            }
+            // $arrMonth[$inc]['id'] = $count;
+            $arrMonth[$inc]['timestamp'] = Carbon::createFromFormat('Y-m-d H:i:s', $data->datetime)->isoFormat('dddd, D MMMM Y');
+            $arrMonth[$inc]['hari'] = $inc;
+            $arrMonth[$inc]['rerata_rf'] = round($sumRainF / $count, 2);
+            $arrMonth[$inc]['rerata_tf'] = round($sumTempF / $count, 2);
+            $arrMonth[$inc]['rerata_hf'] = round($sumHumF / $count, 2);
+
+            if ($arrMonth[$inc]['rerata_rf'] >= 0.5 && $arrMonth[$inc]['rerata_rf'] < 20) {
+                $icon = 'cloudy-day.png';
+            } else if ($arrMonth[$inc]['rerata_rf'] >= 20 && $arrMonth[$inc]['rerata_rf'] < 50) {
+                $icon = 'cloudy.png';
+            } else if ($arrMonth[$inc]['rerata_rf'] >= 50 && $arrMonth[$inc]['rerata_rf'] < 100) {
+                $icon = 'rainy.png';
+            } else if ($arrMonth[$inc]['rerata_rf'] >= 100 && $arrMonth[$inc]['rerata_rf'] < 150) {
+                $icon = 'rainy.png';
+            } else if ($arrMonth[$inc]['rerata_rf'] >= 150) {
+                $icon = 'rainy.png';
+            } else if ($arrMonth[$inc]['rerata_rf'] < 0.5) {
+                $icon = 'sunny.png';
+            }
+            $arrMonth[$inc]['num_days'] =  (int)Carbon::createFromFormat('Y-m-d H:i:s', $data->datetime)->format('d');
+            $arrMonth[$inc]['date'] = Carbon::createFromFormat('Y-m-d H:i:s', $data->datetime)->format('D d');
+            $arrMonth[$inc]['icon'] = $icon;
+        }
+        // dd($arrMonth);
+        $current = Carbon::now();
+
+        $nextMonth = array();
+        for ($i = 0; $i < 8; $i++) {
+            $dateNext = Carbon::parse($current)->addMonth($i);
+            if ($current->year < $dateNext->year && $dateNext->month == 1) {
+                $nextMonth[] = $dateNext->format('M Y');
+            } else {
+                $nextMonth[] = $dateNext->format('M');
+            }
+        }
+
+
+        return view('weather_station/month_view_forecast', ['loc' => $aws_loc, 'query' => $arrMonth, 'thisMonth' => $dateNow, 'nextMonth' => $nextMonth]);
     }
 
     public function tabel_wl(Request $request)
@@ -1139,6 +1495,8 @@ class MasterController extends Controller
             ->orderBy('water_level.datetime', 'desc')
             ->where('water_level_list.id', '=', $idLoc)
             ->get();
+
+
 
         $listLoc = DB::table('water_level_list')->pluck('location', 'id');
         $data =  json_decode(json_encode($data), true);

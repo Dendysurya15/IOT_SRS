@@ -13,9 +13,8 @@
           <div class="card card-red">
             <div class="card-header" ">
                             <div class=" card-title">
-              <i class="fas fa-water pr-2"></i>Water Level {{$listLoc[Request()->id ?: $defaultId]}}, Hari
-              ini
-              {{$dateToday}}
+              <i class="fas fa-water pr-2"></i>Water Level {{$listLoc[Request()->id ?: $defaultId]}} dalam 24 jam
+              terakhir
             </div>
             <div class="float-right">
               <div class="list-inline">
@@ -45,8 +44,8 @@
         <div class="card card-cyan">
           <div class="card-header">
             <div class=" card-title">
-              <i class="fas fa-water pr-2"></i>Water Level {{$listLoc[Request()->id ?: $defaultId]}}
-              Minggu ini
+              <i class="fas fa-water pr-2"></i>Water Level {{$listLoc[Request()->id ?: $defaultId]}} dalam
+              7 hari terakhir
             </div>
             <div class="float-right">
 
@@ -62,8 +61,8 @@
         <div class="card card-purple">
           <div class="card-header">
             <div class=" card-title">
-              <i class="fas fa-water pr-2"></i>Water Level {{$listLoc[Request()->id ?: $defaultId]}}
-              Bulan ini
+              <i class="fas fa-water pr-2"></i>Water Level {{$listLoc[Request()->id ?: $defaultId]}} dalam 30 hari
+              terakhir
             </div>
             <div class="float-right">
 
@@ -133,7 +132,7 @@
         legend: {
             position: 'top',
       },
-      height: 300,
+      height: 400,
      
     };
 
@@ -145,12 +144,17 @@
     var plotlvl_in_minggu = '<?php echo $arrWlPermingguView['plot1']; ?>';
     var plotlvl_out_minggu = '<?php echo $arrWlPermingguView['plot2']; ?>';
     var plotlvl_act_minggu = '<?php echo $arrWlPermingguView['plot3']; ?>';
+    var sumLvlActMinggu = '<?php echo $sumLvlActMinggu; ?>';
 
     var dataWlPerMinggu = new google.visualization.DataTable();
     dataWlPerMinggu.addColumn('string', 'Name');
     dataWlPerMinggu.addColumn('number', plotlvl_in_minggu);
     dataWlPerMinggu.addColumn('number', plotlvl_out_minggu);
-    dataWlPerMinggu.addColumn('number', plotlvl_act_minggu);
+
+    if(sumLvlActMinggu != 0){
+      dataWlPerMinggu.addColumn('number', plotlvl_act_minggu);
+    }
+
     dataWlPerMinggu.addRows([
       <?php echo $arrWlPermingguView['data']; ?>
     ]);
@@ -162,7 +166,7 @@
             position: 'top',
       },
       colors:['#027E91', '#6FC6B9', '#E6631C'],
-      height: 300
+      height: 400,
     };       
    
     var arrWlPermingguView = new google.visualization.ColumnChart(document.getElementById('wlPerminggu'));
@@ -174,11 +178,16 @@
     var plotlvl_out_bulan= '<?php echo $arrWlPerbulanView['plot2']; ?>';
     var plotlvl_act_bulan= '<?php echo $arrWlPerbulanView['plot3']; ?>';
     
+    
     var dataWlPerbulan= new google.visualization.DataTable();
     dataWlPerbulan.addColumn('string', 'Name');
     dataWlPerbulan.addColumn('number', plotlvl_in_minggu);
     dataWlPerbulan.addColumn('number', plotlvl_out_minggu);
-    dataWlPerbulan.addColumn('number', plotlvl_act_minggu);
+
+    
+      dataWlPerbulan.addColumn('number', plotlvl_act_minggu);
+    
+
     dataWlPerbulan.addRows([
       <?php echo $arrWlPerbulanView['data']; ?>
     ]);
@@ -190,7 +199,7 @@
             position: 'top',
       },
       colors:['#1B9E77', '#D95F02', '#7570B3'],
-      height: 300,
+      height: 400,
       
     };       
    

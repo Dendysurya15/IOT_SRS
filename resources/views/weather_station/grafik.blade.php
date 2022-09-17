@@ -1,145 +1,173 @@
 @include('layout.header')
 <div class="content-wrapper">
-    <!-- Content Header (Page header) -->
-    <section class="content-header">
-    </section>
+  <!-- Content Header (Page header) -->
+  <section class="content-header">
+  </section>
 
-    <!-- Main content -->
-    <section class="content">
-        <div class="container-fluid">
-            <div class="row">
-                <div class="col">
-                    <!-- Curah Hujan -->
-                    <div class="card card-red">
-                        <div class="card-header">
-                            <h3 class="card-title">
-                                <i class="fas fa-wind pr-2"></i>Data Aws Hari Ini
-                            </h3>
-                            <div class="row float-sm-right">
-                                <div class="col-md-4 float-sm-right">
-                                    <h3 class="card-title">
-                                        PILIH DATA
-                                    </h3>
-                                </div>
-                                <form class="col-md-5" action="{{ url('/perhari') }}" method="post">
+  <!-- Main content -->
+  <section class="content">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col">
+          <!-- Curah Hujan -->
 
-                                    {{ csrf_field() }}
-                                    <select name="pilih_data" class="form-control" onchange="this.form.submit()">
-                                        @if(isset($fillHariini) && !empty($fillHariini))
-                                        <option value="{{ $fillHariini['value'] }}" selected disabled>{{
-                                            $fillHariini['data'] }}</option>
-                                        @endif
-                                        <option value="suhu_udara">Suhu Udara</option>
-                                        <option value="kelembaban_udara">Kelembaban Udara</option>
-                                        <option value="curah_hujan">Curah Hujan</option>
-                                    </select>
-                                </form>
-                                <div class="col-md-3 float-sm-right">
-                                    <div class="card-tools">
-                                        <button type="button" class="btn btn-tool" data-card-widget="collapse"><i
-                                                class="fas fa-minus"></i>
-                                        </button>
-                                        <button type="button" class="btn btn-tool" data-card-widget="remove"><i
-                                                class="fas fa-times"></i></button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="card-body">
-                            <div class="chart" id="awsPerHariini">
-                            </div>
-                        </div><!-- /.card-body -->
-                    </div><!-- Curah Hujan -->
-
-                    <!-- Curah Hujan -->
-                    <div class="card card-cyan">
-                        <div class="card-header">
-                            <h3 class="card-title">
-                                <i class="fas fa-wind pr-2"></i>Data Aws Minggu Ini
-                            </h3>
-
-                            <div class="row float-sm-right">
-                                <div class="col-md-4 float-sm-right">
-                                    <h3 class="card-title">
-                                        PILIH DATA
-                                    </h3>
-                                </div>
-                                <form class="col-md-5" action="{{ url('/perminggu') }}" method="post">
-                                    {{ csrf_field() }}
-                                    <select name="pilih_data" class="form-control" onchange="this.form.submit()">
-                                        @if(isset($fillMinggu) && !empty($fillMinggu))
-                                        <option value="{{ $fillMinggu['value'] }}" selected disabled>{{
-                                            $fillMinggu['data'] }}</option>
-                                        @endif
-                                        <option value="suhu_udara">Suhu Udara</option>
-                                        <option value="kelembaban_udara">Kelembaban Udara</option>
-                                        <option value="curah_hujan">Curah Hujan</option>
-                                    </select>
-                                </form>
-                                <div class="col-md-3 float-sm-right">
-                                    <div class="card-tools">
-                                        <button type="button" class="btn btn-tool" data-card-widget="collapse"><i
-                                                class="fas fa-minus"></i>
-                                        </button>
-                                        <button type="button" class="btn btn-tool" data-card-widget="remove"><i
-                                                class="fas fa-times"></i></button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="card-body">
-                            <div class="chart" id="awsPerMinggu">
-                            </div>
-                        </div><!-- /.card-body -->
-                    </div><!-- Curah Hujan -->
-
-                    <!-- Curah Hujan -->
-                    <div class="card card-purple">
-                        <div class="card-header">
-                            <h3 class="card-title">
-                                <i class="fas fa-wind pr-2"></i>Data Aws Bulan Ini
-                            </h3>
-                            <div class="row float-sm-right">
-                                <div class="col-md-4 float-sm-right">
-                                    <h3 class="card-title">
-                                        PILIH DATA
-                                    </h3>
-                                </div>
-                                <form class="col-md-5" action="{{ url('/perbulan') }}" method="post">
-                                    {{ csrf_field() }}
-                                    <select name="pilih_data" class="form-control" onchange="this.form.submit()">
-                                        @if(isset($fillBulan) && !empty($fillBulan))
-                                        <option value="{{ $fillBulan['value'] }}" selected disabled>{{
-                                            $fillBulan['data'] }}</option>
-                                        @endif
-                                        <option value="suhu_udara">Suhu Udara</option>
-                                        <option value="kelembaban_udara">Kelembaban Udara</option>
-                                        <option value="curah_hujan">Curah Hujan</option>
-                                    </select>
-                                </form>
-                                <div class="col-md-3 float-sm-right">
-                                    <div class="card-tools">
-                                        <button type="button" class="btn btn-tool" data-card-widget="collapse"><i
-                                                class="fas fa-minus"></i>
-                                        </button>
-                                        <button type="button" class="btn btn-tool" data-card-widget="remove"><i
-                                                class="fas fa-times"></i></button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="card-body">
-                            <div class="chart" id="awsPerbulan">
-                            </div>
-                        </div><!-- /.card-body -->
-                    </div><!-- Curah Hujan -->
-                </div>
+          <div class="card card-green">
+            <div class="card-header">
+              <h3 class="card-title">
+                <i class="fas fa-wind pr-2"></i>Prediksi Curah Hujan untuk 1 minggu kedepan
+              </h3>
+              <div class="row float-sm-right">
+              </div>
             </div>
-            <!-- /.row -->
-        </div><!-- /.container-fluid -->
-    </section>
-    <!-- /.content -->
+            <div class="card-body">
+              <div id="forecastMingguan">
+              </div>
+            </div><!-- /.card-body -->
+          </div><!-- Curah Hujan -->
+
+          <div class="card card-green">
+            <div class="card-header">
+              <h3 class="card-title">
+                <i class="fas fa-wind pr-2"></i>Data Aktual Curah Hujan Seminggu Terakhir
+              </h3>
+              <div class="row float-sm-right">
+              </div>
+            </div>
+            <div class="card-body">
+              <div id="aktualRFPastWeek">
+              </div>
+            </div><!-- /.card-body -->
+          </div><!-- Curah Hujan -->
+
+          <div class="card card-green">
+            <div class="card-header">
+              <h3 class="card-title">
+                <i class="fas fa-wind pr-2"></i>Data Aws Hari Ini
+              </h3>
+              <div class="row float-sm-right">
+                <div class="col-md-4 float-sm-right">
+                  <h3 class="card-title">
+                    PILIH DATA
+                  </h3>
+                </div>
+                <form class="col-md-5" action="{{ url('/perhari') }}" method="post">
+
+                  {{ csrf_field() }}
+                  <select name="pilih_data" class="form-control" onchange="this.form.submit()">
+                    @if(isset($fillHariini) && !empty($fillHariini))
+                    <option value="{{ $fillHariini['value'] }}" selected disabled>{{
+                      $fillHariini['data'] }}</option>
+                    @endif
+                    <option value="suhu_udara">Suhu Udara</option>
+                    <option value="kelembaban_udara">Kelembaban Udara</option>
+                    <option value="curah_hujan">Curah Hujan</option>
+                  </select>
+                </form>
+                <div class="col-md-3 float-sm-right">
+                  <div class="card-tools">
+                    <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i>
+                    </button>
+                    <button type="button" class="btn btn-tool" data-card-widget="remove"><i
+                        class="fas fa-times"></i></button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="chart" id="awsPerHariini">
+              </div>
+            </div><!-- /.card-body -->
+          </div><!-- Curah Hujan -->
+
+          <!-- Curah Hujan -->
+          <div class="card card-green">
+            <div class="card-header">
+              <h3 class="card-title">
+                <i class="fas fa-wind pr-2"></i>Data Aws Minggu Ini
+              </h3>
+
+              <div class="row float-sm-right">
+                <div class="col-md-4 float-sm-right">
+                  <h3 class="card-title">
+                    PILIH DATA
+                  </h3>
+                </div>
+                <form class="col-md-5" action="{{ url('/perminggu') }}" method="post">
+                  {{ csrf_field() }}
+                  <select name="pilih_data" class="form-control" onchange="this.form.submit()">
+                    @if(isset($fillMinggu) && !empty($fillMinggu))
+                    <option value="{{ $fillMinggu['value'] }}" selected disabled>{{
+                      $fillMinggu['data'] }}</option>
+                    @endif
+                    <option value="suhu_udara">Suhu Udara</option>
+                    <option value="kelembaban_udara">Kelembaban Udara</option>
+                    <option value="curah_hujan">Curah Hujan</option>
+                  </select>
+                </form>
+                <div class="col-md-3 float-sm-right">
+                  <div class="card-tools">
+                    <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i>
+                    </button>
+                    <button type="button" class="btn btn-tool" data-card-widget="remove"><i
+                        class="fas fa-times"></i></button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="chart" id="awsPerMinggu">
+              </div>
+            </div><!-- /.card-body -->
+          </div><!-- Curah Hujan -->
+
+          <!-- Curah Hujan -->
+          <div class="card card-green">
+            <div class="card-header">
+              <h3 class="card-title">
+                <i class="fas fa-wind pr-2"></i>Data Aws Bulan Ini
+              </h3>
+              <div class="row float-sm-right">
+                <div class="col-md-4 float-sm-right">
+                  <h3 class="card-title">
+                    PILIH DATA
+                  </h3>
+                </div>
+                <form class="col-md-5" action="{{ url('/perbulan') }}" method="post">
+                  {{ csrf_field() }}
+                  <select name="pilih_data" class="form-control" onchange="this.form.submit()">
+                    @if(isset($fillBulan) && !empty($fillBulan))
+                    <option value="{{ $fillBulan['value'] }}" selected disabled>{{
+                      $fillBulan['data'] }}</option>
+                    @endif
+                    <option value="suhu_udara">Suhu Udara</option>
+                    <option value="kelembaban_udara">Kelembaban Udara</option>
+                    <option value="curah_hujan">Curah Hujan</option>
+                  </select>
+                </form>
+                <div class="col-md-3 float-sm-right">
+                  <div class="card-tools">
+                    <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i>
+                    </button>
+                    <button type="button" class="btn btn-tool" data-card-widget="remove"><i
+                        class="fas fa-times"></i></button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="chart" id="awsPerbulan">
+              </div>
+            </div><!-- /.card-body -->
+          </div><!-- Curah Hujan -->
+        </div>
+      </div>
+      <!-- /.row -->
+    </div><!-- /.container-fluid -->
+  </section>
+  <!-- /.content -->
 </div>
+
+
 @include('layout.footer')
 
 <!-- jQuery -->
@@ -156,10 +184,70 @@
 <script src="{{ asset('public/js/loader.js') }}"></script>
 
 <script type="text/javascript">
-    google.charts.load('current', {
+  google.charts.load('current', {
     'packages': ['corechart']
   });
   google.charts.setOnLoadCallback(drawChart);
+  google.charts.setOnLoadCallback(drawForecast);
+  google.charts.setOnLoadCallback(drawAktualRF);
+
+  function drawAktualRF() {
+    var title = '<?php echo $arrPastWeekRF['title']; ?>';
+    var data = new google.visualization.DataTable();
+      data.addColumn('string', 'Day');
+      data.addColumn('number',title );
+
+      data.addRows([
+        <?php echo $arrPastWeekRF['data']; ?>
+      ]);
+
+        var options = {
+          chartArea: {},
+      series: {
+        1: {
+          targetAxisIndex: 1
+        }
+      },
+      theme: 'material',
+      legend: {
+        position: 'top'
+      },
+      height: 300
+        };
+
+        var chart = new google.visualization.LineChart(document.getElementById('aktualRFPastWeek'));
+
+        chart.draw(data, options);
+      }
+
+  function drawForecast() {
+    var title = '<?php echo $arrForecast['title']; ?>';
+    var data = new google.visualization.DataTable();
+      data.addColumn('string', 'Day');
+      data.addColumn('number',title );
+
+      data.addRows([
+        <?php echo $arrForecast['data']; ?>
+      ]);
+
+        var options = {
+          chartArea: {},
+      series: {
+        1: {
+          targetAxisIndex: 1
+        }
+      },
+      theme: 'material',
+      legend: {
+        position: 'top'
+      },
+      height: 300
+        };
+
+        var chart = new google.visualization.LineChart(document.getElementById('forecastMingguan'));
+
+        chart.draw(data, options);
+      }
 
   function drawChart() {  
     //--Aws Perminggu  
@@ -245,6 +333,7 @@
     var awsPerBulan = new google.visualization.LineChart(document.getElementById('awsPerbulan'));
     awsPerBulan.draw(dataAwsPerBulan, optionsAwsPerBulan);
     //Aws Perbulann--
+
   }  
   $(window).resize(function() {
     drawStuff();

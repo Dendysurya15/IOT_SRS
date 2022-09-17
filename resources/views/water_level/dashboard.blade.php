@@ -36,9 +36,84 @@
     <!-- // Main content AWS 1-->
     <section class="content">
         <div class="container-fluid">
+
+            <div class="row">
+
+                <div class="col-md">
+                    <div class="card card-success">
+                        <div class="card-header">
+                            <div class="card-title" style="text-transform: uppercase;"> Level In Terakhir</div>
+                        </div>
+                        <div class="card-body">
+                            <div class="row no-gutters align-items-center">
+                                <div class="col mr-2">
+                                    <div class="h5 mb-0 font-weight-bold text-gray-800" id="hum_in1">
+                                        {{
+                                        isset($lastDataInDay->lvl_in) ? ''.$lastDataInDay->lvl_in.' cm' : "Data
+                                        Level In tidak
+                                        ada"}}
+                                    </div>
+                                </div>
+                                <div class="col-auto">
+                                    <i id="s_hum_in1" class="fas fa-water fa-2x"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md">
+                    <div class="card card-success">
+                        <div class="card-header">
+                            <div class="card-title" style="text-transform: uppercase;"> Level Out Terakhir</div>
+                        </div>
+                        <div class="card-body">
+                            <div class="row no-gutters align-items-center">
+                                <div class="col mr-2">
+                                    <div class="h5 mb-0 font-weight-bold text-gray-800" id="hum_in1">
+                                        {{
+                                        isset($lastDataInDay->lvl_out) ? ''.$lastDataInDay->lvl_out.' cm' : "Data
+                                        Level In tidak
+                                        ada"}}
+                                    </div>
+                                </div>
+                                <div class="col-auto">
+                                    <i id="s_hum_in1" class="fas fa-water fa-2x"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {{-- @if ($lastDataInDay->lvl_act_)) --}}
+                <div class="col-md">
+                    <div class="card card success">
+                        <div class="card-header">
+                            <div class="card-title" style="text-transform: uppercase;">Level Actual Terakhir</div>
+                        </div>
+                        <div class="card-body">
+                            <div class="row no-gutters align-items-center">
+                                <div class="col mr-2">
+                                    <div class="h5 mb-0 font-weight-bold text-gray-800" id="hum_in1">
+                                        {{
+                                        isset($lastDataInDay->lvl_act) ? ''.$lastDataInDay->lvl_act.' cm' : "Data
+                                        Level Actual tidak
+                                        ada"}}
+                                    </div>
+                                </div>
+                                <div class="col-auto">
+                                    <i id="s_hum_in1" class="fas fa-water fa-2x"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {{-- @endif --}}
+
+            </div>
             <div class="row">
                 <!--//Suhu Ruangan Aws 1-->
-                <div class="col-md-4">
+                <div class="col-md">
                     <div class="card card-primary">
                         <div class="card-header">
                             <div class="card-title" style="text-transform: uppercase;">Rata-rata Level In</div>
@@ -60,7 +135,7 @@
                 <!--Suhu Ruangan//-->
 
                 <!--//Kelembaban Ruangan Aws 1-->
-                <div class="col-md-4">
+                <div class="col-md">
                     <div class="card card-primary">
                         <div class="card-header">
                             <div class="card-title" style="text-transform: uppercase;">Rata-rata Level Out</div>
@@ -83,7 +158,8 @@
                 <!--Kelembaban Ruangan-->
 
                 <!--//Kelembaban Ruangan Aws 1-->
-                <div class="col-md-4">
+                {{-- @if ($avg['lvl_act'] != 0)) --}}
+                <div class="col-md">
                     <div class="card card-primary">
                         <div class="card-header">
                             <div class="card-title" style="text-transform: uppercase;">Rata-rata Level Actual</div>
@@ -104,6 +180,10 @@
                         </div>
                     </div>
                 </div>
+                {{-- @endif --}}
+
+
+
                 <!--Kelembaban Ruangan-->
 
             </div>
