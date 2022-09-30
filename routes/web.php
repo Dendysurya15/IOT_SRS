@@ -20,12 +20,18 @@ use Illuminate\Support\Facades\Route;
 
 //weather_station route
 Route::get('/', [MasterController::class, 'homepage']);
-Route::get('/dashboard_ws', [MasterController::class, 'dashboard_ws']);
+Route::get('/dashboard_ws', [MasterController::class, 'dashboard_ws'])->name('dashboard_ws');
 Route::get('/grafik', [MasterController::class, 'Grafik']);
 Route::get('/tabel', [MasterController::class, 'Tabel']);
 Route::get('month_weather_forecast', [MasterController::class, 'month_weather_forecast'])->name('month_weather_forecast');
 Route::post('getDataDashboard', [MasterController::class, 'getDataDashboard'])->name('getDataDashboard');
 Route::get('getDay/{id}', [MasterController::class, 'getDay'])->name('getDay');
+
+Route::post('/storeAktualWS', [MasterController::class, 'storeAktualWS'])->name('aktualws.store');
+Route::get('/editAktualWS/{id}', [MasterController::class, 'editAktualWS'])->name('aktualws.edit');
+Route::delete('/deleteAktualWS/{id}', [MasterController::class, 'deleteAktualWS'])->name('aktualws.destroy');
+Route::get('/aktualws/index', [MasterController::class, 'formAktualWS'])->name('aktualws.index');
+Route::get('/aktualdb', [MasterController::class, 'getAktualDB'])->name('aktual.db');
 
 //water_level route
 Route::get('/dashboard_wl', [MasterController::class, 'dashboard_wl'])->name('dashboard_wl');

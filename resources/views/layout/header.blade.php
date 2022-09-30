@@ -10,10 +10,11 @@
     <title>IoT DASHBOARD</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="shortcut icon" type="image/x-icon" href="{{ asset('/img/CBI-logo.png') }}">
-    <link rel="stylesheet" href="{{ asset('/plugins/fontawesome-free/css/all.min.css') }}">
+    <link href="{{asset('fontawesome6/css/all.css')}}" rel="stylesheet">
+    {{--
+    <link rel="stylesheet" href="{{ asset('/plugins/fontawesome-free/css/all.min.css') }}"> --}}
     <link rel="stylesheet" href="{{ asset('/css/ionicons.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('/plugins/datatables-responsive/css/responsive.bootstrap4.min.css') }}">
+    <link rel="stylesheet" href="//cdn.datatables.net/1.12.1/css/jquery.dataTables.min.css">
     <link rel="stylesheet" href="{{ asset('/css/adminlte.min.css') }}">
     <link rel="stylesheet" href="{{ asset('/css/jquery.fancybox.min.css') }}">
     <link rel="stylesheet" href="{{ asset('/plugins/select2/css/select2.min.css')}}">

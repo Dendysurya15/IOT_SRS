@@ -7,6 +7,7 @@ use DateTime;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+use Yajra\Datatables\Datatables;
 
 class MasterController extends Controller
 {
@@ -727,9 +728,10 @@ class MasterController extends Controller
     {
 
         $dateToday = Carbon::now()->format('Y-m-d');
+        $tglData = $request->has('tgl') ? $request->input('tgl') : $defaultHari = $dateToday;
+        $convert = new DateTime($tglData);
 
-        $convert = new DateTime($dateToday);
-
+        // dd($convert);
         // $convert->add(new DateInterval('PT7H'));
 
         $from = $convert->format('Y-m-d H:i:s');
@@ -745,6 +747,7 @@ class MasterController extends Controller
         $dateTo = $dateTo->format('Y-m-d H:i:s');
 
         $to = date($dateTo);
+        // dd($from2, $to);
 
         $sel_aws = DB::table('weather_station_list')
             ->join('db_aws_bke', 'weather_station_list.id', '=', 'db_aws_bke.idws')
@@ -756,34 +759,44 @@ class MasterController extends Controller
             ->get();
 
         // dd($sel_aws);
-
-        foreach ($sel_aws as $data) {
-            if ($data->rain_forecast >= 0 && $data->rain_forecast < 10) {
-                $icon = 'cloudy-day.png';
-                $title = 'Cerah Panas';
-            } else if ($data->rain_forecast >= 10 && $data->rain_forecast < 20) {
-                $icon = 'cloudy.png';
-                $title = 'Cerah berawan';
-            } else if ($data->rain_forecast >= 20) {
-                $icon = 'rainy.png';
-                $title = 'Hujan Lebat';
-            }
-            $data->titleIcon = $title;
-            $data->icon = $icon;
+        // dd($sel_aws[0]->rain_fall_real >= 0 && $sel_aws->);
+        // dd($sel_aws[0]);
+        // foreach ($sel_aws[0] as $data) {
+        if ($sel_aws[0]->rain_fall_real >= 0 && $sel_aws[0]->rain_fall_real < 0.5) {
+            $icon = 'cloud-sun';
+            $title = 'Berawan';
+        } else if ($sel_aws[0]->rain_fall_real >= 0.5 && $sel_aws[0]->rain_fall_real < 20) {
+            $icon = 'cloud-rain';
+            $title = 'Hujan ringan';
+        } else if ($sel_aws[0]->rain_fall_real >= 20 && $sel_aws[0]->rain_fall_real < 50) {
+            $icon = 'cloud-rain';
+            $title = 'Hujan Sedang';
+        } else if ($sel_aws[0]->rain_fall_real >= 50 && $sel_aws[0]->rain_fall_real < 100) {
+            $icon = 'cloud-showers-heavy';
+            $title = 'Hujan Lebat';
+        } else if ($sel_aws[0]->rain_fall_real >= 100 && $sel_aws[0]->rain_fall_real < 150) {
+            $icon = 'cloud-showers-water';
+            $title = 'Hujan Sangat Lebat';
+        } else {
+            $icon = 'cloud-showers-water';
+            $title = 'Hujan Ekstrem';
         }
+        $sel_aws[0]->titleIcon = $title;
+        $sel_aws[0]->icon = $icon;
+        // }
 
-        // dd($sel_aws);
+        // dd($sel_aws[0]->wind_direction_real);
         $aws_loc = DB::table('weather_station_list')->get();
         $aws_loc = json_decode(json_encode($aws_loc), true);
 
-        $dateNow = Carbon::now()->format('d M H:i');
+        $dateNow = Carbon::now()->format('H:i');
         // dd($aws_loc);
         $idws = 0;
-        $tglData = $request->has('tgl') ? $request->input('tgl') : $defaultHari = $dateToday;
+        // $tglData = $request->has('tgl') ? $request->input('tgl') : $defaultHari = $dateToday;
 
         $date =  Carbon::now()->format('Y-m-d');
 
-        $formatted = new DateTime($date);
+        $formatted = new DateTime($tglData);
         $formatted = $formatted->format('Y-m-d');
 
         $convert = $formatted . ' 00:00:00';;
@@ -831,25 +844,108 @@ class MasterController extends Controller
             $arrPred[$inc1]['predSuhu'] = $avgTFbyDay;
             $arrPred[$inc1]['predKel'] = $avgHFbyDay;
 
-            if ($avgRFbyDay >= 0.5 && $avgRFbyDay < 20) {
-                $icon = 'cloudy-day.png';
+            if ($avgRFbyDay >= 0 && $avgRFbyDay < 0.5) {
+                $icon = 'cloud-sun';
+            } else if ($avgRFbyDay >= 0.5 && $avgRFbyDay < 20) {
+                $icon = 'cloud-rain';
             } else if ($avgRFbyDay >= 20 && $avgRFbyDay < 50) {
-                $icon = 'cloudy.png';
+                $icon = 'cloud-rain';
             } else if ($avgRFbyDay >= 50 && $avgRFbyDay < 100) {
-                $icon = 'rainy.png';
+                $icon = 'cloud-showers-heavy';
             } else if ($avgRFbyDay >= 100 && $avgRFbyDay < 150) {
-                $icon = 'rainy.png';
-            } else if ($avgRFbyDay >= 150) {
-                $icon = 'rainy.png';
-            } else if ($avgRFbyDay < 0.5) {
-                $icon = 'sunny.png';
+                $icon = 'cloud-showers-water';
+            } else {
+                $icon = 'cloud-showers-water';
             }
             $value->icon = $icon;
             $arrPred[$inc1]['icon'] = $icon;
             $inc1++;
         }
 
-        return view('weather_station/dashboard', ['aws_loc' => $aws_loc, 'aktual' => $sel_aws[0], 'date' => $dateNow, 'forecasting' => $arrPred]);
+        // dd($arrPred);
+        // dd($sel_aws[0]);
+        return view('weather_station/dashboard', ['aws_loc' => $aws_loc, 'aktual' => $sel_aws[0], 'date' => $convert->format('d M') . ' ' . $dateNow, 'forecasting' => $arrPred]);
+    }
+
+    public function storeAktualWS(Request $request)
+    {
+        // $request->validate([
+        //     'rain' => 'required|numeric',
+        //     'temp' => 'required|numeric',
+        //     'hum' => 'required|numeric',
+        //     'tgl' => 'required',
+        // ]);
+
+        $dt = $request->tgl . ' ' . $request->time . ':00';
+
+        $minute = explode(':', $request->time);
+
+        $hourNow = new DateTime();
+        $date = new DateTime($request->timestamp);
+        $dateInput = $date->format('Y-m-d') . ' ' . $hourNow->format('H:i:s');
+
+
+        $dbCheck = DB::table('db_aws_bke')
+            ->select('db_aws_bke.*')
+            ->where('db_aws_bke.datetime', $dt)
+            ->first();
+
+        if (!empty($dbCheck)) {
+            $id = (int)$dbCheck->id;
+        }
+
+        //check same date data 
+
+        if ($minute[1] != '00') {
+            return redirect()->route('aktualws.index')
+                ->with('error', 'Data input format menit salah');
+        }
+
+        // dd($request->temp, $request->hum);
+
+        DB::table('db_aws_bke')
+            ->where('id', $id)
+            ->update(
+                // ['datetime' => $dt],
+                ['temp_real' => $request->temp, 'rain_fall_real' => $request->ch, 'hum_real' => $request->hum],
+
+            );
+
+        return redirect()->route('aktualws.index')
+            ->with('success', 'Data Aktual ' . $dt . ' berhasil disimpan/update.');
+    }
+
+    public function getAktualDB(Request $request)
+    {
+        if ($request->ajax()) {
+            $data = DB::table('db_aws_bke')->get();
+            return Datatables::of($data)
+                ->addIndexColumn()
+                ->make(true);
+        }
+    }
+
+    public function formAktualWS()
+    {
+        $data = DB::table('db_aws_bke')->take(20)->get();
+
+        // dd($data[0]);
+
+        // foreach ($data as $item) {
+        //     $hari = Carbon::parse($item->timestamp)->locale('id');
+        //     $hari->settings(['formatFunction' => 'translatedFormat']);
+        //     $item->tanggal = $hari->format('j F Y');
+        //     $item->tanggal = $hari->format('j F Y');
+        // }
+        return view('weather_station.aktual.index', ['data' => $data]);
+    }
+    public function deleteAktualWS($id)
+    {
+        // $data = DB::table('oer')->where('id', $id)->get();
+        DB::delete('delete from oer where id = ?', [$id]);
+        // dd($data);
+        // $data->delete();
+        return Redirect::back()->with(['success' => 'Berhasil menghapus data oer']);
     }
 
     public function getDataDashboard(Request $request)
@@ -1422,7 +1518,7 @@ class MasterController extends Controller
 
         $dataLog = DB::table('db_aws_bke')
             ->select('db_aws_bke.*',  DB::raw("DATE_FORMAT(db_aws_bke.datetime,'%Y-%d-%m') as hari"))
-            ->orderBy('db_aws_bke.datetime', 'DESC')
+            ->orderBy('db_aws_bke.datetime', 'ASC')
             ->whereMonth('db_aws_bke.datetime', Carbon::now()->month)
             ->whereYear('db_aws_bke.datetime', Carbon::now()->year)
             ->get()

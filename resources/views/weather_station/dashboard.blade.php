@@ -36,10 +36,9 @@
     <section class="content">
         <div class="container-fluid">
             <div class="row">
-                <div class="col-lg-3 mb-3">
+                <div class="col-lg-6 mb-3">
                     <div class="row">
-                        <div class="col-md-8">
-                        </div>
+
                         <form class="col-md-12" action="" method="post">
                             {{ csrf_field() }}
                             <div class="row">
@@ -50,289 +49,317 @@
                                         <option value="{{ $loc['id'] }}">{{ $loc['loc'] }}</option>
                                         @endforeach
                                     </select>
-                                </div>
-                            </div>
+
+
                         </form>
                     </div>
-                </div>
-            </div>
-            <div class="row">
-                <!--//Suhu Ruangan Aws 1-->
-                <div class="col-md-12">
-                    <div class="card">
-                        {{-- <div class="card-header"> --}}
-                            {{-- <h5>Cuaca terkini {{$date}} --}}
-                                {{-- untuk wilayah --}}
-                                {{-- <span id="locTitle"></span> --}}
-                                {{-- </h5> --}}
-                            {{-- </div> --}}
-                        <div class="card-body p-5 "
-                            style="color:white;
-                       background: linear-gradient(rgba(0,0,0,0.6),rgba(0,0,0,0.2)), url({{asset('../img/sunny-day.png')}}) no-repeat; background-size: cover;background-position:top center;">
-                            <div class="layer">
-                                <div class="row no-gutters align-items-center">
-                                    <div class="col-1 mr-2">
-                                        <img src="{{ asset('../img/'.$aktual->icon) }}" class="img-fluid"
-                                            style="width: 80px;" alt="Responsive image">
-                                    </div>
-                                    <div class="col-2">
-                                        <div style="font-size: 13px;margin-bottom:-10px">
-                                            <span id="locTitle"></span> {{$date}}
-                                        </div>
-                                        <div class="" style="font-size: 45px">{{
-                                            $data[0]['temp_real'] ?? '-' }}
-                                            ºC
-                                        </div>
-                                        <div style="margin-top: -10px">
-                                            {{$aktual->titleIcon}}
-                                        </div>
-                                    </div>
-                                    <div class="col">
-                                        Kelembaban
-                                        <br>
-                                        <img src="{{ asset('../img/water.png') }}" class="img-fluid"
-                                            style="width: 15px;margin-left:10px;" alt="Responsive image">
-                                        {{
-                                        $aktual->hum_real != 0 ? $aktual->hum_real : '-'
-                                        }} %
-                                    </div>
-                                    <div class="col">
-                                        Kecepatan Angin
-                                        <br>
-                                        <i class="fas fa-wind"></i>
-                                        {{
-                                        $aktual->wind_speed_real != 0 ? $aktual->wind_speed_real : '-'
-                                        }} m/s
-                                    </div>
-                                    <div class="col">
-                                        Arah Angin
-                                        <br>
-                                        <i class="fas fa-compass"></i>
-                                        {{
-                                        $aktual->wind_chill_real != 0 ? $aktual->wind_chill_real : '-'
-                                        }}
-                                    </div>
-                                    <div class="col">
-                                        Curah Hujan
-                                        <br>
-                                        <i class="fas fa-water"></i>
-                                        {{
-                                        $aktual->rain_fall_real != 0 ? $aktual->rain_fall_real : '-'
-                                        }} mm
-                                    </div>
-                                </div>
+                    <div class="col-md">
+                        <form class="" action="{{ route('dashboard_ws') }}" method="get">
+                            <input class="form-control" type="date" name="tgl" id="inputDate"
+                                onchange="this.form.submit()">
+                        </form>
 
-                                {{-- <div class="row mt-4">
-
-                                </div> --}}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!--Suhu Ruangan//-->
-
-            </div>
-            <div class="mt-2 mb-3">
-                <span>
-                    Perkiraan cuaca seminggu kedepan
-                </span>
-                <span class="float-right font-italic">
-                    <a href="{{ route('month_weather_forecast') }}"> Lihat Perkiraan cuaca ...</a>
-                </span>
-            </div>
-            <div class="row">
-                @foreach ($forecasting as $key => $item)
-                <div class="col-md">
-                    <div class="card card-light selectCard">
-                        <div class="card-header">
-                            <div class="card-title">{{$item['hari']}}</div>
-                        </div>
-                        <div class="card-body">
-                            <div class="row no-gutters align-items-center">
-                                <div class="col mr-2">
-                                    <div class="h5 mb-0 font-weight-bold text-gray-800" id="hum">
-                                        <div class="mb-2">
-                                            {{
-                                            $item['predSuhu'] != 0 ? $item['predSuhu'] : '-'
-                                            }} ºC
-                                        </div>
-                                        {{
-                                        $item['predKel'] != 0 ? $item['predKel'] : '-'
-                                        }} %
-                                    </div>
-                                </div>
-                                <div class="col-auto">
-                                    <img src="{{ asset('../img/'.$item['icon']) }}" class="img-fluid"
-                                        style="width: 50px;" alt="Responsive image">
-                                    {{-- @if ($key == 0)
-                                    <br>
-                                    <i id="s_hum_in1" class="fa-solid fa-droplet"></i>
-                                    {{
-                                    $item['hum_real'] != 0 ? $item['hum_real'] : '-'
-                                    }} %
-                                    @endif --}}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                @endforeach
-            </div>
-            <div class="mt-2 mb-3">
-                <span>
-                    Ringkasan data per jam
-                </span>
-            </div>
-            <div class="" style="border: 1px solid red">
-                <div id="carouselExampleControls" class="carousel slide" data-ride="carousel">
-                    <div class="carousel-inner">
-                        <div class="carousel-item active">
-                            <img class="d-block w-100" src=".../800x400?auto=yes&bg=777&fg=555&text=First slide"
-                                alt="First slide">
-                        </div>
-                        <div class="carousel-item">
-                            <img class="d-block w-100" src=".../800x400?auto=yes&bg=666&fg=444&text=Second slide"
-                                alt="Second slide">
-                        </div>
-                        <div class="carousel-item">
-                            <img class="d-block w-100" src=".../800x400?auto=yes&bg=555&fg=333&text=Third slide"
-                                alt="Third slide">
-                        </div>
-                    </div>
-                    <a class="carousel-control-prev" href="#carouselExampleControls" role="button" data-slide="prev">
-                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                        <span class="sr-only">Previous</span>
-                    </a>
-                    <a class="carousel-control-next" href="#carouselExampleControls" role="button" data-slide="next">
-                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                        <span class="sr-only">Next</span>
-                    </a>
-                </div>
-            </div>
-
-            {{-- <div class="col-md-4">
-                <div class="card card-primary">
-                    <div class="card-header">
-                        <div class="card-title">Kelembaban Udara</div>
-                    </div>
-                    <div class="card-body">
-                        <div class="row no-gutters align-items-center">
-                            <div class="col mr-2">
-                                <div class="h5 mb-0 font-weight-bold text-gray-800" id="hum">{{
-                                    $data[0]['hum_real'] ?? 0
-                                    }} %
-                                </div>
-                            </div>
-                            <div class="col-auto">
-                                <i id="s_hum_in1" class="fas fa-thermometer-three-quarters fa-2x"></i>
-                            </div>
-                        </div>
                     </div>
                 </div>
             </div>
-            <!--Kelembaban Ruangan-->
-
-            <!--//Kelembaban Ruangan Aws 1-->
-            <div class="col-md-4">
-                <div class="card card-primary">
-                    <div class="card-header">
-                        <div class="card-title">Kecepatan Angin</div>
-                    </div>
-                    <div class="card-body">
-                        <div class="row no-gutters align-items-center">
-                            <div class="col mr-2">
-                                <div class="h5 mb-0 font-weight-bold text-gray-800" id="wind_speed_real">{{
-                                    $data[0]['wind_speed_real'] ?? 0}}
-                                    m/s</div>
+        </div>
+</div>
+<div class="row">
+    <!--//Suhu Ruangan Aws 1-->
+    <div class="col-md-12">
+        <div class="card">
+            {{-- <div class="card-header"> --}}
+                {{-- <h5>Cuaca terkini {{$date}} --}}
+                    {{-- untuk wilayah --}}
+                    {{-- <span id="locTitle"></span> --}}
+                    {{-- </h5> --}}
+                {{-- </div> --}}
+            <div class="card-body p-5 " style="background:white;">
+                <div class="layer">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col-1 mr-2">
+                            @php
+                            $iconAktual = 'fa-solid fa-'.$aktual->icon . ' fa-4x';
+                            @endphp
+                            <i class="{{$iconAktual}}"></i>
+                        </div>
+                        <div class="col-2">
+                            <div style="font-size: 13px;margin-bottom:-10px">
+                                <span id="locTitle"></span> {{$date}}
                             </div>
-                            <div class="col-auto">
-                                <i id="s_hum_in1" class="fas fa-wind fa-2x"></i>
+                            <div class="" style="font-size: 45px">{{
+                                $aktual->temp_real ?? '-' }}
+                                ºC
+                            </div>
+                            <div style="margin-top: -10px">
+                                {{$aktual->titleIcon}}
                             </div>
                         </div>
+                        <div class="col">
+                            Kelembaban
+                            <br>
+                            <i class="fa-solid fa-droplet"></i>
+                            {{
+                            $aktual->hum_real != 0 ? $aktual->hum_real : '-'
+                            }} %
+                        </div>
+                        <div class="col">
+                            Curah Hujan
+                            <br>
+                            <i class="fas fa-water"></i>
+                            {{
+                            $aktual->rain_fall_real != 0 ? $aktual->rain_fall_real : '-'
+                            }} mm
+
+                        </div>
+                        <div class="col">
+                            Arah Angin
+                            <br>
+                            <i class="fas fa-compass"></i>
+                            {{
+                            $aktual->wind_direction_real
+                            }}
+                        </div>
+                        <div class="col">
+                            Kecepatan Angin
+                            <br>
+                            <i class="fas fa-wind"></i>
+                            {{
+                            $aktual->wind_speed_real != 0 ? $aktual->wind_speed_real : '-'
+                            }} m/s
+                        </div>
+                    </div>
+
+                    {{-- <div class="row mt-4">
+
+                    </div> --}}
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--Suhu Ruangan//-->
+
+</div>
+<div class="mt-2 mb-3">
+    <span>
+        Perkiraan cuaca seminggu kedepan
+    </span>
+    <span class="float-right font-italic">
+        <a href="{{ route('month_weather_forecast') }}"> Lihat Perkiraan cuaca ...</a>
+    </span>
+</div>
+<div class="row">
+    @foreach ($forecasting as $key => $item)
+    <div class="col-md">
+        <div class="card card-light selectCard">
+            <div class="card-header">
+                <div class="card-title">{{$item['hari']}}</div>
+            </div>
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="h5 mb-0 font-weight-bold text-gray-800" id="hum">
+                            <div class="mb-2">
+                                <i class="fa-solid fa-water fa-fw"></i> {{
+                                $item['predHujan'] != 0 ? $item['predHujan'] : '-'
+                                }} mm
+                            </div>
+                            <div class="mb-2">
+                                <i class="fa-solid fa-temperature-three-quarters fa-fw"></i> {{
+                                $item['predSuhu'] != 0 ? $item['predSuhu'] : '-'
+                                }} ºC
+                            </div>
+                            {{-- <br> --}}
+                            <i class="fa-solid fa-droplet fa-fw"></i> {{
+                            $item['predKel'] != 0 ? $item['predKel'] : '-'
+                            }} %
+                        </div>
+                    </div>
+                    <div class="col-auto">
+                        @php
+
+                        $iconPred = 'fa-solid fa-'.$item['icon'] . ' fa-2x';
+                        @endphp
+                        <i class="{{$iconPred}}"></i>
+                        {{-- @if ($key == 0)
+                        <br>
+                        <i id="s_hum_in1" class="fa-solid fa-droplet"></i>
+                        {{
+                        $item['hum_real'] != 0 ? $item['hum_real'] : '-'
+                        }} %
+                        @endif --}}
                     </div>
                 </div>
             </div>
-            <!--Kelembaban Ruangan-->
+        </div>
+    </div>
+    @endforeach
+</div>
+<div class="mt-2 mb-3">
+    <span>
+        Ringkasan data per jam
+    </span>
+</div>
 
-            <!--//Kelembaban Ruangan Aws 1-->
-            <div class="col-md-4">
-                <div class="card card-primary">
-                    <div class="card-header">
-                        <div class="card-title">Arah Angin</div>
-                    </div>
-                    <div class="card-body">
-                        <div class="row no-gutters align-items-center">
-                            <div class="col mr-2">
-                                <div class="h5 mb-0 font-weight-bold text-gray-800" id="wind_chill_real">{{
-                                    $data[0]['wind_chill_real'] ?? 0 }}
-                                </div>
-                            </div>
-                            <div class="col-auto">
-                                <i id="s_hum_in1" class="fas fa-compass fa-2x "></i>
-                            </div>
-                        </div>
+<div class="row">
+    <div class="col-2" style="border: 1px solid red">
+        akdsfj
+    </div>
+    <div class="col-2" style="border: 1px solid red">
+        akdsfj
+    </div>
+    <div class="col-2" style="border: 1px solid red">
+        akdsfj
+    </div>
+</div>
+{{-- <div class="" style="border: 1px solid red">
+    <div id="carouselExampleControls" class="carousel slide" data-ride="carousel">
+        <div class="carousel-inner">
+            <div class="carousel-item active">
+                <img class="d-block w-100" src=".../800x400?auto=yes&bg=777&fg=555&text=First slide" alt="First slide">
+            </div>
+            <div class="carousel-item">
+                <img class="d-block w-100" src=".../800x400?auto=yes&bg=666&fg=444&text=Second slide"
+                    alt="Second slide">
+            </div>
+            <div class="carousel-item">
+                <img class="d-block w-100" src=".../800x400?auto=yes&bg=555&fg=333&text=Third slide" alt="Third slide">
+            </div>
+        </div>
+        <a class="carousel-control-prev" href="#carouselExampleControls" role="button" data-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="sr-only">Previous</span>
+        </a>
+        <a class="carousel-control-next" href="#carouselExampleControls" role="button" data-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="sr-only">Next</span>
+        </a>
+    </div>
+</div> --}}
+
+{{-- <div class="col-md-4">
+    <div class="card card-primary">
+        <div class="card-header">
+            <div class="card-title">Kelembaban Udara</div>
+        </div>
+        <div class="card-body">
+            <div class="row no-gutters align-items-center">
+                <div class="col mr-2">
+                    <div class="h5 mb-0 font-weight-bold text-gray-800" id="hum">{{
+                        $data[0]['hum_real'] ?? 0
+                        }} %
                     </div>
                 </div>
+                <div class="col-auto">
+                    <i id="s_hum_in1" class="fas fa-thermometer-three-quarters fa-2x"></i>
+                </div>
             </div>
-            <!--Kelembaban Ruangan-->
+        </div>
+    </div>
+</div>
+<!--Kelembaban Ruangan-->
 
-            <!--//Curah Hujan Sekarang Aws 1-->
-            <div class="col-md-4">
-                <div class="card card-primary">
-                    <div class="card-header">
-                        <div class="card-title">Curah Hujan</div>
+<!--//Kelembaban Ruangan Aws 1-->
+<div class="col-md-4">
+    <div class="card card-primary">
+        <div class="card-header">
+            <div class="card-title">Kecepatan Angin</div>
+        </div>
+        <div class="card-body">
+            <div class="row no-gutters align-items-center">
+                <div class="col mr-2">
+                    <div class="h5 mb-0 font-weight-bold text-gray-800" id="wind_speed_real">{{
+                        $data[0]['wind_speed_real'] ?? 0}}
+                        m/s</div>
+                </div>
+                <div class="col-auto">
+                    <i id="s_hum_in1" class="fas fa-wind fa-2x"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--Kelembaban Ruangan-->
+
+<!--//Kelembaban Ruangan Aws 1-->
+<div class="col-md-4">
+    <div class="card card-primary">
+        <div class="card-header">
+            <div class="card-title">Arah Angin</div>
+        </div>
+        <div class="card-body">
+            <div class="row no-gutters align-items-center">
+                <div class="col mr-2">
+                    <div class="h5 mb-0 font-weight-bold text-gray-800" id="wind_chill_real">{{
+                        $data[0]['wind_chill_real'] ?? 0 }}
                     </div>
-                    <div class="card-body">
-                        <div class="row no-gutters align-items-center">
-                            <div class="col mr-2">
-                                <div class="h5 mb-0 font-weight-bold text-gray-800" id="rain_fall_real">
-                                    <?php
+                </div>
+                <div class="col-auto">
+                    <i id="s_hum_in1" class="fas fa-compass fa-2x "></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--Kelembaban Ruangan-->
+
+<!--//Curah Hujan Sekarang Aws 1-->
+<div class="col-md-4">
+    <div class="card card-primary">
+        <div class="card-header">
+            <div class="card-title">Curah Hujan</div>
+        </div>
+        <div class="card-body">
+            <div class="row no-gutters align-items-center">
+                <div class="col mr-2">
+                    <div class="h5 mb-0 font-weight-bold text-gray-800" id="rain_fall_real">
+                        <?php
                         // $curahHujan = $data[0]['rain_fall_real'] ?? 0;
                     ?>
-                                    mm
-                                </div>
-                            </div>
-                            <div class="col-auto">
-                                <i id="s_rain_rn1" class="fas fa-cloud-rain fa-2x "></i>
-                            </div>
-                        </div>
+                        mm
                     </div>
+                </div>
+                <div class="col-auto">
+                    <i id="s_rain_rn1" class="fas fa-cloud-rain fa-2x "></i>
                 </div>
             </div>
+        </div>
+    </div>
+</div>
 
-            <div class="col-md-4">
-                <div class="card card-primary">
-                    <div class="card-header">
-                        <div class="card-title">Forecasting Curah Hujan</div>
-                    </div>
-                    <div class="card-body">
-                        <div class="row no-gutters align-items-center">
-                            <div class="col mr-2">
-                                <div class="h5 mb-0 font-weight-bold text-gray-800" id="rain_forecast">
-                                    <?php
+<div class="col-md-4">
+    <div class="card card-primary">
+        <div class="card-header">
+            <div class="card-title">Forecasting Curah Hujan</div>
+        </div>
+        <div class="card-body">
+            <div class="row no-gutters align-items-center">
+                <div class="col mr-2">
+                    <div class="h5 mb-0 font-weight-bold text-gray-800" id="rain_forecast">
+                        <?php
                         // $curahHujan = $data[0]['rain_forecast'] ?? 0;
                     ?>
-                                    mm
-                                </div>
-                            </div>
-                            <div class="col-auto">
-                                <i id="s_rain_rn1" class="fas fa-cloud-rain fa-2x "></i>
-                            </div>
-                        </div>
+                        mm
                     </div>
                 </div>
-            </div> --}}
-            <!--Curah Hujan Sekarang//-->
+                <div class="col-auto">
+                    <i id="s_rain_rn1" class="fas fa-cloud-rain fa-2x "></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</div> --}}
+<!--Curah Hujan Sekarang//-->
 
-            <!-- /.row -->
-        </div><!-- /.container-fluid -->
-    </section>
-    <!-- Main content AWS 1 //-->
-    {{-- @endforeach --}}
+<!-- /.row -->
+</div><!-- /.container-fluid -->
+</section>
+<!-- Main content AWS 1 //-->
+{{-- @endforeach --}}
 
 
 
-    <!--locList Tambah Koment -->
+<!--locList Tambah Koment -->
 </div>
 @include('layout.footer')
 
