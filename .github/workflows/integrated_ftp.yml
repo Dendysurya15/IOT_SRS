@@ -50,5 +50,7 @@ jobs:
             - **/.git*/**
             - **/.github*
             - **/.github*/**
-            testing.txt
-            - testing.txt
+            /testing.txt
+            - /testing.txt
+            - */testing.txt
+            - *testing.txt
