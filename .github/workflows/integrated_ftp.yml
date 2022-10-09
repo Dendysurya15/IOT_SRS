@@ -33,12 +33,22 @@ jobs:
           password: ${{ secrets.FTP_PASS }}
           port: ${{ secrets.FTP_PORT }}
           protocol: ftps
-          exclude: .git*
+          exclude: |
             - .git*/**
             - .github*/**
             - .github
             - .git
+            - .git/
+            - /.git
+            - .github/
+            - .github/
+            - /github
+            - /git
+            - git/
+            - github/
             - **/.git*
             - **/.git*/**
             - **/.github*
             - **/.github*/**
+            testing.txt
+            - testing.txt
