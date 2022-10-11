@@ -38,30 +38,40 @@
                             <form action="{{ route('aktualws.store') }}" method="POST">
                                 @csrf
                                 <div class="form-row">
-                                    <div class="form-group col-md">
+                                    <div class="form-group col-md-3">
                                         <label for="inputEmail4">Tanggal</label>
                                         <input type="date" class="form-control" id="inputEmail4" name="tgl"
                                             placeholder="Email">
                                     </div>
-                                    <div class="form-group col-md">
+                                    <div class="form-group col-md-3">
                                         <label for="inputEmail4">Jam</label>
                                         <input type="time" class="form-control" id="inputEmail4" name="time"
                                             placeholder="Email">
                                     </div>
-                                    <div class="form-group col-md">
+                                    <div class="form-group col-md-3">
                                         <label for="inputPassword4">Curah Hujan (mm)</label>
                                         <input type="text" class="form-control" id="inputPassword4" name="ch"
                                             placeholder="65.7">
                                     </div>
-                                    <div class="form-group col-md">
+                                    <div class="form-group col-md-3">
                                         <label for="inputAddress">Temperatur (C)</label>
                                         <input type="text" class="form-control" id="inputAddress" name="temp"
                                             placeholder="28.8">
                                     </div>
-                                    <div class="form-group col-md">
+                                    <div class="form-group col-md-3">
                                         <label for="inputAddress2">Kelembaban (Hum)</label>
                                         <input type="text" class="form-control" id="inputAddress2" name="hum"
                                             placeholder="97.3">
+                                    </div>
+                                    <div class="form-group col-md-3">
+                                        <label for="inputAddress2">Arah Angin</label>
+                                        <input type="text" class="form-control" id="inputAddress2" name="winddir"
+                                            placeholder="NNW">
+                                    </div>
+                                    <div class="form-group col-md-3">
+                                        <label for="inputAddress2">Kecepatan Angin (m/s)</label>
+                                        <input type="text" class="form-control" id="inputAddress2" name="windspeed"
+                                            placeholder="4.29">
                                     </div>
                                 </div>
                                 <button type="submit" class="btn btn-primary">Simpan</button>
@@ -86,6 +96,8 @@
                             <th>Curah Hujan (mm)</th>
                             <th>Temperatur (C)</th>
                             <th>Kelembaban (%)</th>
+                            <th>Arah Angin </th>
+                            <th>Kecepatan Angin (m/s)</th>
                             {{-- <th>Action</th> --}}
                         </tr>
                     </table>
@@ -110,8 +122,8 @@
               {data: 'rain_fall_real', name: 'rain_fall_real', title:'Curah Hujan (mm)'},
               {data: 'temp_real', name: 'temp_real', title :'Temperatur (C)'},
               {data: 'hum_real', name: 'hum_real', title : 'Kelembaban (%)'},
-              
-              
+              {data: 'wind_direction_real', name: 'wind_direction_real', title : 'Arah Angin'},
+              {data: 'wind_speed_real', name: 'wind_speed_real', title : 'Kecepatan Angin (m/s)'},
           ]
       });
       

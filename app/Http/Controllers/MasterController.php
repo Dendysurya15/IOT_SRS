@@ -869,12 +869,13 @@ class MasterController extends Controller
 
     public function storeAktualWS(Request $request)
     {
-        // $request->validate([
-        //     'rain' => 'required|numeric',
-        //     'temp' => 'required|numeric',
-        //     'hum' => 'required|numeric',
-        //     'tgl' => 'required',
-        // ]);
+        $request->validate([
+            'temp' => 'required|numeric',
+            'hum' => 'required|numeric',
+            'tgl' => 'required',
+            'winddir' => 'required',
+            'windspeed' => 'required',
+        ]);
 
         $dt = $request->tgl . ' ' . $request->time . ':00';
 
@@ -903,11 +904,15 @@ class MasterController extends Controller
 
         // dd($request->temp, $request->hum);
 
+
         DB::table('db_aws_bke')
             ->where('id', $id)
             ->update(
                 // ['datetime' => $dt],
-                ['temp_real' => $request->temp, 'rain_fall_real' => $request->ch, 'hum_real' => $request->hum],
+                [
+                    'temp_real' => $request->temp, 'rain_fall_real' => $request->ch, 'hum_real' => $request->hum,
+                    'wind_direction_real' => $request->winddir, 'wind_speed_real' => $request->windspeed
+                ],
 
             );
 
