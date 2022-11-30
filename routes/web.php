@@ -32,6 +32,8 @@ Route::get('/editAktualWS/{id}', [MasterController::class, 'editAktualWS'])->nam
 Route::delete('/deleteAktualWS/{id}', [MasterController::class, 'deleteAktualWS'])->name('aktualws.destroy');
 Route::get('/aktualws/index', [MasterController::class, 'formAktualWS'])->name('aktualws.index');
 Route::get('/aktualdb', [MasterController::class, 'getAktualDB'])->name('aktual.db');
+Route::get('/compare_weather', [MasterController::class, 'compareWeather'])->name('compare_weather');
+Route::get('/data', [MasterController::class, 'compareWeather'])->name('data');
 
 //water_level route
 Route::get('/dashboard_wl', [MasterController::class, 'dashboard_wl'])->name('dashboard_wl');

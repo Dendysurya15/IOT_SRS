@@ -13,6 +13,15 @@
                     <div class="row">
                         <div class="col-lg-12">
                             <div class="mb-4">
+                                @if (count($errors) > 0)
+                                <div class="alert alert-danger">
+                                    <ul>
+                                        @foreach ($errors->all() as $error)
+                                        <li>{{ $error }}</li>
+                                        @endforeach
+                                    </ul>
+                                </div>
+                                @endif
                                 <h2>Input Aktual Kondisi Cuaca AWS Davis Batu Kotam</h2>
                             </div>
                             @if ($message = Session::get('success'))
@@ -39,39 +48,42 @@
                                 @csrf
                                 <div class="form-row">
                                     <div class="form-group col-md-3">
-                                        <label for="inputEmail4">Tanggal</label>
+                                        <label for="inputEmail4">Tanggal <span style="color: red">*</span> </label>
                                         <input type="date" class="form-control" id="inputEmail4" name="tgl"
-                                            placeholder="Email">
+                                            placeholder="Email" value="{{ old('tgl') }}">
                                     </div>
                                     <div class="form-group col-md-3">
-                                        <label for="inputEmail4">Jam</label>
+                                        <label for="inputEmail4">Jam <span style="color: red">*</span> </label>
                                         <input type="time" class="form-control" id="inputEmail4" name="time"
-                                            placeholder="Email">
+                                            placeholder="Email" value="{{ old('time') }}">
                                     </div>
                                     <div class="form-group col-md-3">
-                                        <label for="inputPassword4">Curah Hujan (mm)</label>
+                                        <label for="inputPassword4">Curah Hujan (mm) <span style="color: red">*</span>
+                                        </label>
                                         <input type="text" class="form-control" id="inputPassword4" name="ch"
-                                            placeholder="65.7">
+                                            placeholder="65.7" value="{{ old('ch') }}">
                                     </div>
                                     <div class="form-group col-md-3">
-                                        <label for="inputAddress">Temperatur (C)</label>
+                                        <label for="inputAddress">Temperatur (C) <span style="color: red">*</span>
+                                        </label>
                                         <input type="text" class="form-control" id="inputAddress" name="temp"
-                                            placeholder="28.8">
+                                            placeholder="28.8" value="{{ old('temp') }}">
                                     </div>
                                     <div class="form-group col-md-3">
-                                        <label for="inputAddress2">Kelembaban (Hum)</label>
+                                        <label for="inputAddress2">Kelembaban (%) <span style="color: red">*</span>
+                                        </label>
                                         <input type="text" class="form-control" id="inputAddress2" name="hum"
-                                            placeholder="97.3">
+                                            placeholder="97.3" value="{{ old('hum') }}">
                                     </div>
                                     <div class="form-group col-md-3">
                                         <label for="inputAddress2">Arah Angin</label>
                                         <input type="text" class="form-control" id="inputAddress2" name="winddir"
-                                            placeholder="NNW">
+                                            placeholder="NNW" value="{{ old('winddir') }}">
                                     </div>
                                     <div class="form-group col-md-3">
                                         <label for="inputAddress2">Kecepatan Angin (m/s)</label>
                                         <input type="text" class="form-control" id="inputAddress2" name="windspeed"
-                                            placeholder="4.29">
+                                            placeholder="4.29" value="{{ old('windspeed') }}">
                                     </div>
                                 </div>
                                 <button type="submit" class="btn btn-primary">Simpan</button>

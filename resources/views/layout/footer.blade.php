@@ -6,18 +6,19 @@
     </div>
 </footer>
 
-<script src="{{ asset('/js/js_tabel/jquery-3.5.1.js') }}"></script>
-<script src="{{ asset('/js/js_tabel/jquery.dataTables.min.js') }}"></script>
-<script src="//cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
-{{-- <script src="{{ asset('/js/js_tabel/dataTables.buttons.min.js') }}"></script> --}}
-<script src="{{ asset('/js/js_tabel/buttons.flash.min.js') }}"></script>
-<script src="{{ asset('/js/js_tabel/jszip.min.js') }}"></script>
-<script src="{{ asset('/js/js_tabel/pdfmake.min.js') }}"></script>
-<script src="{{ asset('/js/js_tabel/vfs_fonts.js') }}"></script>
-<script src="{{ asset('/js/js_tabel/buttons.html5.min.js') }}"></script>
-<script src="{{ asset('/js/js_tabel/buttons.print.min.js') }}"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/v/bs4/dt-1.11.5/datatables.min.js"></script>
 
-<script src="{{ asset('/plugins/select2/js/select2.full.min.js') }}"></script>
+<script src="{{ asset('js/js_tabel/jquery-3.5.1.js') }}"></script>
+<script src="{{ asset('js/js_tabel/jquery.dataTables.min.js') }}"></script>
+<script src="{{ asset('js/js_tabel/dataTables.buttons.min.js') }}"></script>
+<script src="{{ asset('js/js_tabel/buttons.flash.min.js') }}"></script>
+<script src="{{ asset('js/js_tabel/jszip.min.js') }}"></script>
+<script src="{{ asset('js/js_tabel/pdfmake.min.js') }}"></script>
+<script src="{{ asset('js/js_tabel/vfs_fonts.js') }}"></script>
+<script src="{{ asset('js/js_tabel/buttons.html5.min.js') }}"></script>
+<script src="{{ asset('js/js_tabel/buttons.print.min.js') }}"></script>
+
+<script src="{{ asset('plugins/select2/js/select2.full.min.js') }}"></script>
 
 <script>
     $(function () {

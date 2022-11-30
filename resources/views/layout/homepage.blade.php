@@ -115,7 +115,7 @@
                                                                 <i class=" fa fa-water fa-2x"
                                                                     style="color:#5797E6;"></i>
                                                                 <br>
-                                                                <span style="font-size: 15px; "> Dashboard Water
+                                                                <span style="font-size: 15px; ">Dashboard Water
                                                                     Level</span>
                                                             </div>
                                                         </div>
