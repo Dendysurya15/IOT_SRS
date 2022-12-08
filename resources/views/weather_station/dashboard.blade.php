@@ -6,8 +6,6 @@
         box-shadow: 0 10px 20px rgba(0, 0, 0, .12), 0 4px 8px rgba(0, 0, 0, .06);
     }
 
-
-
     .selectCard {
         border-radius: 4px;
         background: #fff;
@@ -56,10 +54,10 @@
                         </form>
                     </div>
                     <div class="col-md">
-                        {{-- <form class="" action="{{ route('dashboard_ws') }}" method="get">
+                        <form class="" action="{{ route('dashboard_ws') }}" method="get">
                             <input class="form-control" type="date" name="tgl" id="inputDate"
                                 onchange="this.form.submit()">
-                        </form> --}}
+                        </form>
 
                     </div>
                 </div>
@@ -83,7 +81,7 @@
                             @php
 
                             if($aktual != null){
-                            $iconAktual = 'fa-solid fa-'.$aktual->icon . ' fa-5x';
+                            $iconAktual = 'fa-solid fa-'.$aktual->icon . ' fa-4x';
                             }else{
                             $iconAktual = '-';
                             }
@@ -125,7 +123,6 @@
                             <br>
                             <i class="fas fa-compass" style="color: #183153"></i>
                             @php
-                            if ($aktual != null) {
                             if($aktual->wind_direction_real == 'N'){
                             $wind_direction = 'Utara';
                             }
@@ -152,10 +149,9 @@
                             }else{
                             $wind_direction = $aktual->wind_direction_real ?? '-';
                             }
-                            }
                             @endphp
                             {{
-                            $wind_direction ?? '-'
+                            $wind_direction
                             }}
                         </div>
                         <div class="col">
@@ -172,7 +168,6 @@
                             <i class="fas fa-sun" style="color: #183153"></i>
 
                             @php
-                            if ($aktual != null) {
                             if($aktual->uv_real >= 0 && $aktual->uv_real <3) { $val=$aktual->uv_real;
                                 $title = 'Low';
                                 }
@@ -193,15 +188,13 @@
                                             $val = $aktual->uv_real ?? '-';
                                             $title = '';
                                             }
-                                            }
-
                                             @endphp
 
                                             {{
-                                            $val ?? '-'
+                                            $val
                                             }}
                                             ({{
-                                            $title ?? '-'
+                                            $title
                                             }})
                         </div>
                     </div>
@@ -211,131 +204,34 @@
                     </div> --}}
                 </div>
             </div>
-
-
-
         </div>
+    </div>
+    <!--Suhu Ruangan//-->
 
-        <div class="card">
-            <div class="card-header card-light">
-                <h5>Ringkasan history aktual</h5>
-            </div>
-            <div class="card-body pb-5">
+</div>
+<div class="card">
+    <div class="card-header card-light">
+        <h5>Ringkasan Temperatur Aktual dan Forecast dalam 24 jam</h5>
+    </div>
+    <div class="card-body pb-5">
+        <div id="tempGraphAktualForecast"></div>
+    </div>
+</div>
+<div class="card">
+    <div class="card-header card-light">
+        <h5>Ringkasan Curah Hujan Aktual dan Forecast dalam 24 jam</h5>
+    </div>
+    <div class="card-body pb-5">
 
-                <div id="test"></div>
-                <div id="chartLast12Hour" class="" style="height: 400px">
-                </div>
-                {{-- <div style="display: flex;
-                justify-content: center;">
-                    <div class="row " style="margin-top:-40px;width:100%;"> --}}
-                        {{-- @foreach ($arrHistoryData as $item) --}}
-                        {{-- <div class="col" style="border: 1px solid red">
-                            @php
-
-                            if($item['icon'] != null){
-                            $iconAktual = 'fa-solid fa-'.$item['icon'] ;
-                            }else{
-                            $iconAktual = '-';
-                            }
-                            @endphp
-                            <i class="{{$iconAktual}} '" style="color:#183153;"></i>
-                        </div> --}}
-                        {{-- @endforeach --}}
-
-                        {{-- <div class="col" style="border: 1px solid red">skdjf</div>
-                        <div class="col" style="border: 1px solid red">skdjf</div>
-                        <div class="col" style="border: 1px solid red">skdjf</div>
-                        <div class="col" style="border: 1px solid red">skdjf</div>
-                        <div class="col" style="border: 1px solid red">skdjf</div>
-                        <div class="col" style="border: 1px solid red">skdjf</div>
-                        <div class="col" style="border: 1px solid red">skdjf</div>
-                        <div class="col" style="border: 1px solid red">skdjf</div>
-                        <div class="col" style="border: 1px solid red">skdjf</div>
-                        <div class="col" style="border: 1px solid red">skdjf</div> --}}
-                        {{--
-                    </div>
-                </div> --}}
+        <div id="chAktualForecast"></div>
 
 
-                <div style="display: flex;
-                justify-content: center;margin-top:-50px">
-                    <div class="row " style="width:97%">
-                        @foreach ($arrHistoryData as $item)
-                        @php
-
-                        if($item['icon'] != null){
-                        $iconAktual = 'fa-solid fa-'.$item['icon'] ;
-                        }else{
-                        $iconAktual = '-';
-                        }
-                        @endphp
-                        @if ($item['counter'] != 12)
-
-                        <div class="col "> <i class="{{$iconAktual}} '"></i></div>
-                        @endif
-                        @endforeach
-                        {{-- <div class="col-1" style="border: 1px solid red">asdf</div>
-                        <div class="col-1" style="border: 1px solid red">asdf</div>
-                        <div class="col-1" style="border: 1px solid red">asdf</div>
-                        <div class="col-1" style="border: 1px solid red">asdf</div>
-                        <div class="col-1" style="border: 1px solid red">asdf</div>
-                        <div class="col-1" style="border: 1px solid red">asdf</div>
-                        <div class="col-1" style="border: 1px solid red">asdf</div>
-                        <div class="col-1" style="border: 1px solid red">asdf</div>
-                        <div class="col-1" style="border: 1px solid red">asdf</div>
-                        <div class="col-1" style="border: 1px solid red">asdf</div>
-                        <div class="col-1" style="border: 1px solid red">asdf</div> --}}
-                        {{-- <div style="border: 1px solid red;width:141px">
-                            askdf
-                        </div>
-                        <div style="border: 1px solid red;width:141px">
-                            askdf
-                        </div>
-                        <div style="border: 1px solid red;width:141px">
-                            askdf
-                        </div>
-                        <div style="border: 1px solid red;width:141px">
-                            askdf
-                        </div>
-                        <div style="border: 1px solid red;width:141px">
-                            askdf
-                        </div>
-                        <div style="border: 1px solid red;width:141px">
-                            askdf
-                        </div>
-                        <div style="border: 1px solid red;width:141px">
-                            askdf
-                        </div>
-                        <div style="border: 1px solid red;width:141px">
-                            askdf
-                        </div>
-                        <div style="border: 1px solid red;width:141px">
-                            askdf
-                        </div>
-                        <div style="border: 1px solid red;width:141px">
-                            askdf
-                        </div>
-                        <div style="border: 1px solid red;width:141px">
-                            askdf
-                        </div>
-                        <div style="border: 1px solid red;width:141px">
-                            askdf
-                        </div> --}}
-                    </div>
-                </div>
-
-
-            </div>
-        </div>
 
     </div>
 </div>
-<!--Suhu Ruangan//-->
-
-</div>
-<div class=" mt-2 mb-3">
+<div class="mt-2 mb-3">
     <span>
-        Perkiraan cuaca beberapa hari kedepan
+        Perkiraan cuaca seminggu kedepan
     </span>
     <span class="float-right font-italic">
         {{-- <a href="{{ route('month_weather_forecast') }}"> Perkiraan cuaca bulanan ...</a> --}}
@@ -359,15 +255,13 @@
                                 }} mm
                             </div>
                             <div class="mb-2">
-                                <i class="fa-solid fa-temperature-three-quarters fa-fw" style="color: #183153"></i>
-                                {{
+                                <i class="fa-solid fa-temperature-three-quarters fa-fw" style="color: #183153"></i> {{
                                 $item['max_temp'] != 0 ? $item['max_temp'] : '-'
                                 }} / {{
                                 $item['min_temp'] != 0 ? $item['min_temp'] : '-'
                                 }} ºC
                             </div>
-                            <i class="fa-solid fa-cloud-showers-heavy fa-fw" style="color: #183153"></i>
-                            {{
+                            <i class="fa-solid fa-cloud-showers-heavy fa-fw" style="color: #183153"></i> {{
                             $item['rain_hours'] != 0 ? $item['rain_hours'] : '-'
                             }} Jam
                         </div>
@@ -415,7 +309,7 @@
                     <div style="height: 170px;">
                         <div id="textbox">
                             <p class="alignleft" style="float:left;margin-top:15px;margin-left:25px">
-                                <span style="font-size:14px">
+                                <span style="font-size:13px">
                                     {{$data['waktu']}} ( {{$data['jam']}} )</span> <br>
                                 <span class="font-italic" style="color:#6C757D">{{$data['title']}}</span>
                             </p>
@@ -428,26 +322,24 @@
                             <div class="row m-2" style="">
                                 <div class="col-6" style="">
                                     <i class="fa-solid fa-water fa-sm fa-fw m-1" style="color:#183153;"></i>
-                                    <span style="font-size:13px"> {{$data['rain']}} mm</span>
+                                    <span style="font-size:11px"> {{$data['rain']}} mm</span>
                                 </div>
                                 <div class="col-6" style="">
                                     <i class="fa-solid fa-temperature-low fa-sm fa-fw m-1" style="color:#183153;"></i>
 
-                                    <span style="font-size:13px"> {{$data['temp']}} C</span>
+                                    <span style="font-size:11px"> {{$data['temp']}} C</span>
                                 </div>
                             </div>
                             <div class="row m-2" style="">
                                 <div class="col-6" style="">
                                     <i class="fa-solid fa-cloud-sun-rain fa-sm fa-fw m-1" style="color:#183153;"></i>
 
-                                    <span style="font-size:13px"> Persentase
-                                        {{$data['rain_probability']}} % </span>
+                                    <span style="font-size:11px"> {{$data['rain_probability']}} % </span>
                                 </div>
                                 <div class="col-6" style="">
                                     <i class="fa-solid fa-wind fa-sm fa-fw m-1" style="color:#183153;"></i>
 
-                                    <span style="font-size:13px"> {{$data['winddir']}}
-                                        {{$data['ws']}}m/s</span>
+                                    <span style="font-size:11px"> {{$data['ws']}}m/s</span>
                                 </div>
                             </div>
                         </div>
@@ -464,6 +356,19 @@
         @endforeach
     </div>
 </div>
+
+<!--<div class="card">-->
+<!--    <div class="card-header card-light">-->
+<!--        <h5>Ringkasan Forecast 12 Jam kedepan dari <i>AccuWeather</i> </h5>-->
+<!--    </div>-->
+<!--    <div class="card-body pb-5">-->
+
+<!--        <div id="forecast12"></div>-->
+
+
+
+<!--    </div>-->
+<!--</div>-->
 <div class="mt-2 mb-3">
     {{-- <span>
         Ringkasan data per jam
@@ -647,6 +552,7 @@
 <script src="{{ asset('/public/js/demo.js') }}"></script>
 
 <script src="{{ asset('/public/js/loader.js') }}"></script>
+
 <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
 
 <script>
@@ -654,43 +560,145 @@
     $( "#inputDate" ).datepicker( "option", "disabled", true );
     $( "#locList" ).datepicker( "option", "disabled", true );
     });
+    
+    var arrHistoryData = <?php echo json_encode($arrHistoryData); ?>;
+    var arrForecast12hour = <?php echo json_encode($arrForecast12hour); ?>;
+    var arrNewForecast12 = <?php echo json_encode($arrForecastNew12hour); ?>;
+    var arrNewForecast12 = Object.entries(arrNewForecast12)
+    var arrHistoryData = Object.entries(arrHistoryData)
+    var arrForecast12hour = Object.entries(arrForecast12hour)
+
+    var categoriesHistoryHour = '['
+    var rainHistoryHour = '['
+    var tempHistoryHour = '['
+    arrHistoryData.forEach(element => {
+        categoriesHistoryHour += '"' +element[1]['jam'] + '",'
+        rainHistoryHour += '"' +element[1]['rain'] + '",'
+        tempHistoryHour += '"' +element[1]['temp'] + '",'
+    });
+    
+    categoriesHistoryHour = categoriesHistoryHour.substring(0, categoriesHistoryHour.length - 1);
+    rainHistoryHour = rainHistoryHour.substring(0, rainHistoryHour.length - 1);
+    tempHistoryHour = tempHistoryHour.substring(0, tempHistoryHour.length - 1);
+    categoriesHistoryHour += ']'
+    rainHistoryHour += ']'
+    tempHistoryHour += ']'
+
+    categoriesHistoryHour = JSON.parse(categoriesHistoryHour)
+    rainHistoryHour = JSON.parse(rainHistoryHour)
+    tempHistoryHour = JSON.parse(tempHistoryHour)
+
+    var categoriesForecastHour = '['
+    var rainForecastHour = '['
+    var tempForecastHour = '['
+    arrForecast12hour.forEach(element => {
+        categoriesForecastHour += '"' +element[1]['jam'] + '",'
+        rainForecastHour += '"' +element[1]['rain'] + '",'
+        tempForecastHour += '"' +element[1]['temp'] + '",'
+    });
+
+    categoriesForecastHour = categoriesForecastHour.substring(0, categoriesForecastHour.length - 1);
+    rainForecastHour = rainForecastHour.substring(0, rainForecastHour.length - 1);
+    tempForecastHour = tempForecastHour.substring(0, tempForecastHour.length - 1);
+    categoriesForecastHour += ']'
+    rainForecastHour += ']'
+    tempForecastHour += ']'
+
+    categoriesForecastHour = JSON.parse(categoriesForecastHour)
+    rainForecastHour = JSON.parse(rainForecastHour)
+    tempForecastHour = JSON.parse(tempForecastHour)
+
+
+    var categoriesAll = '['
+    var rainAll = '['
+    var tempAll = '['
+    arrNewForecast12.forEach(element => {
+        categoriesAll += '"' +element[1]['jam'] + '",'
+        rainAll += '"' +element[1]['rain'] + '",'
+        tempAll += '"' +element[1]['temp'] + '",'
+    });
+    
+    categoriesAll = categoriesAll.substring(0, categoriesAll.length - 1);
+    rainAll = rainAll.substring(0, rainAll.length - 1);
+    tempAll = tempAll.substring(0, tempAll.length - 1);
+    categoriesAll += ']'
+    rainAll += ']'
+    tempAll += ']'
+
+
+    categoriesAll = JSON.parse(categoriesAll)
+
+    rainAll = JSON.parse(rainAll)
+    tempAll = JSON.parse(tempAll)
+    console.log(tempAll)
 
     var options = {
-          series: [{
-          data: [1269,
-1288,
-1562,
-1562,
-1655,
-1635,
-1124,
-1274,
-1434,
- ]
-        }],
-          chart: {
-          type: 'bar',
-          height: 350
-        },
-        plotOptions: {
-          bar: {
-            borderRadius: 4,
-            horizontal: false,
-          }
-        },
-        dataLabels: {
-          enabled: true
-        },
-        colors:['#F44336', '#E91E63', '#9C27B0', '#9C27B0', '#9C27B0', '#9C27B0', '#9C27B0', '#9C27B0', '#9C27B0'],
-        xaxis: {
-          categories: ['SLM', 'SYM', 'SGM', 'SKM', 'NBM', 'MLM', 'MKM',
-            'SCM', 'KTM'
-          ],
-        }
-        };
+series: [{
+name: 'Aktual Temperatur (°C)',
+data: tempHistoryHour
+}, {
+name: 'Forecast Temperatur (°C)',
+data: tempAll
+}],
+chart: {
+height: 350,
+type: 'area'
+},
+dataLabels: {
+enabled: false
+},
+colors:['#1565c0', '#b71c1c', '#9C27B0'],
+stroke: {
+curve: 'smooth'
+},
+xaxis: {
+type: 'string',
+categories: categoriesAll
+// ["2018-09-19T00:00:00.000Z", "2018-09-19T01:30:00.000Z", "2018-09-19T02:30:00.000Z",
+// "2018-09-19T03:30:00.000Z", "2018-09-19T04:30:00.000Z", "2018-09-19T05:30:00.000Z", "2018-09-19T06:30:00.000Z"]
+}
+// tooltip: {
+// x: {
+// format: 'dd/MM/yy HH:mm'
+// },
+// },
+};
 
-var chart = new ApexCharts(document.querySelector("#test"), options);
+var chart = new ApexCharts(document.querySelector("#tempGraphAktualForecast"), options);
+chart.render();
+var options = {
+series: [{
+name: 'Aktual Curah Hujan (mm)',
+data: rainHistoryHour
+}, {
+name: 'Forecast Curah Hujan  (mm)',
+data: rainAll
+}],
+chart: {
+height: 350,
+type: 'area'
+},
+dataLabels: {
+enabled: false
+},
+colors:['#1565c0', '#b71c1c', '#9C27B0'],
+stroke: {
+curve: 'smooth'
+},
+xaxis: {
+type: 'string',
+categories: categoriesAll
+// ["2018-09-19T00:00:00.000Z", "2018-09-19T01:30:00.000Z", "2018-09-19T02:30:00.000Z",
+// "2018-09-19T03:30:00.000Z", "2018-09-19T04:30:00.000Z", "2018-09-19T05:30:00.000Z", "2018-09-19T06:30:00.000Z"]
+}
+// tooltip: {
+// x: {
+// format: 'dd/MM/yy HH:mm'
+// },
+// },
+};
 
+var chart = new ApexCharts(document.querySelector("#chAktualForecast"), options);
 chart.render();
     //   var indexDefault = 2;
     //   $('#locList').val(99)
@@ -781,65 +789,4 @@ chart.render();
     // }
     // })
     // }
-    google.charts.load('current', {'packages':['corechart']});
-
-    google.charts.setOnLoadCallback(drawChart);
-
-    function drawChart() {  
-    
-    var plot_ch = '<?php echo $arrlogLast12hour['plot1']; ?>';
-    var plot_temp = '<?php echo $arrlogLast12hour['plot2']; ?>';
-   
-    var dataLog12jamterakhir = new google.visualization.DataTable();
-    dataLog12jamterakhir.addColumn('string', 'Name');
-    dataLog12jamterakhir.addColumn('number', plot_ch);    
-    dataLog12jamterakhir.addColumn({type:'string', role:'style'});
-    dataLog12jamterakhir.addColumn({type:'number', role:'annotation'});   
-    dataLog12jamterakhir.addColumn('number', plot_temp);
-    dataLog12jamterakhir.addColumn({type:'string', role:'style'});
-    dataLog12jamterakhir.addColumn({type:'number', role:'annotation'});
-    dataLog12jamterakhir.addRows([
-      <?php echo $arrlogLast12hour['data']; ?>
-    ]);
-
-    var optionlog12jamterakhirs = {
-        chartArea: {
-            width: '97%'
-        },
-        annotations: {
-    textStyle: {
-      fontName: 'Times-Roman',
-      fontSize: 15,
-      bold: true,
-    //   italic: true,
-      // The color of the text.
-      color: '#871b47',
-      // The color of the text outline.
-      // The transparency of the text.
-      opacity: 0.8
-    }
-  },
-        theme: 'material',
-        colors:[ '#6B728E','#6B728E'],
-        legend: { position: 'none',
-        textStyle: {fontSize: 15}},
-        lineWidth: 2,
-        'tooltip' : {
-  trigger: 'none'
-},
-        vAxis: {
-            baselineColor: '#fff',
-         gridlineColor: '#fff',
-      textPosition: 'none',
-    //   maxValue: 100,
-    //   minValue: -100,
-    //   gridlines: { interval: 0}
-    },
-        // height:400,
-    };
-
-    var loglast12jam = new google.visualization.AreaChart(document.getElementById('chartLast12Hour'));
-    loglast12jam.draw(dataLog12jamterakhir,optionlog12jamterakhirs);
-
-  }
 </script>

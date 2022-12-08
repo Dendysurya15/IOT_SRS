@@ -837,6 +837,8 @@ class MasterController extends Controller
             ->get()
             ->groupBy('hari');
 
+
+
         $queryPredDetail =  DB::table('weather_station_list')
             ->join('db_aws_bke', 'weather_station_list.id', '=', 'db_aws_bke.idws')
             ->select('db_aws_bke.*', 'weather_station_list.rain_cal as rain_cal', 'weather_station_list.loc as loc', DB::raw("DATE_FORMAT(db_aws_bke.datetime,'%d-%m-%Y') as hari"))
@@ -846,26 +848,35 @@ class MasterController extends Controller
             ->groupBy('hari');
 
 
-        // dd($from);
 
-        $dateNow = Carbon::parse('2022-11-18')->format('Y-m-d');
+        $dateNow = Carbon::parse()->format('Y-m-d');
         $hourNow = Carbon::now()->format('H:i:s');
         $dateNow = $dateNow . ' ' . $hourNow;
 
 
-        $last12hour = Carbon::parse($dateNow)->subHours(24)->format('Y-m-d H:i:s');
-        // dd($dateNow, $last12hour);
+        $last12hour = Carbon::parse($dateNow)->subHours(12)->format('Y-m-d H:i:s');
+        $next12hour = Carbon::parse($dateNow)->addHours(11)->format('Y-m-d H:i:s');
 
-        // dd($last12hour);
 
         $queryHistoryData =  DB::table('weather_station_list')
             ->join('db_aws_bke', 'weather_station_list.id', '=', 'db_aws_bke.idws')
-            ->select('db_aws_bke.*', 'weather_station_list.rain_cal as rain_cal', 'weather_station_list.loc as loc', DB::raw("DATE_FORMAT(db_aws_bke.datetime,'%d-%m-%Y') as hari"))
+            ->select('db_aws_bke.*', 'weather_station_list.rain_cal as rain_cal', 'weather_station_list.loc as loc')
             ->whereBetween('db_aws_bke.datetime', [$last12hour, $dateNow])
             ->where('idws', 1)
+            ->orderBy('db_aws_bke.datetime')
             ->get();
 
-        // dd($queryHistoryData);
+        // dd($queryHistoryData[91]);
+
+        $queryForecast12hour =  DB::table('weather_station_list')
+            ->join('db_aws_bke', 'weather_station_list.id', '=', 'db_aws_bke.idws')
+            ->select('db_aws_bke.*', 'weather_station_list.rain_cal as rain_cal', 'weather_station_list.loc as loc', DB::raw("DATE_FORMAT(db_aws_bke.datetime,'%H:%i') as hari"))
+            ->whereBetween('db_aws_bke.datetime', [$dateNow, $next12hour])
+            ->where('idws', 1)
+            ->orderBy('hari')
+            ->get();
+
+        // dd($queryForecast12hour);
 
         foreach ($queryHistoryData as $key => $value) {
             $formatted = Carbon::parse($value->datetime)->format('Y-m-d');
@@ -878,10 +889,16 @@ class MasterController extends Controller
             return Carbon::parse($item->datetime)->format('H');
         });
 
+        $queryForecast12hour = $queryForecast12hour->groupBy(function ($item) {
+            return Carbon::parse($item->datetime)->format('H');
+        });
 
-        // dd($queryHistoryData);
+
+        // dd($queryForecast12hour);
 
         $arrHistoryData = array();
+        $arrHistoryDataTemp = array();
+        $hourHistoryDate = array();
         $incAll = 1;
         foreach ($queryHistoryData as $key => $value) {
             $sum_rain_fall = 0;
@@ -918,15 +935,64 @@ class MasterController extends Controller
             }
 
             $arrHistoryData[$key . ':00']['temp'] = round($sum_temp / $inc, 2);
-            $arrHistoryData[$key . ':00']['rain'] = $sum_rain_fall;
+            $arrHistoryData[$key . ':00']['rain'] = round($sum_rain_fall, 2);
             $arrHistoryData[$key . ':00']['jam'] = $key . ':00';
             $arrHistoryData[$key . ':00']['icon'] = $icon;
             $arrHistoryData[$key . ':00']['title'] = $title;
             $arrHistoryData[$key . ':00']['counter'] = $incAll;
+            $hourHistoryDate[] = $key . ':00';
+            $arrHistoryDataTemp[$key . ':00']['temp'] = 0;
+            $arrHistoryDataTemp[$key . ':00']['rain'] = 0;
+            $arrHistoryDataTemp[$key . ':00']['jam'] = $key . ':00';
             $incAll++;
         }
 
-        // dd($arrHistoryData);
+        $arrForecast12hour = array();
+        $incAll = 1;
+        $hourNext12hour = array();
+        foreach ($queryForecast12hour as $key => $value) {
+            $sum_rain_fall = 0;
+            $sum_temp = 0;
+            $inc = 0;
+
+            foreach ($value as $key2 => $value2) {
+                $sum_rain_fall += $value2->accu_rf_forecast;
+                $sum_temp += $value2->accu_temp_forecast;
+                $inc++;
+            }
+
+            if ($sum_rain_fall == 0) {
+                $icon = 'cloud-sun';
+                $title = 'Berawan';
+            } else if ($sum_rain_fall >= 0.1 && $sum_rain_fall < 0.5) {
+                $icon = 'cloud-rain';
+                $title = 'Hujan rintik';
+            } else if ($sum_rain_fall >= 0.5 && $sum_rain_fall < 20) {
+                $icon = 'cloud-showers-heavy';
+                $title = 'Hujan ringan';
+            } else if ($sum_rain_fall >= 20 && $sum_rain_fall < 50) {
+                $icon = 'cloud-showers-heavy';
+                $title = 'Hujan Sedang';
+            } else if ($sum_rain_fall >= 50 && $sum_rain_fall < 100) {
+                $icon = 'cloud-showers-heavy';
+                $title = 'Hujan Lebat';
+            } else if ($sum_rain_fall >= 100 && $sum_rain_fall < 150) {
+                $icon = 'cloud-showers-water';
+                $title = 'Hujan Sangat Lebat';
+            } else {
+                $icon = 'cloud-showers-water';
+                $title = 'Hujan Ekstrem';
+            }
+
+            $arrForecast12hour[$key . ':00']['temp'] = round($sum_temp / $inc, 2);
+            $arrForecast12hour[$key . ':00']['rain'] = round($sum_rain_fall, 2);
+            $arrForecast12hour[$key . ':00']['jam'] = $key . ':00';
+            $arrForecast12hour[$key . ':00']['icon'] = $icon;
+            $arrForecast12hour[$key . ':00']['title'] = $title;
+            $arrForecast12hour[$key . ':00']['counter'] = $incAll;
+            $hourNext12hour[] = $key . ':00';
+            $incAll++;
+        }
 
         $loglast12hour = '';
         foreach ($arrHistoryData as $key => $value) {
@@ -960,13 +1026,15 @@ class MasterController extends Controller
         }
 
 
-        // dd($loglast12hour);
 
         $arrlogLast12hour = [
             'plot1'     => 'Curah Hujan (mm)',
             'plot2'     => 'Temperatur (C)',
             'data'      => $loglast12hour
         ];
+
+
+
 
         $arrPagiMalam = array();
         $arrPred = array();
@@ -1035,6 +1103,7 @@ class MasterController extends Controller
             }
 
 
+
             $sum_rain = round($sum_rain, 2);
 
             if ($sum_rain >= 0 && $sum_rain < 0.5) {
@@ -1057,16 +1126,20 @@ class MasterController extends Controller
                 $title = 'Hujan Ekstrem';
             }
             $arrPred[$jamConvert]['rain_hours'] = $sum_hoursofrain;
-            $arrPred[$jamConvert]['rain'] = $sum_rain;
+            $arrPred[$jamConvert]['rain'] = round($sum_rain, 2);
             $arrPred[$jamConvert]['icon'] = $icon;
             $arrPred[$jamConvert]['title'] = $title;
             $inc++;
         }
 
-        foreach ($arrlogLast12hour as $key => $value) {
-            # code...
-        }
-        return view('weather_station/dashboard', ['arrPagiMalam' => $arrPagiMalam, 'aws_loc' => $aws_loc, 'aktual' => $sel_aws, 'date' => $convert->format('d M') . ' ' . $dateNow, 'forecasting' => $arrPred, 'arrlogLast12hour' => $arrlogLast12hour, 'arrHistoryData' => $arrHistoryData]);
+        // dd($arrHistoryData);
+        // dd($arrForecast12hour);
+
+
+        $arrForecastNew12hour = array_merge($arrHistoryDataTemp, $arrForecast12hour);
+        // dd($arrForecastNew12hour);
+
+        return view('weather_station/dashboard', ['arrForecastNew12hour' => $arrForecastNew12hour, 'arrForecast12hour' => $arrForecast12hour, 'hourHistoryDate' => $hourHistoryDate, 'arrPagiMalam' => $arrPagiMalam, 'aws_loc' => $aws_loc, 'aktual' => $sel_aws, 'date' => $convert->format('d M') . ' ' . $dateNow, 'forecasting' => $arrPred, 'arrlogLast12hour' => $arrlogLast12hour, 'arrHistoryData' => $arrHistoryData]);
     }
 
     public function compareWeather(Request $request)
