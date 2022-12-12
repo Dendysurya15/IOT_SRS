@@ -138,6 +138,14 @@
                             </a>
                         </li>
 
+                        <li class="nav-item">
+                            <a href="{{ url('/dashboard_soil') }}" class="nav-link">
+                                <i class="nav-icon fa fa-droplet"></i>
+                                <p>
+                                    Dashboard Soil Moisture
+                                </p>
+                            </a>
+                        </li>
                         <!-- TABEL -->
                         <li class="nav-item">
                             <a href="{{ url('/grafik') }}" class="nav-link">

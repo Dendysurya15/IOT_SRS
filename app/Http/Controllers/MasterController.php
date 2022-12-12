@@ -724,6 +724,42 @@ class MasterController extends Controller
         return view('weather_station/forecastDay');
     }
 
+    public static function dashboard_soil(Request $request)
+    {
+
+        $dateToday =  Carbon::now();
+        $yesterday = Carbon::parse($dateToday)->subDay();
+
+        $query =  DB::table('soil_moisture')
+            ->select('soil_moisture.*',  DB::raw("DATE_FORMAT(soil_moisture.datetime,'%H:00') as jam"))
+
+            ->whereBetween('soil_moisture.datetime', [$yesterday, $dateToday])
+            ->orderBy('soil_moisture.datetime')
+            ->get()
+            ->groupBy('jam');
+
+        // dd($query);
+
+        $listHour = array();
+        $arrHour = array();
+        foreach ($query as $key => $value) {
+            $sum_hum = 0;
+            $sum_temp = 0;
+            $inc = 0;
+            foreach ($value as $key2 => $data) {
+                $sum_hum += $data->hum1;
+                $sum_temp += $data->temp;
+                $inc++;
+            }
+            $arrHour[$key]['hum'] = round($sum_hum / $inc, 2);
+            $arrHour[$key]['temp'] = round($sum_temp / $inc, 2);
+            $listHour[] = $key;
+        }
+
+
+        return view('soil_moisture.dashboard', ['arrHour' => $arrHour, 'listHour' => $listHour, 'dateNow' => $dateToday->format('d M Y')]);
+    }
+
     public static function dashboard_ws(Request $request)
     {
 
@@ -866,18 +902,41 @@ class MasterController extends Controller
             ->orderBy('db_aws_bke.datetime')
             ->get();
 
-        // dd($queryHistoryData[91]);
+        $oneDay = ['00', '01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23'];
 
         $queryForecast12hour =  DB::table('weather_station_list')
             ->join('db_aws_bke', 'weather_station_list.id', '=', 'db_aws_bke.idws')
-            ->select('db_aws_bke.*', 'weather_station_list.rain_cal as rain_cal', 'weather_station_list.loc as loc', DB::raw("DATE_FORMAT(db_aws_bke.datetime,'%H:%i') as hari"))
+            ->select('db_aws_bke.*', 'weather_station_list.rain_cal as rain_cal', 'weather_station_list.loc as loc', DB::raw("DATE_FORMAT(db_aws_bke.datetime,'%H:00') as jam"))
             ->whereBetween('db_aws_bke.datetime', [$dateNow, $next12hour])
             ->where('idws', 1)
-            ->orderBy('hari')
+            ->orderBy('db_aws_bke.datetime')
+            // ->orderBy('jam')
             ->get();
 
-        // dd($queryForecast12hour);
 
+
+        $historyForecast12Hour = $queryHistoryData;
+
+        $historyForecast12Hour = $historyForecast12Hour->groupBy(function ($item) {
+            return Carbon::parse($item->datetime)->format('H');
+        });
+
+        // dd($historyForecast12Hour);
+
+        foreach ($historyForecast12Hour as $key => $value) {
+            // foreach ($value as $key2 => $val) {
+
+            $formatted = Carbon::parse($value[0]->datetime)->format('Y-m-d');
+
+
+            foreach ($oneDay as $key3 => $hour) {
+                if ($value[0]->datetime == $formatted . ' ' . $hour . ':00:00') {
+                    $value[0]->nice = $hour;
+                }
+            }
+            // }
+        }
+        dd($historyForecast12Hour);
         foreach ($queryHistoryData as $key => $value) {
             $formatted = Carbon::parse($value->datetime)->format('Y-m-d');
             if ($value->datetime == $formatted . ' 07:00:00' || $value->datetime == $formatted . ' 19:00:00') {
@@ -889,12 +948,15 @@ class MasterController extends Controller
             return Carbon::parse($item->datetime)->format('H');
         });
 
+
+        // dd($queryHistoryData);
+
         $queryForecast12hour = $queryForecast12hour->groupBy(function ($item) {
             return Carbon::parse($item->datetime)->format('H');
+            // return $item->jam;
         });
 
 
-        // dd($queryForecast12hour);
 
         $arrHistoryData = array();
         $arrHistoryDataTemp = array();
@@ -947,6 +1009,17 @@ class MasterController extends Controller
             $incAll++;
         }
 
+        // $queryForecast12hour = json_decode(json_encode($queryForecast12hour), true);
+        // krsort($queryForecast12hour);
+        // dd($queryForecast12hour);
+
+        // foreach ($queryForecast12hour as $key => $value) {
+        //     if ($value[0]['datetime'] == ) {
+
+        //     }
+        // }
+
+
         $arrForecast12hour = array();
         $incAll = 1;
         $hourNext12hour = array();
@@ -993,6 +1066,11 @@ class MasterController extends Controller
             $hourNext12hour[] = $key . ':00';
             $incAll++;
         }
+
+        $test['key'] = 'value';
+        // dd($test);
+        // dd(array_merge($test, $arrForecast12hour));
+        dd($arrForecast12hour);
 
         $loglast12hour = '';
         foreach ($arrHistoryData as $key => $value) {

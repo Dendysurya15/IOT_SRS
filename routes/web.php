@@ -27,6 +27,8 @@ Route::get('month_weather_forecast', [MasterController::class, 'month_weather_fo
 Route::post('getDataDashboard', [MasterController::class, 'getDataDashboard'])->name('getDataDashboard');
 Route::get('getDay/{id}', [MasterController::class, 'getDay'])->name('getDay');
 
+Route::get('/dashboard_soil', [MasterController::class, 'dashboard_soil'])->name('dashboard_soil');
+
 Route::post('/storeAktualWS', [MasterController::class, 'storeAktualWS'])->name('aktualws.store');
 Route::get('/editAktualWS/{id}', [MasterController::class, 'editAktualWS'])->name('aktualws.edit');
 Route::delete('/deleteAktualWS/{id}', [MasterController::class, 'deleteAktualWS'])->name('aktualws.destroy');
