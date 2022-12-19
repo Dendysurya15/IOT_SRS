@@ -39,27 +39,27 @@
                 <div class="col-lg-6 mb-3">
                     <div class="row">
 
-                        <form class="col-md-12" action="" method="post">
+                        <form class="col-md-6" action="" method="post">
                             {{ csrf_field() }}
                             <div class="row">
                                 <div class="col-md">
                                     <select name="lokasi" id="locList" class="form-control">
-                                        <option selected disabled>Pilih Lokasi</option>
-                                        @foreach($aws_loc as $loc)
-                                        <option value="{{ $loc['id'] }}" disabled>{{ $loc['loc'] }}</option>
+                                        {{-- <option selected disabled>Pilih Lokasi</option> --}}
+                                        @foreach($listStation as $loc)
+                                        <option value="{{ $loc->id }}">{{ $loc->loc }}</option>
                                         @endforeach
                                     </select>
 
 
                         </form>
                     </div>
-                    <div class="col-md">
+                    {{-- <div class="col-md">
                         <form class="" action="{{ route('dashboard_ws') }}" method="get">
                             <input class="form-control" type="date" name="tgl" id="inputDate"
                                 onchange="this.form.submit()">
                         </form>
 
-                    </div>
+                    </div> --}}
                 </div>
             </div>
         </div>
@@ -557,16 +557,39 @@
 
 <script>
     $(document).ready(function(){
-    $( "#inputDate" ).datepicker( "option", "disabled", true );
-    $( "#locList" ).datepicker( "option", "disabled", true );
+    // $( "#inputDate" ).datepicker( "option", "disabled", true );
+    // $( "#locList" ).datepicker( "option", "disabled", true );
+
+        var select2 = document.getElementById('locList');
+        var defaultStation =  $( "#locList option:selected" ).val();
+        // console.log(defaultStation)
+
+      getDataLoc(defaultStation)
+    // });
+    });
+
+    $('#locList').change(function(){
+    if($(this).val() != '')
+    {
+
+        station = $(this).val();
+
+        var _token = $('input[name="_token"]').val();
+        // var e = document.getElementById("locList");
+        // var loc = e.options[e.selectedIndex].text;
+
+        getDataLoc(station)
+    }
     });
     
     var arrHistoryData = <?php echo json_encode($arrHistoryData); ?>;
     var arrForecast12hour = <?php echo json_encode($arrForecast12hour); ?>;
     var arrNewForecast12 = <?php echo json_encode($arrForecastNew12hour); ?>;
+    var arrOneDayForecast = <?php echo json_encode($arrOneDayForecast); ?>;
     var arrNewForecast12 = Object.entries(arrNewForecast12)
     var arrHistoryData = Object.entries(arrHistoryData)
     var arrForecast12hour = Object.entries(arrForecast12hour)
+    var arrOneDayForecast = Object.entries(arrOneDayForecast)
 
     var categoriesHistoryHour = '['
     var rainHistoryHour = '['
@@ -625,6 +648,23 @@
     rainAll += ']'
     tempAll += ']'
 
+    var rainForecastOneDay = '['
+    var tempForecastOneDay = '['
+    arrOneDayForecast.forEach(element => {
+        rainForecastOneDay += '"' +element[1]['rain'] + '",'
+        tempForecastOneDay += '"' +element[1]['temp'] + '",'
+    });
+    
+    categoriesAll = categoriesAll.substring(0, categoriesAll.length - 1);
+    rainForecastOneDay = rainForecastOneDay.substring(0, rainForecastOneDay.length - 1);
+    tempForecastOneDay = tempForecastOneDay.substring(0, tempForecastOneDay.length - 1);
+    categoriesAll += ']'
+    rainForecastOneDay += ']'
+    tempForecastOneDay += ']'
+
+    rainForecastOneDay = JSON.parse(rainForecastOneDay)
+    tempForecastOneDay = JSON.parse(tempForecastOneDay)
+
 
     categoriesAll = JSON.parse(categoriesAll)
 
@@ -633,30 +673,30 @@
     console.log(tempAll)
 
     var options = {
-series: [{
-name: 'Aktual Temperatur (°C)',
-data: tempHistoryHour
-}, {
-name: 'Forecast Temperatur (°C)',
-data: tempAll
-}],
-chart: {
-height: 350,
-type: 'area'
-},
-dataLabels: {
-enabled: false
-},
-colors:['#1565c0', '#b71c1c', '#9C27B0'],
-stroke: {
-curve: 'smooth'
-},
-xaxis: {
-type: 'string',
-categories: categoriesAll
+        series: [{
+        name: 'Aktual Temperatur (°C)',
+        data: tempHistoryHour
+        }, {
+        name: 'Forecast Temperatur (°C)',
+        data: tempForecastOneDay
+        }],
+        chart: {
+        height: 350,
+        type: 'area'
+        },
+        dataLabels: {
+        enabled: false
+        },
+        colors:['#1565c0', '#b71c1c', '#9C27B0'],
+        stroke: {
+        curve: 'smooth'
+        },
+        xaxis: {
+        type: 'string',
+        categories: categoriesAll
 // ["2018-09-19T00:00:00.000Z", "2018-09-19T01:30:00.000Z", "2018-09-19T02:30:00.000Z",
 // "2018-09-19T03:30:00.000Z", "2018-09-19T04:30:00.000Z", "2018-09-19T05:30:00.000Z", "2018-09-19T06:30:00.000Z"]
-}
+    }
 // tooltip: {
 // x: {
 // format: 'dd/MM/yy HH:mm'
@@ -672,7 +712,7 @@ name: 'Aktual Curah Hujan (mm)',
 data: rainHistoryHour
 }, {
 name: 'Forecast Curah Hujan  (mm)',
-data: rainAll
+data: rainForecastOneDay
 }],
 chart: {
 height: 350,
@@ -702,91 +742,68 @@ var chart = new ApexCharts(document.querySelector("#chAktualForecast"), options)
 chart.render();
     //   var indexDefault = 2;
     //   $('#locList').val(99)
-    //   let dropdownList = document.getElementById('locList');
-    //   let selectedOption = dropdownList.options[indexDefault];
-    //   var idws = selectedOption.value;
-    //   var loc = selectedOption.text;
-    //   getDataLoc(idws,loc)
-    // });
 
-    // $('#locList').change(function(){
-    // if($(this).val() != '')
-    // {
-    // var e = document.getElementById("locList");
-    // var loc = e.options[e.selectedIndex].text;
+    function getDataLoc(locIndex){
+     
+        value = locIndex;   
 
-    // getDataLoc($('#locList'),loc)
-    // }
-    // });
+        console.log(value)
+        var _token = $('input[name="_token"]').val();
+        const params = new URLSearchParams(window.location.search)
+        var paramArr = [];
+        for (const param of  params) {
+            paramArr = param
+        }
 
-    // function getDataLoc(locIndex, loc){
-    //     var status = 0 // ketika ada klik id yang di fetch
-    // var value = ''
-    // try {
-    //     value = locIndex.val();   
-    // }
-    // catch(err) {
-    //     var status = 1 // ketika tidak ada klik dan nilai RDE
-    // } 
+        if(paramArr.length > 0){
+            date = paramArr[1]
+        }else{
+            date = new Date().toISOString().slice(0, 10)
+        }
 
-    // if(status == 1){
-    //     value = locIndex
-    // }      
+        $.ajax({
+        url:"{{ route('getDataDashboard') }}",
+        method:"POST",
+        data:{ id_loc:value, _token:_token},
+        success:function(result)
+        {
 
-    // var _token = $('input[name="_token"]').val();
-    // const params = new URLSearchParams(window.location.search)
-    // var paramArr = [];
-    // for (const param of  params) {
-    //     paramArr = param
-    // }
-
-    // if(paramArr.length > 0){
-    //     date = paramArr[1]
-    // }else{
-    //     date = new Date().toISOString().slice(0, 10)
-    // }
-
-    // $.ajax({
-    // url:"{{ route('getDataDashboard') }}",
-    // method:"POST",
-    // data:{ id_loc:value, _token:_token, tgl:date},
-    // success:function(result)
-    // {
-    //     if(result.length > 10){
-    //         sliceResult = result.slice(1, -1);
-    //     const arrSlice = sliceResult.split(",");
-    //     const arrResult = []
-    //     for (let index = 0; index < arrSlice.length; index++) {
-    //         const splitted = arrSlice[index].split(":")
-    //         var estate = splitted[0].slice(1, -1);
-    //         var valEst = splitted[1]
-    //         arrResult.push([estate,valEst])
-    //     }
-    //     console.log(arrResult)
-    //     $textTemp = (arrResult[6][1] == 0 || arrResult[6][1] == '"0"') ? '-' : arrResult[6][1] + ' ºC';
-    //     $textHum = (arrResult[7][1] == 0 || arrResult[7][1] == '"0"') ? '-'  :arrResult[7][1] + ' %';
-    //     $textWC = (arrResult[5][1] == 0 || arrResult[5][1] == '"0"') ? '-' :arrResult[5][1] + ' m/s';
-    //     $textWS = (arrResult[3][1] == 0 || arrResult[3][1] == '"0"') ? '-' :arrResult[3][1] + ' mm';
-    //     $textRF = (arrResult[8][1] == 0 || arrResult[8][1] == '"0"') ? '-' :arrResult[8][1] + ' mm';
-    //     $textRFo = (arrResult[9][1] == 0 || arrResult[9][1] == '"0"') ? '-' :  parseFloat(arrResult[9][1]).toFixed(2) + ' mm';
-    //     }else{
-    //     $textTemp = '-';
-    //     $textHum = '-';
-    //     $textWC = '-';
-    //     $textWS = '-';
-    //     $textRF = '-';
-    //     $textRFo = '-';
-    //     }
+            console.log(result)
+        // if(result.length > 10){
+        //     sliceResult = result.slice(1, -1);
+        // const arrSlice = sliceResult.split(",");
+        // const arrResult = []
+        // for (let index = 0; index < arrSlice.length; index++) {
+        //     const splitted = arrSlice[index].split(":")
+        //     var estate = splitted[0].slice(1, -1);
+        //     var valEst = splitted[1]
+        //     arrResult.push([estate,valEst])
+        // }
+        // console.log(arrResult)
+        // $textTemp = (arrResult[6][1] == 0 || arrResult[6][1] == '"0"') ? '-' : arrResult[6][1] + ' ºC';
+        // $textHum = (arrResult[7][1] == 0 || arrResult[7][1] == '"0"') ? '-'  :arrResult[7][1] + ' %';
+        // $textWC = (arrResult[5][1] == 0 || arrResult[5][1] == '"0"') ? '-' :arrResult[5][1] + ' m/s';
+        // $textWS = (arrResult[3][1] == 0 || arrResult[3][1] == '"0"') ? '-' :arrResult[3][1] + ' mm';
+        // $textRF = (arrResult[8][1] == 0 || arrResult[8][1] == '"0"') ? '-' :arrResult[8][1] + ' mm';
+        // $textRFo = (arrResult[9][1] == 0 || arrResult[9][1] == '"0"') ? '-' :  parseFloat(arrResult[9][1]).toFixed(2) + ' mm';
+        // }else{
+        // $textTemp = '-';
+        // $textHum = '-';
+        // $textWC = '-';
+        // $textWS = '-';
+        // $textRF = '-';
+        // $textRFo = '-';
+        // }
         
-    //     document.getElementById('locTitle').innerHTML = loc + ", ";
-    //     document.getElementById('temp').innerHTML = $textTemp ;
-    //     document.getElementById('hum').innerHTML = $textHum ;
-    //     document.getElementById('wind_chill_real').innerHTML = $textWC ;
-    //     document.getElementById('wind_speed_real').innerHTML = $textWS ;
-    //     document.getElementById('rain_fall_real').innerHTML = $textRF ;
-    //     document.getElementById('rain_forecast').innerHTML = $textRFo ;
+        // document.getElementById('locTitle').innerHTML = loc + ", ";
+        // document.getElementById('temp').innerHTML = $textTemp ;
+        // document.getElementById('hum').innerHTML = $textHum ;
+        // document.getElementById('wind_chill_real').innerHTML = $textWC ;
+        // document.getElementById('wind_speed_real').innerHTML = $textWS ;
+        // document.getElementById('rain_fall_real').innerHTML = $textRF ;
+        // document.getElementById('rain_forecast').innerHTML = $textRFo ;
 
-    // }
-    // })
-    // }
+        }
+        })
+        }
 </script>
