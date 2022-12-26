@@ -562,7 +562,6 @@
 
         var select2 = document.getElementById('locList');
         var defaultStation =  $( "#locList option:selected" ).val();
-        // console.log(defaultStation)
 
       getDataLoc(defaultStation)
     // });
@@ -670,7 +669,6 @@
 
     rainAll = JSON.parse(rainAll)
     tempAll = JSON.parse(tempAll)
-    console.log(tempAll)
 
     var options = {
         series: [{
@@ -704,8 +702,8 @@
 // },
 };
 
-var chart = new ApexCharts(document.querySelector("#tempGraphAktualForecast"), options);
-chart.render();
+var chartTemp = new ApexCharts(document.querySelector("#tempGraphAktualForecast"), options);
+chartTemp.render();
 var options = {
 series: [{
 name: 'Aktual Curah Hujan (mm)',
@@ -738,8 +736,8 @@ categories: categoriesAll
 // },
 };
 
-var chart = new ApexCharts(document.querySelector("#chAktualForecast"), options);
-chart.render();
+var chartCh = new ApexCharts(document.querySelector("#chAktualForecast"), options);
+chartCh.render();
     //   var indexDefault = 2;
     //   $('#locList').val(99)
 
@@ -747,7 +745,6 @@ chart.render();
      
         value = locIndex;   
 
-        console.log(value)
         var _token = $('input[name="_token"]').val();
         const params = new URLSearchParams(window.location.search)
         var paramArr = [];
@@ -762,13 +759,74 @@ chart.render();
         }
 
         $.ajax({
-        url:"{{ route('getDataDashboard') }}",
+        url:"{{ route('getHistoryForecastDay') }}",
         method:"POST",
         data:{ id_loc:value, _token:_token},
         success:function(result)
         {
 
-            console.log(result)
+            
+            arrResult = JSON.parse(result)
+
+            // console.log(arrResult['historyForecast']);
+            
+            var arrResultHistory = Object.entries(arrResult['historyData'])
+            var arrResultForecast = Object.entries(arrResult['historyForecast'])
+
+            // console.log(arrResultHistory)
+            
+            var rainHistory = '['
+            var tempHistory = '['
+            var categoriesHistory = '['
+            arrResultForecast.forEach(element => {
+                rainHistory += '"' +element[1]['rain'] + '",'
+                tempHistory += '"' +element[1]['temp'] + '",'
+                categoriesHistory += '"' +element[1]['jam'] + '",'
+            });
+            rainHistory = rainHistory.substring(0, rainHistory.length - 1);
+            tempHistory = tempHistory.substring(0, tempHistory.length - 1);
+            categoriesHistory = categoriesHistory.substring(0, categoriesHistory.length - 1);
+            categoriesHistory += ']'
+            rainHistory += ']'
+            tempHistory += ']'
+
+            rainHistory = JSON.parse(rainHistory)
+            tempHistory = JSON.parse(tempHistory)
+            categoriesHistory = JSON.parse(categoriesHistory)
+
+            var rainForecast = '['
+            var tempForecast = '['
+            var categoriesForecast = '['
+            arrResultHistory.forEach(element => {
+                rainForecast += '"' +element[1]['rain'] + '",'
+                tempForecast += '"' +element[1]['temp'] + '",'
+                categoriesForecast += '"' +element[1]['jam'] + '",'
+            });
+            rainForecast = rainForecast.substring(0, rainForecast.length - 1);
+            tempForecast = tempForecast.substring(0, tempForecast.length - 1);
+            categoriesForecast = categoriesForecast.substring(0, categoriesForecast.length - 1);
+            categoriesForecast += ']'
+            rainForecast += ']'
+            tempForecast += ']'
+
+            rainForecast = JSON.parse(rainForecast)
+            tempForecast = JSON.parse(tempForecast)
+            categoriesForecast = JSON.parse(categoriesForecast)
+
+            chartTemp.updateSeries([{
+                name: 'Aktual Temperatur (°C)',
+                data: tempHistory
+            },{
+                name: 'Forecast Temperatur (°C)',
+                data: tempForecast
+            }])
+            chartCh.updateSeries([{ 
+                name: 'Aktual Curah Hujan (mm)',
+                data: rainHistory
+            },{
+                name: 'Forecast Temperatur (°C)',
+                data: rainForecast
+            }])
         // if(result.length > 10){
         //     sliceResult = result.slice(1, -1);
         // const arrSlice = sliceResult.split(",");

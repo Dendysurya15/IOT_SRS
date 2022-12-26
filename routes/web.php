@@ -24,7 +24,7 @@ Route::get('/dashboard_ws', [MasterController::class, 'dashboard_ws'])->name('da
 Route::get('/grafik', [MasterController::class, 'Grafik']);
 Route::get('/tabel', [MasterController::class, 'Tabel']);
 Route::get('month_weather_forecast', [MasterController::class, 'month_weather_forecast'])->name('month_weather_forecast');
-Route::post('getDataDashboard', [MasterController::class, 'getDataDashboard'])->name('getDataDashboard');
+Route::post('getHistoryForecastDay', [MasterController::class, 'getHistoryForecastDay'])->name('getHistoryForecastDay');
 Route::get('getDay/{id}', [MasterController::class, 'getDay'])->name('getDay');
 
 Route::get('/dashboard_soil', [MasterController::class, 'dashboard_soil'])->name('dashboard_soil');

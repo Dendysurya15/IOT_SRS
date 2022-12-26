@@ -922,11 +922,11 @@ class MasterController extends Controller
 
         $historyForecast12Hour = $queryHistoryData;
 
+
         $historyForecast12Hour = $historyForecast12Hour->groupBy(function ($item) {
             return Carbon::parse($item->datetime)->format('H');
         });
 
-        // dd($historyForecast12Hour);
 
         $arrHistoryForecast = array();
         foreach ($historyForecast12Hour as $key => $value) {
@@ -1403,9 +1403,11 @@ class MasterController extends Controller
         return Redirect::back()->with(['success' => 'Berhasil menghapus data oer']);
     }
 
-    public function getDataDashboard(Request $request)
+    public function getHistoryForecastDay(Request $request)
     {
         $id_loc = $request->get('id_loc');
+
+        // dd($id_loc);
 
         $dateNow = Carbon::parse()->format('Y-m-d');
         $hourNow = Carbon::now()->format('H:i:s');
@@ -1424,12 +1426,14 @@ class MasterController extends Controller
 
         $oneDay = ['00', '01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23'];
 
+
+
         $queryForecast12hour =  DB::table('weather_station_list')
             ->join('db_aws_bke', 'weather_station_list.id', '=', 'db_aws_bke.idws')
             ->select('db_aws_bke.*', 'weather_station_list.rain_cal as rain_cal', 'weather_station_list.loc as loc', DB::raw("DATE_FORMAT(db_aws_bke.datetime,'%H:00') as jam"))
             ->whereBetween('db_aws_bke.datetime', [$dateNow, $next12hour])
-            ->where('idws', $id_loc)
-            ->orderBy('db_aws_bke.datetime')
+            ->where('idws', 1)
+            // ->orderBy('db_aws_bke.datetime')
             // ->orderBy('jam')
             ->get();
 
@@ -1437,6 +1441,7 @@ class MasterController extends Controller
 
         $historyForecast12Hour = $queryHistoryData;
 
+        // dd($historyForecast12Hour);
         $historyForecast12Hour = $historyForecast12Hour->groupBy(function ($item) {
             return Carbon::parse($item->datetime)->format('H');
         });
@@ -1458,7 +1463,7 @@ class MasterController extends Controller
             }
             // }
         }
-        // dd($historyForecast12Hour);
+
         foreach ($queryHistoryData as $key => $value) {
             $formatted = Carbon::parse($value->datetime)->format('Y-m-d');
             if ($value->datetime == $formatted . ' 07:00:00' || $value->datetime == $formatted . ' 19:00:00') {
@@ -1474,6 +1479,7 @@ class MasterController extends Controller
             return Carbon::parse($item->datetime)->format('H');
             // return $item->jam;
         });
+
 
         $arrHistoryData = array();
         $arrHistoryDataTemp = array();
@@ -1526,18 +1532,6 @@ class MasterController extends Controller
             $incAll++;
         }
 
-        // dd($arrHistoryData);
-        // $queryForecast12hour = json_decode(json_encode($queryForecast12hour), true);
-        // krsort($queryForecast12hour);
-        // dd($queryForecast12hour);
-
-        // foreach ($queryForecast12hour as $key => $value) {
-        //     if ($value[0]['datetime'] == ) {
-
-        //     }
-        // }
-
-
         $arrForecast12hour = array();
         $incAll = 1;
         $hourNext12hour = array();
@@ -1587,11 +1581,12 @@ class MasterController extends Controller
 
         $arrOneDayForecast = array_merge($arrHistoryForecast, $arrForecast12hour);
 
+        $arrData = array();
 
+        $arrData['historyData'] = $arrHistoryData;
+        $arrData['historyForecast'] = $arrOneDayForecast;
 
-        dd($arrOneDayForecast);
-
-        exit();
+        echo json_encode($arrData);
     }
 
     public static function Grafik()
