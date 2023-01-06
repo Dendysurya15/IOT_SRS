@@ -62,9 +62,7 @@
     </div>
     @include('layout.footer')
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.9.4/lottie.min.js"
-        integrity="sha512-ilxj730331yM7NbrJAICVJcRmPFErDqQhXJcn+PLbkXdE031JJbcK87Wt4VbAK+YY6/67L+N8p7KdzGoaRjsTg=="
-        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.9.4/lottie.min.js" integrity="sha512-ilxj730331yM7NbrJAICVJcRmPFErDqQhXJcn+PLbkXdE031JJbcK87Wt4VbAK+YY6/67L+N8p7KdzGoaRjsTg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <!-- jQuery -->
 
     <!-- Bootstrap 4 -->
@@ -83,144 +81,143 @@
     <script>
         var arrHour = <?php echo json_encode($arrHour); ?>;
         var listHour = <?php echo json_encode($listHour); ?>;
+
+        // console.log(listHour)
         var dateNow = <?php echo json_encode($dateNow); ?>;
 
         var arrNewHour = Object.entries(arrHour)
 
         var categoriesHour = '['
         listHour.forEach(element => {
-            categoriesHour += '"' +element + '",'
+            categoriesHour += '"' + element + '",'
         });
+
 
         var temp = '['
         var hum = '['
         arrNewHour.forEach(element => {
-            hum += '"' +element[1]['hum'] + '",'
-            temp += '"' +element[1]['temp'] + '",'
+            hum += '"' + element[1]['hum'] + '",'
+            temp += '"' + element[1]['temp'] + '",'
         });
 
         hum = hum.substring(0, hum.length - 1);
         temp = temp.substring(0, temp.length - 1);
         hum += ']'
         temp += ']'
-        
+
         categoriesHour = categoriesHour.substring(0, categoriesHour.length - 1);
         categoriesHour += ']'
-
+        // console.log(categoriesHour)
         hum = JSON.parse(hum)
         temp = JSON.parse(temp)
         categoriesHour = JSON.parse(categoriesHour)
+        // console.log(categoriesHour)
 
-        
         var options = {
-        series: [{
-        name: 'Kelembaban',
-        data: hum
-        }],
-        chart: {
-        height: 350,
-        type: 'area'
-        },
-        dataLabels: {
-        enabled: false
-        },
-        colors:['#1565c0', '#b71c1c', '#9C27B0'],
-        stroke: {
-            show: true,
-    curve: 'smooth',
-    lineCap: 'butt',
-    colors: undefined,
-    width: 2,
-    dashArray: 0,
-        },
-        xaxis: {
-        type: 'string',
-        categories: categoriesHour
-        // ["2018-09-19T00:00:00.000Z", "2018-09-19T01:30:00.000Z", "2018-09-19T02:30:00.000Z",
-        // "2018-09-19T03:30:00.000Z", "2018-09-19T04:30:00.000Z", "2018-09-19T05:30:00.000Z", "2018-09-19T06:30:00.000Z"]
-        },
-        annotations: {
-            xaxis: [
-                {
-                x: '00:00',
-                borderColor: '#775DD0',
-                label: {
-          borderColor: "#FF4560",
-          borderWidth: 1,
-        borderRadius: 2,
-          offsetY: 0,
-          style: {
-            color: "#fff",
-            background: "#FF4560",
-            fontSize: '13pt',
-            fontWeight: 400,
-          },
-          orientation:'horizontal',
+            series: [{
+                name: 'Kelembaban',
+                data: hum
+            }],
+            chart: {
+                height: 350,
+                type: 'area'
+            },
+            dataLabels: {
+                enabled: false
+            },
+            colors: ['#1565c0', '#b71c1c', '#9C27B0'],
+            stroke: {
+                show: true,
+                curve: 'smooth',
+                lineCap: 'butt',
+                colors: undefined,
+                width: 2,
+                dashArray: 0,
+            },
+            xaxis: {
+                type: 'string',
+                categories: categoriesHour
+                // ["2018-09-19T00:00:00.000Z", "2018-09-19T01:30:00.000Z", "2018-09-19T02:30:00.000Z",
+                // "2018-09-19T03:30:00.000Z", "2018-09-19T04:30:00.000Z", "2018-09-19T05:30:00.000Z", "2018-09-19T06:30:00.000Z"]
+            },
+            annotations: {
+                xaxis: [{
+                    x: '00:00',
+                    borderColor: '#775DD0',
+                    label: {
+                        borderColor: "#FF4560",
+                        borderWidth: 1,
+                        borderRadius: 2,
+                        offsetY: 0,
+                        style: {
+                            color: "#fff",
+                            background: "#FF4560",
+                            fontSize: '13pt',
+                            fontWeight: 400,
+                        },
+                        orientation: 'horizontal',
 
-          text: dateNow
-        }
-                }
-            ]
+                        text: dateNow
+                    }
+                }]
             }
-        // tooltip: {
-        // x: {
-        // format: 'dd/MM/yy HH:mm'
-        // },
-        // },
+            // tooltip: {
+            // x: {
+            // format: 'dd/MM/yy HH:mm'
+            // },
+            // },
         };
 
         var chart = new ApexCharts(document.querySelector("#hum"), options);
         chart.render();
 
         var options = {
-        series: [{
-        name: 'Temperatur',
-        data: temp
-        }],
-        chart: {
-        height: 350,
-        type: 'area'
-        },
-        dataLabels: {
-        enabled: false
-        },
-        colors:['#f44336', '#b71c1c', '#9C27B0'],
-        stroke: {
-            show: true,
-    curve: 'smooth',
-    lineCap: 'butt',
-    colors: undefined,
-    width: 2,
-    dashArray: 0,
-        },
-        xaxis: {
-        type: 'string',
-        categories: categoriesHour
-        // ["2018-09-19T00:00:00.000Z", "2018-09-19T01:30:00.000Z", "2018-09-19T02:30:00.000Z",
-        // "2018-09-19T03:30:00.000Z", "2018-09-19T04:30:00.000Z", "2018-09-19T05:30:00.000Z", "2018-09-19T06:30:00.000Z"]
-        },
-                    annotations: {
-            xaxis: [
-                {
-                x: '00:00',
-                borderColor: '#775DD0',
-                label: {
-          borderColor: "#FF4560",
-          borderWidth: 1,
-        borderRadius: 2,
-          offsetY: 0,
-          style: {
-            color: "#fff",
-            background: "#FF4560",
-            fontSize: '13pt',
-            fontWeight: 400,
-          },
-          orientation:'horizontal',
+            series: [{
+                name: 'Temperatur',
+                data: temp
+            }],
+            chart: {
+                height: 350,
+                type: 'area'
+            },
+            dataLabels: {
+                enabled: false
+            },
+            colors: ['#f44336', '#b71c1c', '#9C27B0'],
+            stroke: {
+                show: true,
+                curve: 'smooth',
+                lineCap: 'butt',
+                colors: undefined,
+                width: 2,
+                dashArray: 0,
+            },
+            xaxis: {
+                type: 'string',
+                categories: categoriesHour
+                // ["2018-09-19T00:00:00.000Z", "2018-09-19T01:30:00.000Z", "2018-09-19T02:30:00.000Z",
+                // "2018-09-19T03:30:00.000Z", "2018-09-19T04:30:00.000Z", "2018-09-19T05:30:00.000Z", "2018-09-19T06:30:00.000Z"]
+            },
+            annotations: {
+                xaxis: [{
+                    x: '00:00',
+                    borderColor: '#775DD0',
+                    label: {
+                        borderColor: "#FF4560",
+                        borderWidth: 1,
+                        borderRadius: 2,
+                        offsetY: 0,
+                        style: {
+                            color: "#fff",
+                            background: "#FF4560",
+                            fontSize: '13pt',
+                            fontWeight: 400,
+                        },
+                        orientation: 'horizontal',
 
-          text: dateNow
-        }
-                }
-            ]
+                        text: dateNow
+                    }
+                }]
             }
         };
 

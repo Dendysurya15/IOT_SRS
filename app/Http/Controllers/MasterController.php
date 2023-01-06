@@ -727,7 +727,7 @@ class MasterController extends Controller
     public static function dashboard_soil(Request $request)
     {
 
-        $dateToday =  Carbon::now();
+        $dateToday =  Carbon::parse('');
         $yesterday = Carbon::parse($dateToday)->subDay();
 
         $query =  DB::table('soil_moisture')
@@ -737,7 +737,6 @@ class MasterController extends Controller
             ->orderBy('soil_moisture.datetime')
             ->get()
             ->groupBy('jam');
-
         // dd($query);
 
         $listHour = array();
@@ -756,13 +755,14 @@ class MasterController extends Controller
             $listHour[] = $key;
         }
 
+        // dd($listHour);
+
 
         return view('soil_moisture.dashboard', ['arrHour' => $arrHour, 'listHour' => $listHour, 'dateNow' => $dateToday->format('d M Y')]);
     }
 
     public static function dashboard_ws(Request $request)
     {
-
         $dateToday = Carbon::now()->format('Y-m-d');
         $tglData = $request->has('tgl') ? $request->input('tgl') : $defaultHari = $dateToday;
 
@@ -1161,7 +1161,8 @@ class MasterController extends Controller
                     if ($data->accu_windir_forecast != '' && $data->accu_windir_forecast != 0) {
                         $dir = $data->accu_windir_forecast;
                     } else {
-                        $dir = $directions[round($data->accu_windir_forecast / 22.5)];
+                        // $dir = $directions[round($data->accu_windir_forecast / 22.5)];
+                        $dir = 22;
                     }
                     $arrPagiMalam[$jamConvert]['Pagi']['temp'] = $data->accu_temp_forecast ?: 0;
                     $arrPagiMalam[$jamConvert]['Pagi']['ws'] = $data->accu_ws_forecast;
@@ -1232,7 +1233,34 @@ class MasterController extends Controller
         $arrForecastNew12hour = array_merge($arrHistoryDataTemp, $arrForecast12hour);
         // dd($arrForecastNew12hour);
 
-        return view('weather_station/dashboard', ['arrForecastNew12hour' => $arrForecastNew12hour, 'arrForecast12hour' => $arrForecast12hour, 'hourHistoryDate' => $hourHistoryDate, 'arrPagiMalam' => $arrPagiMalam, 'aws_loc' => $aws_loc, 'aktual' => $sel_aws, 'date' => $convert->format('d M') . ' ' . $dateNow, 'forecasting' => $arrPred, 'arrlogLast12hour' => $arrlogLast12hour, 'arrHistoryData' => $arrHistoryData, 'arrOneDayForecast' => $arrOneDayForecast, 'listStation' => $listStation]);
+        $dateToday =  Carbon::parse('');
+        $yesterday = Carbon::parse($dateToday)->subDay();
+
+        $query =  DB::table('soil_moisture')
+            ->select('soil_moisture.*',  DB::raw("DATE_FORMAT(soil_moisture.datetime,'%H:00') as jam"))
+
+            ->whereBetween('soil_moisture.datetime', [$yesterday, $dateToday])
+            ->orderBy('soil_moisture.datetime')
+            ->get()
+            ->groupBy('jam');
+
+        $listHour = array();
+        $arrHour = array();
+        foreach ($query as $key => $value) {
+            $sum_hum = 0;
+            $sum_temp = 0;
+            $inc = 0;
+            foreach ($value as $key2 => $data) {
+                $sum_hum += $data->hum1;
+                $sum_temp += $data->temp;
+                $inc++;
+            }
+            $arrHour[$key]['hum'] = round($sum_hum / $inc, 2);
+            $arrHour[$key]['temp'] = round($sum_temp / $inc, 2);
+            $listHour[] = $key;
+        }
+
+        return view('weather_station/dashboard', ['arrForecastNew12hour' => $arrForecastNew12hour, 'arrForecast12hour' => $arrForecast12hour, 'hourHistoryDate' => $hourHistoryDate, 'arrPagiMalam' => $arrPagiMalam, 'aws_loc' => $aws_loc, 'aktual' => $sel_aws, 'date' => $convert->format('d M') . ' ' . $dateNow, 'forecasting' => $arrPred, 'arrlogLast12hour' => $arrlogLast12hour, 'arrHistoryData' => $arrHistoryData, 'arrOneDayForecast' => $arrOneDayForecast, 'listStation' => $listStation, 'listHour' => $listHour, 'arrHour' => $arrHour]);
     }
 
     public function compareWeather(Request $request)
@@ -1406,8 +1434,214 @@ class MasterController extends Controller
     public function getHistoryForecastDay(Request $request)
     {
         $id_loc = $request->get('id_loc');
+        $dateToday = Carbon::now()->format('Y-m-d');
 
-        // dd($id_loc);
+        $tglData = $request->has('tgl') ? $request->input('tgl') : $defaultHari = $dateToday;
+
+        $formatted = new DateTime($tglData);
+        $formatted = $formatted->format('Y-m-d');
+
+        $convert = $formatted . ' 00:00:00';;
+        $convert = new DateTime($convert);
+
+        $from =  $convert->format('Y-m-d H:i:s');
+
+        $from = Carbon::parse($from)->addDays();
+
+        $from =  $convert->format('Y-m-d H:i:s');
+
+        $dateParse = Carbon::parse($from)->addDays(4);
+
+        $dateParse = $dateParse->format('Y-m-d');
+
+        $dateParse = $dateParse . ' 23:59:59';
+        $to = new DateTime($dateParse);
+        $to = $to->format('Y-m-d H:i:s');
+
+
+        $queryPredDetail =  DB::table('weather_station_list')
+            ->join('db_aws_bke', 'weather_station_list.id', '=', 'db_aws_bke.idws')
+            ->select('db_aws_bke.*', 'weather_station_list.rain_cal as rain_cal', 'weather_station_list.loc as loc', DB::raw("DATE_FORMAT(db_aws_bke.datetime,'%d-%m-%Y') as hari"))
+            ->whereBetween('db_aws_bke.datetime', [$from, $to])
+            ->where('idws', $id_loc)
+            ->get()
+            ->groupBy('hari');
+
+        $arrPagiMalam = array();
+        $arrPred = array();
+
+
+        foreach ($queryPredDetail as $key => $value) {
+            $jamConvert = Carbon::parse($key)->format('D d');
+
+            $inc = 1;
+            $sum_rain = 0;
+            $sum_hoursofrain = 0;
+            foreach ($value as $key2 => $data) {
+                $jam = Carbon::parse($data->datetime)->format('H:i:s');
+
+
+                $sum_rain += $data->accu_rf_forecast;
+                $sum_hoursofrain += $data->accu_hours_of_rain;
+
+                if ($data->accu_rf_forecast >= 0 && $data->accu_rf_forecast < 0.5) {
+                    $icon = 'cloud-sun';
+                    $title = 'Cerah Berawan';
+                } else if ($data->accu_rf_forecast >= 0.5 && $data->accu_rf_forecast < 20) {
+                    $icon = 'cloud-rain';
+                    $title = 'Hujan Ringan';
+                } else if ($data->accu_rf_forecast >= 20 && $data->accu_rf_forecast < 50) {
+                    $icon = 'cloud-rain';
+                    $title = 'Hujan Sedang';
+                } else if ($data->accu_rf_forecast >= 50 && $data->accu_rf_forecast < 100) {
+                    $icon = 'cloud-showers-heavy';
+                    $title = 'Hujan Lebat';
+                } else if ($data->accu_rf_forecast >= 100 && $data->accu_rf_forecast < 150) {
+                    $icon = 'cloud-showers-water';
+                    $title = 'Hujan Sangat Lebat';
+                } else {
+                    $icon = 'cloud-showers-water';
+                    $title = 'Hujan Ekstrem';
+                }
+
+                if ($jam == '07:00:00') {
+                    $directions = array('N', 'NNE', 'NE', 'ENE', 'E', 'ESE', 'SE', 'SSE', 'S', 'SSW', 'SW', 'WSW', 'W', 'WNW', 'NW', 'NNW', 'N');
+
+                    if ($data->accu_windir_forecast != '' && $data->accu_windir_forecast != 0) {
+                        $dir = $data->accu_windir_forecast;
+                    } else {
+                        $dir = $directions[round($data->accu_windir_forecast / 22.5)];
+                    }
+                    $arrPagiMalam[$jamConvert]['Pagi']['temp'] = $data->accu_temp_forecast ?: 0;
+                    $arrPagiMalam[$jamConvert]['Pagi']['ws'] = $data->accu_ws_forecast;
+                    $arrPagiMalam[$jamConvert]['Pagi']['winddir'] = $dir;
+                    $arrPagiMalam[$jamConvert]['Pagi']['rain'] = round($data->accu_rf_forecast, 2);
+                    $arrPagiMalam[$jamConvert]['Pagi']['hoursOfRain'] = $data->accu_hours_of_rain ?: 0;
+                    $arrPagiMalam[$jamConvert]['Pagi']['rain_probability'] = $data->accu_rain_probability ?: 0;
+                    $arrPagiMalam[$jamConvert]['Pagi']['icon'] = $icon;
+                    $arrPagiMalam[$jamConvert]['Pagi']['title'] = $title;
+                    $arrPagiMalam[$jamConvert]['Pagi']['waktu'] = 'Pagi';
+                    $arrPagiMalam[$jamConvert]['Pagi']['jam'] = '00:00 - 12:00';
+                    $arrPred[$jamConvert]['max_temp'] = $data->accu_temp_forecast;
+                } else if ($jam == '19:00:00') {
+                    $directions = array('N', 'NNE', 'NE', 'ENE', 'E', 'ESE', 'SE', 'SSE', 'S', 'SSW', 'SW', 'WSW', 'W', 'WNW', 'NW', 'NNW', 'N');
+                    if ($data->accu_windir_forecast != '' && $data->accu_windir_forecast != 0) {
+                        $dir = $data->accu_windir_forecast;
+                    } else {
+                        $dir = $directions[round($data->accu_windir_forecast / 22.5)];
+                    }
+                    $arrPagiMalam[$jamConvert]['Malam']['temp'] =  $data->accu_temp_forecast ?: 0;
+                    $arrPagiMalam[$jamConvert]['Malam']['ws'] = $data->accu_ws_forecast;
+                    $arrPagiMalam[$jamConvert]['Malam']['winddir'] = $dir;
+                    $arrPagiMalam[$jamConvert]['Malam']['rain'] = round($data->accu_rf_forecast, 2);
+                    $arrPagiMalam[$jamConvert]['Malam']['hoursOfRain'] = $data->accu_hours_of_rain ?: 0;
+                    $arrPagiMalam[$jamConvert]['Malam']['rain_probability'] = $data->accu_rain_probability ?: 0;
+                    $arrPagiMalam[$jamConvert]['Malam']['icon'] = $icon;
+                    $arrPagiMalam[$jamConvert]['Malam']['title'] = $title;
+                    $arrPagiMalam[$jamConvert]['Malam']['waktu'] = 'Malam';
+                    $arrPagiMalam[$jamConvert]['Malam']['jam'] = '12:00 - 23:59';
+                    $arrPred[$jamConvert]['min_temp'] = $data->accu_temp_forecast;
+                }
+            }
+
+
+            $sum_rain = round($sum_rain, 2);
+
+            if ($sum_rain >= 0 && $sum_rain < 0.5) {
+                $icon = 'cloud-sun';
+                $title = 'Cerah Berawan';
+            } else if ($sum_rain >= 0.5 && $sum_rain < 20) {
+                $icon = 'cloud-rain';
+                $title = 'Hujan Ringan';
+            } else if ($sum_rain >= 20 && $sum_rain < 50) {
+                $icon = 'cloud-rain';
+                $title = 'Hujan Sedang';
+            } else if ($sum_rain >= 50 && $sum_rain < 100) {
+                $icon = 'cloud-showers-heavy';
+                $title = 'Hujan Lebat';
+            } else if ($sum_rain >= 100 && $sum_rain < 150) {
+                $icon = 'cloud-showers-water';
+                $title = 'Hujan Sangat Lebat';
+            } else {
+                $icon = 'cloud-showers-water';
+                $title = 'Hujan Ekstrem';
+            }
+            $arrPred[$jamConvert]['rain_hours'] = $sum_hoursofrain;
+            $arrPred[$jamConvert]['rain'] = round($sum_rain, 2);
+            $arrPred[$jamConvert]['icon'] = $icon;
+            $arrPred[$jamConvert]['title'] = $title;
+            $arrPred[$jamConvert]['tanggal'] = $jamConvert;
+            $inc++;
+        }
+
+
+        $convert = new DateTime();
+
+
+        $from = $convert->format('Y-m-d H:i:s');
+        // 
+        $from2 = Carbon::parse($from)->subMinutes()->subDays(7);
+
+        // dd($from2);
+
+        $from2 = $from2->format('Y-m-d H:i:s');
+        // dd($to);
+        $dateTo = Carbon::parse();
+
+        // $dateFrom->add(new DateInterval('PT0H'));
+        // dd($dateTo);
+        $dateRaw = $dateTo->format('Y-m-d');
+        $dateTo = $dateTo->format('Y-m-d') . ' 23:59:59';
+
+
+        $to = date($dateTo);
+
+        $sel_aws = DB::table('weather_station_list')
+            ->join('db_aws_bke', 'weather_station_list.id', '=', 'db_aws_bke.idws')
+            ->select('db_aws_bke.*', 'weather_station_list.rain_cal as rain_cal', 'weather_station_list.loc as loc')
+            ->whereBetween('db_aws_bke.datetime', [$from2, $to])
+            ->orderByDesc('db_aws_bke.id')
+            ->where('db_aws_bke.idws', '=', $id_loc)
+            // ->take(1)
+            ->get();
+
+
+        $listStation = DB::table('weather_station_list')
+            ->whereNotNull('mac')
+            ->get();
+
+        foreach ($sel_aws as $key => $value) {
+            $formatted = Carbon::parse($value->datetime)->format('Y-m-d');
+            if ($value->datetime == $formatted . ' 07:00:00' || $value->datetime == $formatted . ' 19:00:00') {
+                unset($sel_aws[$key]);
+            }
+        }
+
+        $sel_aws = $sel_aws->first();
+        if ($sel_aws != '') {
+            if ($sel_aws->rain_fall_real >= 0 && $sel_aws->rain_fall_real < 0.5) {
+                $icon = 'cloud-sun';
+                $title = 'Berawan';
+            } else if ($sel_aws->rain_fall_real >= 0.5 && $sel_aws->rain_fall_real < 20) {
+                $icon = 'cloud-rain';
+                $title = 'Hujan ringan';
+            } else if ($sel_aws->rain_fall_real >= 20 && $sel_aws->rain_fall_real < 50) {
+                $icon = 'cloud-rain';
+                $title = 'Hujan Sedang';
+            } else if ($sel_aws->rain_fall_real >= 50 && $sel_aws->rain_fall_real < 100) {
+                $icon = 'cloud-showers-heavy';
+                $title = 'Hujan Lebat';
+            } else if ($sel_aws->rain_fall_real >= 100 && $sel_aws->rain_fall_real < 150) {
+                $icon = 'cloud-showers-water';
+                $title = 'Hujan Sangat Lebat';
+            } else {
+                $icon = 'cloud-showers-water';
+                $title = 'Hujan Ekstrem';
+            }
+            $sel_aws->date_format = Carbon::parse($sel_aws->datetime)->format('d M Y, H:i');
+            $sel_aws->titleIcon = $title;
+            $sel_aws->icon = $icon;
+        }
 
         $dateNow = Carbon::parse()->format('Y-m-d');
         $hourNow = Carbon::now()->format('H:i:s');
@@ -1585,6 +1819,9 @@ class MasterController extends Controller
 
         $arrData['historyData'] = $arrHistoryData;
         $arrData['historyForecast'] = $arrOneDayForecast;
+        $arrData['dataAktual'] = $sel_aws;
+        $arrData['dataPagiMalam'] = $arrPagiMalam;
+        $arrData['dataPred'] = $arrPred;
 
         echo json_encode($arrData);
     }
