@@ -727,7 +727,7 @@ class MasterController extends Controller
     public static function dashboard_soil(Request $request)
     {
 
-        $dateToday =  Carbon::parse('');
+        $dateToday =  Carbon::now();
         $yesterday = Carbon::parse($dateToday)->subDay();
 
         $query =  DB::table('soil_moisture')
@@ -737,6 +737,7 @@ class MasterController extends Controller
             ->orderBy('soil_moisture.datetime')
             ->get()
             ->groupBy('jam');
+
         // dd($query);
 
         $listHour = array();
@@ -755,14 +756,13 @@ class MasterController extends Controller
             $listHour[] = $key;
         }
 
-        // dd($listHour);
-
 
         return view('soil_moisture.dashboard', ['arrHour' => $arrHour, 'listHour' => $listHour, 'dateNow' => $dateToday->format('d M Y')]);
     }
 
     public static function dashboard_ws(Request $request)
     {
+
         $dateToday = Carbon::now()->format('Y-m-d');
         $tglData = $request->has('tgl') ? $request->input('tgl') : $defaultHari = $dateToday;
 
@@ -799,9 +799,6 @@ class MasterController extends Controller
             // ->take(1)
             ->get();
 
-        $listStation = DB::table('weather_station_list')
-            ->whereNotNull('mac')
-            ->get();
 
         foreach ($sel_aws as $key => $value) {
             $formatted = Carbon::parse($value->datetime)->format('Y-m-d');
@@ -887,6 +884,11 @@ class MasterController extends Controller
             ->groupBy('hari');
 
 
+        $listStation = DB::table('weather_station_list')
+            ->whereNotNull('mac')
+            ->get();
+
+
 
         $dateNow = Carbon::parse()->format('Y-m-d');
         $hourNow = Carbon::now()->format('H:i:s');
@@ -905,28 +907,23 @@ class MasterController extends Controller
             ->orderBy('db_aws_bke.datetime')
             ->get();
 
-        $oneDay = ['00', '01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23'];
+        // dd($queryHistoryData[91]);
 
         $queryForecast12hour =  DB::table('weather_station_list')
             ->join('db_aws_bke', 'weather_station_list.id', '=', 'db_aws_bke.idws')
-            ->select('db_aws_bke.*', 'weather_station_list.rain_cal as rain_cal', 'weather_station_list.loc as loc', DB::raw("DATE_FORMAT(db_aws_bke.datetime,'%H:00') as jam"))
+            ->select('db_aws_bke.*', 'weather_station_list.rain_cal as rain_cal', 'weather_station_list.loc as loc', DB::raw("DATE_FORMAT(db_aws_bke.datetime,'%H:%i') as hari"))
             ->whereBetween('db_aws_bke.datetime', [$dateNow, $next12hour])
             ->where('idws', 1)
-            // ->orderBy('db_aws_bke.datetime')
-            // ->orderBy('jam')
+            ->orderBy('db_aws_bke.datetime')
             ->get();
 
-
-        // dd($queryForecast12hour);
-
-
         $historyForecast12Hour = $queryHistoryData;
-
 
         $historyForecast12Hour = $historyForecast12Hour->groupBy(function ($item) {
             return Carbon::parse($item->datetime)->format('H');
         });
-
+        $oneDay = ['00', '01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23'];
+        // dd($historyForecast12Hour);
 
         $arrHistoryForecast = array();
         foreach ($historyForecast12Hour as $key => $value) {
@@ -943,7 +940,8 @@ class MasterController extends Controller
             }
             // }
         }
-        // dd($historyForecast12Hour);
+
+
         foreach ($queryHistoryData as $key => $value) {
             $formatted = Carbon::parse($value->datetime)->format('Y-m-d');
             if ($value->datetime == $formatted . ' 07:00:00' || $value->datetime == $formatted . ' 19:00:00') {
@@ -955,13 +953,10 @@ class MasterController extends Controller
             return Carbon::parse($item->datetime)->format('H');
         });
 
-
-        // dd($queryHistoryData);
-
         $queryForecast12hour = $queryForecast12hour->groupBy(function ($item) {
             return Carbon::parse($item->datetime)->format('H');
-            // return $item->jam;
         });
+
 
         // dd($queryForecast12hour);
 
@@ -1016,17 +1011,6 @@ class MasterController extends Controller
             $incAll++;
         }
 
-        // $queryForecast12hour = json_decode(json_encode($queryForecast12hour), true);
-        // krsort($queryForecast12hour);
-        // dd($queryForecast12hour);
-
-        // foreach ($queryForecast12hour as $key => $value) {
-        //     if ($value[0]['datetime'] == ) {
-
-        //     }
-        // }
-
-
         $arrForecast12hour = array();
         $incAll = 1;
         $hourNext12hour = array();
@@ -1074,10 +1058,8 @@ class MasterController extends Controller
             $incAll++;
         }
 
-        $test['key'] = 'value';
 
         $arrOneDayForecast = array_merge($arrHistoryForecast, $arrForecast12hour);
-
         $loglast12hour = '';
         foreach ($arrHistoryData as $key => $value) {
 
@@ -1103,11 +1085,13 @@ class MasterController extends Controller
                 "[{v:'" . $jam . "'}, {v:" . $value['rain'] . ", f:'" . $value['rain'] . " mm'},
                 {v:'" . $warnaRain . "', f:'" . $warnaRain . "'}, 
                 {v:" . $value['rain'] . ", f:'" . $value['rain'] . " mm '}, 
-                {v:" . $temp . ", f:'" . $temp . " ° '},                        
+                {v:" . $temp . ", f:'" . $temp . " �� '},                        
                 {v:'" . $warnaTemp . "', f:'" . $warnaTemp . "'}, 
-                {v:" . $temp . ", f:'" . $temp . " ° '} 
+                {v:" . $temp . ", f:'" . $temp . " �� '} 
             ],";
         }
+
+
 
         $arrlogLast12hour = [
             'plot1'     => 'Curah Hujan (mm)',
@@ -1120,8 +1104,6 @@ class MasterController extends Controller
 
         $arrPagiMalam = array();
         $arrPred = array();
-
-
         foreach ($queryPredDetail as $key => $value) {
             $jamConvert = Carbon::parse($key)->format('D d');
 
@@ -1157,12 +1139,11 @@ class MasterController extends Controller
 
                 if ($jam == '07:00:00') {
                     $directions = array('N', 'NNE', 'NE', 'ENE', 'E', 'ESE', 'SE', 'SSE', 'S', 'SSW', 'SW', 'WSW', 'W', 'WNW', 'NW', 'NNW', 'N');
-
-                    if ($data->accu_windir_forecast != '' && $data->accu_windir_forecast != 0) {
+                    // $dir = $directions[round($data->accu_windir_forecast / 22.5)];
+                    if ($data->accu_windir_forecast != '' || $data->accu_windir_forecast != 0) {
                         $dir = $data->accu_windir_forecast;
                     } else {
-                        // $dir = $directions[round($data->accu_windir_forecast / 22.5)];
-                        $dir = 22;
+                        $dir = $directions[round($data->accu_windir_forecast / 22.5)];
                     }
                     $arrPagiMalam[$jamConvert]['Pagi']['temp'] = $data->accu_temp_forecast ?: 0;
                     $arrPagiMalam[$jamConvert]['Pagi']['ws'] = $data->accu_ws_forecast;
@@ -1177,7 +1158,8 @@ class MasterController extends Controller
                     $arrPred[$jamConvert]['max_temp'] = $data->accu_temp_forecast;
                 } else if ($jam == '19:00:00') {
                     $directions = array('N', 'NNE', 'NE', 'ENE', 'E', 'ESE', 'SE', 'SSE', 'S', 'SSW', 'SW', 'WSW', 'W', 'WNW', 'NW', 'NNW', 'N');
-                    if ($data->accu_windir_forecast != '' && $data->accu_windir_forecast != 0) {
+                    // $dir = $directions[round($data->accu_windir_forecast / 22.5)];
+                    if ($data->accu_windir_forecast != '' || $data->accu_windir_forecast != 0) {
                         $dir = $data->accu_windir_forecast;
                     } else {
                         $dir = $directions[round($data->accu_windir_forecast / 22.5)];
@@ -1238,8 +1220,8 @@ class MasterController extends Controller
 
         $query =  DB::table('soil_moisture')
             ->select('soil_moisture.*',  DB::raw("DATE_FORMAT(soil_moisture.datetime,'%H:00') as jam"))
-
             ->whereBetween('soil_moisture.datetime', [$yesterday, $dateToday])
+            // ->where('soil_moisture.datetime', 'like', '%2023-01-06%')
             ->orderBy('soil_moisture.datetime')
             ->get()
             ->groupBy('jam');
@@ -1331,9 +1313,40 @@ class MasterController extends Controller
                 $incArr++;
             }
 
-            // dd($arrAllData);
             return DataTables::of($arrAllData)
-
+                ->editColumn('akurasi_accu', function ($model) {
+                    return '-';
+                })
+                ->editColumn('akurasi_srs', function ($model) {
+                    return '-';
+                })
+                ->editColumn('accu_ws_forecast', function ($model) {
+                    return '-';
+                })
+                ->editColumn('accu_winddir_forecast', function ($model) {
+                    return '-';
+                })
+                ->editColumn('accu_ws', function ($model) {
+                    return '-';
+                })
+                ->editColumn('accu_winddir', function ($model) {
+                    return '-';
+                })
+                ->editColumn('wind_dir_forecast', function ($model) {
+                    return '-';
+                })
+                ->editColumn('wind_speed_forecast', function ($model) {
+                    return '-';
+                })
+                ->editColumn('rain_forecast', function ($model) {
+                    return round($model['rain_forecast'], 2);
+                })
+                ->editColumn('rain', function ($model) {
+                    return round($model['rain'], 2);
+                })
+                ->editColumn('wind_dir', function ($model) {
+                    return '-';
+                })
                 ->make(true);
         }
         return view('weather_station.compare');
@@ -1341,7 +1354,6 @@ class MasterController extends Controller
 
     public function storeAktualWS(Request $request)
     {
-
         $messages = [
             'required' => ':attribute tidak boleh kosong!!!',
             'min' => ':attribute harus diisi minimal :min karakter ya cuy!!!',
@@ -1381,16 +1393,12 @@ class MasterController extends Controller
         }
 
         // dd($request->temp, $request->hum);
-        // dd($request->winddir);
-        $request->winddir == null ? '---' : $request->winddir;
 
         DB::table('db_aws_bke')
             ->where('id', $id)
             ->update(
-                [
-                    'temp_real' => $request->temp, 'rain_fall_real' => $request->winddir == null ? '---' : $request->winddir, 'hum_real' => $request->hum,
-                    'wind_direction_real' => $request->winddir == null ? '---' : $request->winddir, 'wind_speed_real' => $request->windspeed
-                ],
+                // ['datetime' => $dt],
+                ['temp_real' => $request->temp, 'rain_fall_real' => $request->ch, 'hum_real' => $request->hum,  'wind_direction_real' => $request->winddir, 'wind_speed_real' => $request->windspeed]
 
             );
 
@@ -1507,10 +1515,13 @@ class MasterController extends Controller
                 if ($jam == '07:00:00') {
                     $directions = array('N', 'NNE', 'NE', 'ENE', 'E', 'ESE', 'SE', 'SSE', 'S', 'SSW', 'SW', 'WSW', 'W', 'WNW', 'NW', 'NNW', 'N');
 
+
+
                     if ($data->accu_windir_forecast != '' && $data->accu_windir_forecast != 0) {
-                        $dir = $data->accu_windir_forecast;
-                    } else {
+
                         $dir = $directions[round($data->accu_windir_forecast / 22.5)];
+                    } else {
+                        $dir = $data->accu_windir_forecast;
                     }
                     $arrPagiMalam[$jamConvert]['Pagi']['temp'] = $data->accu_temp_forecast ?: 0;
                     $arrPagiMalam[$jamConvert]['Pagi']['ws'] = $data->accu_ws_forecast;
@@ -1528,7 +1539,8 @@ class MasterController extends Controller
                     if ($data->accu_windir_forecast != '' && $data->accu_windir_forecast != 0) {
                         $dir = $data->accu_windir_forecast;
                     } else {
-                        $dir = $directions[round($data->accu_windir_forecast / 22.5)];
+                        // $dir = $directions[round($data->accu_windir_forecast / 22.5)];
+                        $dir = 22;
                     }
                     $arrPagiMalam[$jamConvert]['Malam']['temp'] =  $data->accu_temp_forecast ?: 0;
                     $arrPagiMalam[$jamConvert]['Malam']['ws'] = $data->accu_ws_forecast;
@@ -1642,6 +1654,8 @@ class MasterController extends Controller
             $sel_aws->titleIcon = $title;
             $sel_aws->icon = $icon;
         }
+
+        // dd($id_loc);
 
         $dateNow = Carbon::parse()->format('Y-m-d');
         $hourNow = Carbon::now()->format('H:i:s');
@@ -1822,6 +1836,40 @@ class MasterController extends Controller
         $arrData['dataAktual'] = $sel_aws;
         $arrData['dataPagiMalam'] = $arrPagiMalam;
         $arrData['dataPred'] = $arrPred;
+
+        $dateTodayS =  Carbon::parse('');
+        $yesterday = Carbon::parse($dateTodayS)->subDay();
+
+        $getIds = DB::table('soil_moisture_list')
+            ->join('weather_station_list', 'soil_moisture_list.loc', '=', 'weather_station_list.loc')
+            ->where('weather_station_list.id', $id_loc)
+            ->pluck('soil_moisture_list.id');
+
+        if (!empty($getIds->toArray())) {
+            $querySoil =  DB::table('soil_moisture')
+                ->select('soil_moisture.*',  DB::raw("DATE_FORMAT(soil_moisture.datetime,'%H:00') as jam"))
+                ->whereBetween('soil_moisture.datetime', [$yesterday, $dateTodayS])
+                ->where('soil_moisture.idsm', $getIds[0])
+                // ->where('soil_moisture.datetime', 'like', '%2023-01-06%')
+                ->orderBy('soil_moisture.datetime')
+                ->get()
+                ->groupBy('jam');
+
+            $arrHour = array();
+            foreach ($querySoil as $key => $value) {
+                $sum_hum = 0;
+                $sum_temp = 0;
+                $inc = 0;
+                foreach ($value as $key2 => $data) {
+                    $sum_hum += $data->hum1;
+                    $sum_temp += $data->temp;
+                    $inc++;
+                }
+                $arrHour[$key]['hum'] = round($sum_hum / $inc, 2);
+                $arrHour[$key]['temp'] = round($sum_temp / $inc, 2);
+            }
+            $arrData['arrHour'] = $arrHour;
+        }
 
         echo json_encode($arrData);
     }

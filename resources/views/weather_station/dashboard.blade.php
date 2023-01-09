@@ -156,7 +156,11 @@
         <h5>Ringkasan Curah Hujan Aktual dan Forecast dalam 24 jam</h5>
     </div>
     <div class="card-body pb-5">
+
         <div id="chAktualForecast"></div>
+
+
+
     </div>
 </div>
 <div class="card">
@@ -689,6 +693,76 @@
     //   var indexDefault = 2;
     //   $('#locList').val(99)
 
+
+    var arrHour = <?php echo json_encode($arrHour); ?>;
+    var listHour = <?php echo json_encode($listHour); ?>;
+
+    var arrNewHour = Object.entries(arrHour)
+
+    var categoriesHour = '['
+    listHour.forEach(element => {
+        categoriesHour += '"' + element + '",'
+    });
+
+    categoriesHour = categoriesHour.substring(0, categoriesHour.length - 1);
+    categoriesHour += ']'
+
+    var temp = '['
+    var hum = '['
+    arrNewHour.forEach(element => {
+        hum += '"' + element[1]['hum'] + '",'
+        temp += '"' + element[1]['temp'] + '",'
+    });
+
+    hum = hum.substring(0, hum.length - 1);
+    temp = temp.substring(0, temp.length - 1);
+    hum += ']'
+    temp += ']'
+
+    var defStation = $("#locList option:selected").val();
+    if (defStation == 1) {
+        hum = [0, 0, 0, 0, 0]
+        temp = [0, 0, 0, 0, 0]
+    } else {
+        hum = JSON.parse(hum)
+        temp = JSON.parse(temp)
+    }
+    categoriesHour = JSON.parse(categoriesHour)
+
+    var options = {
+        series: [{
+            name: 'Kelembaban',
+            data: hum
+        }, {
+            name: 'Temperatur',
+            data: temp
+        }],
+        chart: {
+            height: 350,
+            type: 'area'
+        },
+        dataLabels: {
+            enabled: false
+        },
+        colors: ['#1565c0', '#b71c1c', '#9C27B0'],
+        stroke: {
+            curve: 'smooth'
+        },
+        xaxis: {
+            type: 'string',
+            categories: categoriesHour
+            // ["2018-09-19T00:00:00.000Z", "2018-09-19T01:30:00.000Z", "2018-09-19T02:30:00.000Z",
+            // "2018-09-19T03:30:00.000Z", "2018-09-19T04:30:00.000Z", "2018-09-19T05:30:00.000Z", "2018-09-19T06:30:00.000Z"]
+        }
+        // tooltip: {
+        // x: {
+        // format: 'dd/MM/yy HH:mm'
+        // },
+        // },
+    };
+    var chartKt = new ApexCharts(document.querySelector("#ktAktualForecast"), options);
+    chartKt.render();
+
     function getDataLoc(locIndex) {
 
         value = locIndex;
@@ -730,6 +804,38 @@
 
                 var arrResultHistory = Object.entries(arrResult['historyData'])
                 var arrResultForecast = Object.entries(arrResult['historyForecast'])
+                if (arrResult['arrHour'] != null) {
+                    var arrResultSoil = Object.entries(arrResult['arrHour'])
+                    var temperature = '['
+                    var humidity = '['
+                    arrResultSoil.forEach(element => {
+                        humidity += '"' + element[1]['hum'] + '",'
+                        temperature += '"' + element[1]['temp'] + '",'
+                    });
+
+                    humidity = humidity.substring(0, humidity.length - 1);
+                    temperature = temperature.substring(0, temperature.length - 1);
+                    humidity += ']'
+                    temperature += ']'
+
+                    humidity = JSON.parse(humidity)
+                    temperature = JSON.parse(temperature)
+                    chartKt.updateSeries([{
+                        name: 'Kelembaban',
+                        data: humidity
+                    }, {
+                        name: 'Temperature',
+                        data: temperature
+                    }])
+                } else {
+                    chartKt.updateSeries([{
+                        name: 'Kelembaban',
+                        data: [0, 0, 0, 0, 0]
+                    }, {
+                        name: 'Temperature',
+                        data: [0, 0, 0, 0, 0]
+                    }])
+                }
                 var arrAktual = arrResult['dataAktual']
                 var arrPred = arrResult['dataPred']
                 var arrPagiMalam = arrResult['dataPagiMalam']
@@ -914,6 +1020,7 @@
                     name: 'Forecast Temperatur (°C)',
                     data: rainForecast
                 }])
+
                 // if(result.length > 10){
                 //     sliceResult = result.slice(1, -1);
                 // const arrSlice = sliceResult.split(",");
@@ -951,67 +1058,4 @@
             }
         })
     }
-
-    var arrHour = <?php echo json_encode($arrHour); ?>;
-    var listHour = <?php echo json_encode($listHour); ?>;
-
-    var arrNewHour = Object.entries(arrHour)
-
-    var categoriesHour = '['
-    listHour.forEach(element => {
-        categoriesHour += '"' + element + '",'
-    });
-
-    categoriesHour = categoriesHour.substring(0, categoriesHour.length - 1);
-    categoriesHour += ']'
-
-    var temp = '['
-    var hum = '['
-    arrNewHour.forEach(element => {
-        hum += '"' + element[1]['hum'] + '",'
-        temp += '"' + element[1]['temp'] + '",'
-    });
-
-    hum = hum.substring(0, hum.length - 1);
-    temp = temp.substring(0, temp.length - 1);
-    hum += ']'
-    temp += ']'
-
-    hum = JSON.parse(hum)
-    temp = JSON.parse(temp)
-    categoriesHour = JSON.parse(categoriesHour)
-
-    var options = {
-        series: [{
-            name: 'Kelembaban',
-            data: hum
-        }, {
-            name: 'Temperatur',
-            data: temp
-        }],
-        chart: {
-            height: 350,
-            type: 'area'
-        },
-        dataLabels: {
-            enabled: false
-        },
-        colors: ['#1565c0', '#b71c1c', '#9C27B0'],
-        stroke: {
-            curve: 'smooth'
-        },
-        xaxis: {
-            type: 'string',
-            categories: categoriesHour
-            // ["2018-09-19T00:00:00.000Z", "2018-09-19T01:30:00.000Z", "2018-09-19T02:30:00.000Z",
-            // "2018-09-19T03:30:00.000Z", "2018-09-19T04:30:00.000Z", "2018-09-19T05:30:00.000Z", "2018-09-19T06:30:00.000Z"]
-        }
-        // tooltip: {
-        // x: {
-        // format: 'dd/MM/yy HH:mm'
-        // },
-        // },
-    };
-    var chartKt = new ApexCharts(document.querySelector("#ktAktualForecast"), options);
-    chartKt.render();
 </script>
