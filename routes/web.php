@@ -43,3 +43,5 @@ Route::get('/grafik_wl', [MasterController::class, 'grafik_wl'])->name('grafik_w
 Route::get('/tabel_wl', [MasterController::class, 'tabel_wl'])->name('tabel_wl');
 
 Route::get('/filltabel', [MasterController::class, 'FilterTabel']);
+
+Route::get('/exportAktual', [MasterController::class, 'exportAktual']);

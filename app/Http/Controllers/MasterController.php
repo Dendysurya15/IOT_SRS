@@ -1837,6 +1837,8 @@ class MasterController extends Controller
         $arrData['dataPagiMalam'] = $arrPagiMalam;
         $arrData['dataPred'] = $arrPred;
 
+        // dd($arrData);
+
         $dateTodayS =  Carbon::parse('');
         $yesterday = Carbon::parse($dateTodayS)->subDay();
 
@@ -1872,6 +1874,21 @@ class MasterController extends Controller
         }
 
         echo json_encode($arrData);
+    }
+
+    public static function exportAktual()
+    {
+        $queryHistoryData =  DB::table('weather_station_list')
+            ->join('db_aws_bke', 'weather_station_list.id', '=', 'db_aws_bke.idws')
+            ->select('db_aws_bke.*', DB::raw("DATE_FORMAT(db_aws_bke.datetime, '%Y-%m-%d') as tgl"), DB::raw("DATE_FORMAT(db_aws_bke.datetime, '%H:%i') as jam"), 'weather_station_list.loc as loc')
+            ->where('idws', 1)
+            ->orderBy('db_aws_bke.datetime', 'asc')
+            ->get();
+
+        $his = json_decode($queryHistoryData, true);
+        // dd($his);
+
+        return view('exportAktual', ['historyData' => $his]);
     }
 
     public static function Grafik()
