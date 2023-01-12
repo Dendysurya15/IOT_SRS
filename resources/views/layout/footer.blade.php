@@ -18,7 +18,8 @@
 <script src="{{ asset('js/js_tabel/buttons.html5.min.js') }}"></script>
 <script src="{{ asset('js/js_tabel/buttons.print.min.js') }}"></script>
 
-<script src="{{ asset('plugins/select2/js/select2.full.min.js') }}"></script>
+{{-- <script src="{{ asset('plugins/select2/js/select2.full.min.js') }}"></script> --}}
+
 
 <script>
     $(function () {

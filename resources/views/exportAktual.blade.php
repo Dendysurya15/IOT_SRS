@@ -31,6 +31,8 @@
     </section>
 </div>
 
+@include('layout.footer')
+
 <script>
     $(document).ready(function() {
         $('#aktualTemp').DataTable({
@@ -47,4 +49,3 @@
         });
     });
 </script>
-@include('layout.footer')
