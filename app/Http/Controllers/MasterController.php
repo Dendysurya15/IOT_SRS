@@ -1882,6 +1882,7 @@ class MasterController extends Controller
             ->join('db_aws_bke', 'weather_station_list.id', '=', 'db_aws_bke.idws')
             ->select('db_aws_bke.*', DB::raw("DATE_FORMAT(db_aws_bke.datetime, '%Y-%m-%d') as tgl"), DB::raw("DATE_FORMAT(db_aws_bke.datetime, '%H:%i') as jam"), 'weather_station_list.loc as loc')
             ->where('idws', 1)
+            ->where('db_aws_bke.datetime', '!=', '')
             ->orderBy('db_aws_bke.datetime', 'asc')
             ->get();
 
