@@ -699,43 +699,29 @@
 
     var arrNewHour = Object.entries(arrHour)
 
-    var categoriesHour = '['
-    listHour.forEach(element => {
-        categoriesHour += '"' + element + '",'
-    });
+    // var temp = '['
+    // var hum = '['
+    // arrNewHour.forEach(element => {
+    //     hum += '"' + element[1]['hum'] + '",'
+    //     temp += '"' + element[1]['temp'] + '",'
+    // });
 
-    categoriesHour = categoriesHour.substring(0, categoriesHour.length - 1);
-    categoriesHour += ']'
+    // hum = hum.substring(0, hum.length - 1);
+    // temp = temp.substring(0, temp.length - 1);
+    // hum += ']'
+    // temp += ']'
 
-    var temp = '['
-    var hum = '['
-    arrNewHour.forEach(element => {
-        hum += '"' + element[1]['hum'] + '",'
-        temp += '"' + element[1]['temp'] + '",'
-    });
-
-    hum = hum.substring(0, hum.length - 1);
-    temp = temp.substring(0, temp.length - 1);
-    hum += ']'
-    temp += ']'
-
-    var defStation = $("#locList option:selected").val();
-    if (defStation == 1) {
-        hum = [0, 0, 0, 0, 0]
-        temp = [0, 0, 0, 0, 0]
-    } else {
-        hum = JSON.parse(hum)
-        temp = JSON.parse(temp)
-    }
-    categoriesHour = JSON.parse(categoriesHour)
+    humFirst = [0, 0]
+    tempFirst = [0, 0]
+    categoriesHourFirst = ['07:00', '08:00']
 
     var options = {
         series: [{
             name: 'Kelembaban',
-            data: hum
+            data: humFirst
         }, {
             name: 'Temperatur',
-            data: temp
+            data: tempFirst
         }],
         chart: {
             height: 350,
@@ -750,7 +736,7 @@
         },
         xaxis: {
             type: 'string',
-            categories: categoriesHour
+            categories: categoriesHourFirst
             // ["2018-09-19T00:00:00.000Z", "2018-09-19T01:30:00.000Z", "2018-09-19T02:30:00.000Z",
             // "2018-09-19T03:30:00.000Z", "2018-09-19T04:30:00.000Z", "2018-09-19T05:30:00.000Z", "2018-09-19T06:30:00.000Z"]
         }
@@ -804,8 +790,27 @@
 
                 var arrResultHistory = Object.entries(arrResult['historyData'])
                 var arrResultForecast = Object.entries(arrResult['historyForecast'])
-                if (arrResult['arrHour'] != null) {
+                var defaultStation = $("#locList option:selected").val();
+                if (defaultStation == 1) {
+                    chartKt.updateOptions({
+                        series: [{
+                            name: 'Kelembaban',
+                            data: [0, 0]
+                        }, {
+                            name: 'Temperatur',
+                            data: [0, 0]
+                        }],
+                        xaxis: {
+                            type: 'string',
+                            categories: ['07:00', '08:00']
+                            // ["2018-09-19T00:00:00.000Z", "2018-09-19T01:30:00.000Z", "2018-09-19T02:30:00.000Z",
+                            // "2018-09-19T03:30:00.000Z", "2018-09-19T04:30:00.000Z", "2018-09-19T05:30:00.000Z", "2018-09-19T06:30:00.000Z"]
+                        }
+                    })
+                } else {
                     var arrResultSoil = Object.entries(arrResult['arrHour'])
+
+                    var categoriesHour = '['
                     var temperature = '['
                     var humidity = '['
                     arrResultSoil.forEach(element => {
@@ -813,28 +818,42 @@
                         temperature += '"' + element[1]['temp'] + '",'
                     });
 
+                    listHour.forEach(element => {
+                        categoriesHour += '"' + element + '",'
+                    });
+
                     humidity = humidity.substring(0, humidity.length - 1);
                     temperature = temperature.substring(0, temperature.length - 1);
+                    categoriesHour = categoriesHour.substring(0, categoriesHour.length - 1);
                     humidity += ']'
                     temperature += ']'
+                    categoriesHour += ']'
 
-                    humidity = JSON.parse(humidity)
-                    temperature = JSON.parse(temperature)
-                    chartKt.updateSeries([{
-                        name: 'Kelembaban',
-                        data: humidity
-                    }, {
-                        name: 'Temperature',
-                        data: temperature
-                    }])
-                } else {
-                    chartKt.updateSeries([{
-                        name: 'Kelembaban',
-                        data: [0, 0, 0, 0, 0]
-                    }, {
-                        name: 'Temperature',
-                        data: [0, 0, 0, 0, 0]
-                    }])
+                    if (humidity === "]") {
+                        humidity = [0, 0, 0]
+                        temperature = [0, 0, 0]
+                        categoriesHour = ['07:00', '08:00', '09:00']
+                    } else {
+                        humidity = JSON.parse(humidity)
+                        temperature = JSON.parse(temperature)
+                        categoriesHour = JSON.parse(categoriesHour)
+                    }
+
+                    chartKt.updateOptions({
+                        series: [{
+                            name: 'Kelembaban',
+                            data: humidity
+                        }, {
+                            name: 'Temperatur',
+                            data: temperature
+                        }],
+                        xaxis: {
+                            type: 'string',
+                            categories: categoriesHour
+                            // ["2018-09-19T00:00:00.000Z", "2018-09-19T01:30:00.000Z", "2018-09-19T02:30:00.000Z",
+                            // "2018-09-19T03:30:00.000Z", "2018-09-19T04:30:00.000Z", "2018-09-19T05:30:00.000Z", "2018-09-19T06:30:00.000Z"]
+                        }
+                    })
                 }
                 var arrAktual = arrResult['dataAktual']
                 var arrPred = arrResult['dataPred']
