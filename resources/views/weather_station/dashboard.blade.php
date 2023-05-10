@@ -43,7 +43,7 @@
                             {{ csrf_field() }}
                             <div class="row">
                                 <div class="col-md">
-                                    <select name="lokasi" id="locList" class="form-control">
+                                    <select disabled name="lokasi" id="locList" class="form-control">
                                         {{-- <option selected disabled>Pilih Lokasi</option> --}}
                                         @foreach($listStation as $loc)
                                         <option value="{{ $loc->id }}">{{ $loc->loc }}</option>
@@ -55,24 +55,25 @@
                     </div>
                     {{-- <div class="col-md">
                         <form class="" action="{{ route('dashboard_ws') }}" method="get">
-                    <input class="form-control" type="date" name="tgl" id="inputDate" onchange="this.form.submit()">
-                    </form>
+                            <input class="form-control" type="date" name="tgl" id="inputDate"
+                                onchange="this.form.submit()">
+                        </form>
 
-                </div> --}}
+                    </div> --}}
+                </div>
             </div>
         </div>
-</div>
 </div>
 <div class="row">
     <!--//Suhu Ruangan Aws 1-->
     <div class="col-md-12">
         <div class="card">
             {{-- <div class="card-header"> --}}
-            {{-- <h5>Cuaca terkini {{$date}} --}}
-            {{-- untuk wilayah --}}
-            {{-- <span id="locTitle"></span> --}}
-            {{-- </h5> --}}
-            {{-- </div> --}}
+                {{-- <h5>Cuaca terkini {{$date}} --}}
+                    {{-- untuk wilayah --}}
+                    {{-- <span id="locTitle"></span> --}}
+                    {{-- </h5> --}}
+                {{-- </div> --}}
             <div class="card-body p-5 " style="background:white;">
                 <div class="layer">
                     <div class="row no-gutters align-items-center">
@@ -242,7 +243,8 @@
     @endforeach
 </div>
 <p>
-    <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+    <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseExample"
+        aria-expanded="false" aria-controls="collapseExample">
         Detail perkiraan cuaca
     </button>
 </p>
@@ -256,7 +258,8 @@
                         <span id="div_hari_{{$key}}"></span>
                     </div>
                 </div>
-                <div style="background:white;border-radius:5px;height:340px;box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;">
+                <div
+                    style="background:white;border-radius:5px;height:340px;box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;">
                     @foreach ($item as $data)
 
                     <div style="height: 170px;">
@@ -265,7 +268,8 @@
                                 <span style="font-size:13px">
                                     <span id="div_waktu_{{$data['waktu']}}_{{$key}}"></span> (
                                     <span id="div_jam_{{$data['waktu']}}_{{$key}}"></span> )</span> <br>
-                                <span class="font-italic" style="color:#6C757D"><span id="div_title_{{$data['waktu']}}_{{$key}}"></span></span>
+                                <span class="font-italic" style="color:#6C757D"><span
+                                        id="div_title_{{$data['waktu']}}_{{$key}}"></span></span>
                             </p>
                             <p class="alignright" style="float:right;margin-top:25px;margin-right:15px;">
                                 <span id="div_icon_{{$data['waktu']}}_{{$key}}"></span>
@@ -276,12 +280,14 @@
                             <div class="row m-2" style="">
                                 <div class="col-6" style="">
                                     <i class="fa-solid fa-water fa-sm fa-fw m-1" style="color:#183153;"></i>
-                                    <span style="font-size:11px"> <span id="div_rain_{{$data['waktu']}}_{{$key}}"></span> mm</span>
+                                    <span style="font-size:11px"> <span
+                                            id="div_rain_{{$data['waktu']}}_{{$key}}"></span> mm</span>
                                 </div>
                                 <div class="col-6" style="">
                                     <i class="fa-solid fa-temperature-low fa-sm fa-fw m-1" style="color:#183153;"></i>
 
-                                    <span style="font-size:11px"> <span id="div_temp_{{$data['waktu']}}_{{$key}}"></span> C</span>
+                                    <span style="font-size:11px"> <span
+                                            id="div_temp_{{$data['waktu']}}_{{$key}}"></span> C</span>
                                 </div>
                             </div>
                             <div class="row m-2" style="">
@@ -294,7 +300,8 @@
                                 <div class="col-6" style="">
                                     <i class="fa-solid fa-wind fa-sm fa-fw m-1" style="color:#183153;"></i>
 
-                                    <span style="font-size:11px"> <span id="div_ws_{{$data['waktu']}}_{{$key}}"></span>m/s</span>
+                                    <span style="font-size:11px"> <span
+                                            id="div_ws_{{$data['waktu']}}_{{$key}}"></span>m/s</span>
                                 </div>
                             </div>
                         </div>
@@ -377,14 +384,14 @@
                     <div class="h5 mb-0 font-weight-bold text-gray-800" id="hum">{{
                         $data[0]['hum_real'] ?? 0
                         }} %
-</div>
-</div>
-<div class="col-auto">
-    <i id="s_hum_in1" class="fas fa-thermometer-three-quarters fa-2x"></i>
-</div>
-</div>
-</div>
-</div>
+                    </div>
+                </div>
+                <div class="col-auto">
+                    <i id="s_hum_in1" class="fas fa-thermometer-three-quarters fa-2x"></i>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 <!--Kelembaban Ruangan-->
 
@@ -492,7 +499,9 @@
 </div>
 @include('layout.footer')
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.9.4/lottie.min.js" integrity="sha512-ilxj730331yM7NbrJAICVJcRmPFErDqQhXJcn+PLbkXdE031JJbcK87Wt4VbAK+YY6/67L+N8p7KdzGoaRjsTg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.9.4/lottie.min.js"
+    integrity="sha512-ilxj730331yM7NbrJAICVJcRmPFErDqQhXJcn+PLbkXdE031JJbcK87Wt4VbAK+YY6/67L+N8p7KdzGoaRjsTg=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <!-- jQuery -->
 
 <!-- Bootstrap 4 -->
@@ -514,6 +523,7 @@
         // $( "#locList" ).datepicker( "option", "disabled", true );
 
         var select2 = document.getElementById('locList');
+        
         var defaultStation = $("#locList option:selected").val();
 
         getDataLoc(defaultStation)
@@ -859,14 +869,17 @@
                 var arrPred = arrResult['dataPred']
                 var arrPagiMalam = arrResult['dataPagiMalam']
 
-                let node = document.createTextNode(arrAktual['temp_real']);
+                let node = document.createTextNode(arrAktual['temp_out']);
 
-                tempDiv.innerHTML = arrAktual['temp_real'];
+                tempDiv.innerHTML = arrAktual['temp_out'];
                 locTitleDiv.innerHTML = arrAktual['loc'] + ', ';
-                humDiv.innerHTML = arrAktual['hum_real'];
-                chDiv.innerHTML = arrAktual['rain_fall_real'];
+                humDiv.innerHTML = arrAktual['hum_out'];
+                chDiv.innerHTML = arrAktual['rain_rate'];
 
-                wdVal = arrAktual['wind_direction_real']
+                wdVal = arrAktual['windDirPoint']
+
+
+                console.log(wdVal)
 
                 var wind_direction = '';
 
@@ -891,29 +904,26 @@
                 }
 
                 wdDiv.innerHTML = wind_direction;
-                wsDiv.innerHTML = arrAktual['wind_speed_real'];
+                wsDiv.innerHTML = arrAktual['winspeedkmh'];
                 // uvDiv.innerHTML = arrAktual['uv_real'];
 
-                uvVal = arrAktual['uv_real']
+                uvVal = arrAktual['uv']
 
 
                 uvTitle = ''
-                if (uvVal >= 0 && uvVal < 3) {
+                if (uvVal >= 0 && uvVal < 2) {
                     $val = uvVal;
-                    uvTitle = 'Low';
-                } else if (uvVal >= 3 && uvVal < 6) {
+                    uvTitle = 'Rendah';
+                } else if (uvVal >= 3 && uvVal < 5) {
                     $val = uvVal;
-                    uvTitle = 'Moderate';
-                } else if (uvVal >= 6 && uvVal < 8) {
+                    uvTitle = 'Sedang';
+                } else if (uvVal >= 6 && uvVal < 7) {
                     $val = uvVal;
-                    uvTitle = 'High';
-                } else if (uvVal >= 8 && uvVal < 11) {
+                    uvTitle = 'Tinggi';
+                } else if (uvVal >= 8 && uvVal < 10) {
                     $val = uvVal;
-                    uvTitle = 'Very high';
-                } else if (uvVal >= 11) {
-                    $val = uvVal;
-                    uvTitle = 'Extreme';
-                } else {
+                    uvTitle = 'Sangat Tinggi';
+                }  else {
                     $val = uvVal;
                     uvTitle = '';
                 }

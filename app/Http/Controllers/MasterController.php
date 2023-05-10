@@ -800,35 +800,44 @@ class MasterController extends Controller
             ->get();
 
 
+        $sel_aws = DB::table('weather_station_list')
+            ->join('weather_station', 'weather_station_list.id', '=', 'weather_station.idws')
+            ->select('weather_station.*', 'weather_station_list.rain_cal as rain_cal', 'weather_station_list.loc as loc')
+            ->whereBetween('weather_station.date', [$from2, $to])
+            ->orderByDesc('weather_station.id')
+            ->where('weather_station.idws', '=', 15)
+            // ->take(1)
+            ->get();
+
         foreach ($sel_aws as $key => $value) {
-            $formatted = Carbon::parse($value->datetime)->format('Y-m-d');
-            if ($value->datetime == $formatted . ' 07:00:00' || $value->datetime == $formatted . ' 19:00:00') {
+            $formatted = Carbon::parse($value->date)->format('Y-m-d');
+            if ($value->date == $formatted . ' 07:00:00' || $value->date == $formatted . ' 19:00:00') {
                 unset($sel_aws[$key]);
             }
         }
 
         $sel_aws = $sel_aws->first();
         if ($sel_aws != '') {
-            if ($sel_aws->rain_fall_real >= 0 && $sel_aws->rain_fall_real < 0.5) {
+            if ($sel_aws->rain_rate >= 0 && $sel_aws->rain_rate < 0.5) {
                 $icon = 'cloud-sun';
                 $title = 'Berawan';
-            } else if ($sel_aws->rain_fall_real >= 0.5 && $sel_aws->rain_fall_real < 20) {
+            } else if ($sel_aws->rain_rate >= 0.5 && $sel_aws->rain_rate < 20) {
                 $icon = 'cloud-rain';
                 $title = 'Hujan ringan';
-            } else if ($sel_aws->rain_fall_real >= 20 && $sel_aws->rain_fall_real < 50) {
+            } else if ($sel_aws->rain_rate >= 20 && $sel_aws->rain_rate < 50) {
                 $icon = 'cloud-rain';
                 $title = 'Hujan Sedang';
-            } else if ($sel_aws->rain_fall_real >= 50 && $sel_aws->rain_fall_real < 100) {
+            } else if ($sel_aws->rain_rate >= 50 && $sel_aws->rain_rate < 100) {
                 $icon = 'cloud-showers-heavy';
                 $title = 'Hujan Lebat';
-            } else if ($sel_aws->rain_fall_real >= 100 && $sel_aws->rain_fall_real < 150) {
+            } else if ($sel_aws->rain_rate >= 100 && $sel_aws->rain_rate < 150) {
                 $icon = 'cloud-showers-water';
                 $title = 'Hujan Sangat Lebat';
             } else {
                 $icon = 'cloud-showers-water';
                 $title = 'Hujan Ekstrem';
             }
-            $sel_aws->date_format = Carbon::parse($sel_aws->datetime)->format('d M Y, H:i');
+            $sel_aws->date_format = Carbon::parse($sel_aws->date)->format('d M Y, H:i');
             $sel_aws->titleIcon = $title;
             $sel_aws->icon = $icon;
         }
@@ -886,9 +895,10 @@ class MasterController extends Controller
 
         $listStation = DB::table('weather_station_list')
             ->whereNotNull('mac')
-            ->get();
+            ->get()->toArray();
 
 
+        $listStation = array_reverse($listStation);
 
         $dateNow = Carbon::parse()->format('Y-m-d');
         $hourNow = Carbon::now()->format('H:i:s');
@@ -900,14 +910,13 @@ class MasterController extends Controller
 
 
         $queryHistoryData =  DB::table('weather_station_list')
-            ->join('db_aws_bke', 'weather_station_list.id', '=', 'db_aws_bke.idws')
-            ->select('db_aws_bke.*', 'weather_station_list.rain_cal as rain_cal', 'weather_station_list.loc as loc')
-            ->whereBetween('db_aws_bke.datetime', [$last12hour, $dateNow])
-            ->where('idws', 1)
-            ->orderBy('db_aws_bke.datetime')
+            ->join('weather_station', 'weather_station_list.id', '=', 'weather_station.idws')
+            ->select('weather_station.*', 'weather_station_list.rain_cal as rain_cal', 'weather_station_list.loc as loc')
+            ->whereBetween('weather_station.date', [$last12hour, $dateNow])
+            ->where('idws', 15)
+            ->orderBy('weather_station.date')
             ->get();
 
-        // dd($queryHistoryData[91]);
 
         $queryForecast12hour =  DB::table('weather_station_list')
             ->join('db_aws_bke', 'weather_station_list.id', '=', 'db_aws_bke.idws')
@@ -920,7 +929,7 @@ class MasterController extends Controller
         $historyForecast12Hour = $queryHistoryData;
 
         $historyForecast12Hour = $historyForecast12Hour->groupBy(function ($item) {
-            return Carbon::parse($item->datetime)->format('H');
+            return Carbon::parse($item->date)->format('H');
         });
         $oneDay = ['00', '01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23'];
         // dd($historyForecast12Hour);
@@ -929,11 +938,11 @@ class MasterController extends Controller
         foreach ($historyForecast12Hour as $key => $value) {
             // foreach ($value as $key2 => $val) {
 
-            $formatted = Carbon::parse($value[0]->datetime)->format('Y-m-d');
+            $formatted = Carbon::parse($value[0]->date)->format('Y-m-d');
 
 
             foreach ($oneDay as $key3 => $hour) {
-                if ($value[0]->datetime == $formatted . ' ' . $hour . ':00:00') {
+                if ($value[0]->date == $formatted . ' ' . $hour . ':00:00') {
                     $arrHistoryForecast[$hour . ':00']['temp'] = $value[0]->accu_temp_forecast;
                     $arrHistoryForecast[$hour . ':00']['rain'] = $value[0]->accu_rf_forecast;
                 }
@@ -943,14 +952,14 @@ class MasterController extends Controller
 
 
         foreach ($queryHistoryData as $key => $value) {
-            $formatted = Carbon::parse($value->datetime)->format('Y-m-d');
-            if ($value->datetime == $formatted . ' 07:00:00' || $value->datetime == $formatted . ' 19:00:00') {
+            $formatted = Carbon::parse($value->date)->format('Y-m-d');
+            if ($value->date == $formatted . ' 07:00:00' || $value->date == $formatted . ' 19:00:00') {
                 unset($queryHistoryData[$key]);
             }
         }
 
         $queryHistoryData = $queryHistoryData->groupBy(function ($item) {
-            return Carbon::parse($item->datetime)->format('H');
+            return Carbon::parse($item->date)->format('H');
         });
 
         $queryForecast12hour = $queryForecast12hour->groupBy(function ($item) {
@@ -970,8 +979,8 @@ class MasterController extends Controller
             $inc = 0;
 
             foreach ($value as $key2 => $value2) {
-                $sum_rain_fall += $value2->rain_fall_real;
-                $sum_temp += $value2->temp_real;
+                $sum_rain_fall += $value2->rain_rate;
+                $sum_temp += $value2->temp_out;
                 $inc++;
             }
 
@@ -1090,7 +1099,6 @@ class MasterController extends Controller
                 {v:" . $temp . ", f:'" . $temp . " �� '} 
             ],";
         }
-
 
 
         $arrlogLast12hour = [
@@ -1609,11 +1617,11 @@ class MasterController extends Controller
         $to = date($dateTo);
 
         $sel_aws = DB::table('weather_station_list')
-            ->join('db_aws_bke', 'weather_station_list.id', '=', 'db_aws_bke.idws')
-            ->select('db_aws_bke.*', 'weather_station_list.rain_cal as rain_cal', 'weather_station_list.loc as loc')
-            ->whereBetween('db_aws_bke.datetime', [$from2, $to])
-            ->orderByDesc('db_aws_bke.id')
-            ->where('db_aws_bke.idws', '=', $id_loc)
+            ->join('weather_station', 'weather_station_list.id', '=', 'weather_station.idws')
+            ->select('weather_station.*', 'weather_station_list.rain_cal as rain_cal', 'weather_station_list.loc as loc')
+            ->whereBetween('weather_station.date', [$from2, $to])
+            ->orderByDesc('weather_station.id')
+            ->where('weather_station.idws', '=', $id_loc)
             // ->take(1)
             ->get();
 
@@ -1623,36 +1631,41 @@ class MasterController extends Controller
             ->get();
 
         foreach ($sel_aws as $key => $value) {
-            $formatted = Carbon::parse($value->datetime)->format('Y-m-d');
-            if ($value->datetime == $formatted . ' 07:00:00' || $value->datetime == $formatted . ' 19:00:00') {
+            $formatted = Carbon::parse($value->date)->format('Y-m-d');
+            if ($value->date == $formatted . ' 07:00:00' || $value->date == $formatted . ' 19:00:00') {
                 unset($sel_aws[$key]);
             }
         }
 
+
         $sel_aws = $sel_aws->first();
         if ($sel_aws != '') {
-            if ($sel_aws->rain_fall_real >= 0 && $sel_aws->rain_fall_real < 0.5) {
+            if ($sel_aws->rain_rate >= 0 && $sel_aws->rain_rate < 0.5) {
                 $icon = 'cloud-sun';
                 $title = 'Berawan';
-            } else if ($sel_aws->rain_fall_real >= 0.5 && $sel_aws->rain_fall_real < 20) {
+            } else if ($sel_aws->rain_rate >= 0.5 && $sel_aws->rain_rate < 20) {
                 $icon = 'cloud-rain';
                 $title = 'Hujan ringan';
-            } else if ($sel_aws->rain_fall_real >= 20 && $sel_aws->rain_fall_real < 50) {
+            } else if ($sel_aws->rain_rate >= 20 && $sel_aws->rain_rate < 50) {
                 $icon = 'cloud-rain';
                 $title = 'Hujan Sedang';
-            } else if ($sel_aws->rain_fall_real >= 50 && $sel_aws->rain_fall_real < 100) {
+            } else if ($sel_aws->rain_rate >= 50 && $sel_aws->rain_rate < 100) {
                 $icon = 'cloud-showers-heavy';
                 $title = 'Hujan Lebat';
-            } else if ($sel_aws->rain_fall_real >= 100 && $sel_aws->rain_fall_real < 150) {
+            } else if ($sel_aws->rain_rate >= 100 && $sel_aws->rain_rate < 150) {
                 $icon = 'cloud-showers-water';
                 $title = 'Hujan Sangat Lebat';
             } else {
                 $icon = 'cloud-showers-water';
                 $title = 'Hujan Ekstrem';
             }
-            $sel_aws->date_format = Carbon::parse($sel_aws->datetime)->format('d M Y, H:i');
+            $sel_aws->date_format = Carbon::parse($sel_aws->date)->format('d M Y, H:i');
             $sel_aws->titleIcon = $title;
             $sel_aws->icon = $icon;
+            $directions = array('N', 'NNE', 'NE', 'ENE', 'E', 'ESE', 'SE', 'SSE', 'S', 'SSW', 'SW', 'WSW', 'W', 'WNW', 'NW', 'NNW', 'N');
+
+            $dir = $directions[round($sel_aws->winddir / 22.5)];
+            $sel_aws->windDirPoint  = $dir;
         }
 
         // dd($id_loc);
@@ -1665,11 +1678,11 @@ class MasterController extends Controller
         $next12hour = Carbon::parse($dateNow)->addHours(11)->format('Y-m-d H:i:s');
 
         $queryHistoryData =  DB::table('weather_station_list')
-            ->join('db_aws_bke', 'weather_station_list.id', '=', 'db_aws_bke.idws')
-            ->select('db_aws_bke.*', 'weather_station_list.rain_cal as rain_cal', 'weather_station_list.loc as loc')
-            ->whereBetween('db_aws_bke.datetime', [$last12hour, $dateNow])
+            ->join('weather_station', 'weather_station_list.id', '=', 'weather_station.idws')
+            ->select('weather_station.*', 'weather_station_list.rain_cal as rain_cal', 'weather_station_list.loc as loc')
+            ->whereBetween('weather_station.date', [$last12hour, $dateNow])
             ->where('idws', $id_loc)
-            ->orderBy('db_aws_bke.datetime')
+            ->orderBy('weather_station.date')
             ->get();
 
         $oneDay = ['00', '01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23'];
@@ -1713,14 +1726,14 @@ class MasterController extends Controller
         }
 
         foreach ($queryHistoryData as $key => $value) {
-            $formatted = Carbon::parse($value->datetime)->format('Y-m-d');
-            if ($value->datetime == $formatted . ' 07:00:00' || $value->datetime == $formatted . ' 19:00:00') {
+            $formatted = Carbon::parse($value->date)->format('Y-m-d');
+            if ($value->date == $formatted . ' 07:00:00' || $value->date == $formatted . ' 19:00:00') {
                 unset($queryHistoryData[$key]);
             }
         }
 
         $queryHistoryData = $queryHistoryData->groupBy(function ($item) {
-            return Carbon::parse($item->datetime)->format('H');
+            return Carbon::parse($item->date)->format('H');
         });
 
         $queryForecast12hour = $queryForecast12hour->groupBy(function ($item) {
@@ -1739,8 +1752,8 @@ class MasterController extends Controller
             $inc = 0;
 
             foreach ($value as $key2 => $value2) {
-                $sum_rain_fall += $value2->rain_fall_real;
-                $sum_temp += $value2->temp_real;
+                $sum_rain_fall += $value2->rain_rate;
+                $sum_temp += $value2->temp_out;
                 $inc++;
             }
 
