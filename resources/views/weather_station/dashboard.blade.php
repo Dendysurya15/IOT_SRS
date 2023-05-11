@@ -194,29 +194,29 @@
                         <div class="h5 mb-0 font-weight-bold text-gray-800" id="hum">
                             <div class="mb-2">
                                 <i class="fa-solid fa-water fa-fw" style="color: #183153"></i>
-                                {{-- {{
-                                $item['rain'] != 0 ? $item['rain'] : '-'
-                                }} --}}
+                                <!-- {{-->
+                                <!--$item['rain'] != 0 ? $item['rain'] : '-'-->
+                                <!--}} -->
                                 <span id="rain_{{$key}}"></span>
                                 mm
                             </div>
                             <div class="mb-2">
                                 <i class="fa-solid fa-temperature-three-quarters fa-fw" style="color: #183153"></i>
                                 <span id="max_temp_{{$key}}"></span>
-                                {{-- {{
-                                $item['max_temp'] != 0 ? $item['max_temp'] : '-'
-                                }} --}}
+                                <!-- {{-->
+                                <!--$item['max_temp'] != 0 ? $item['max_temp'] : '-'-->
+                                <!--}} -->
                                 /
                                 <span id="min_temp_{{$key}}"></span>
-                                {{-- {{
+                                {{
                                 $item['min_temp'] != 0 ? $item['min_temp'] : '-'
-                                }} --}}
+                                }}
                                 ºC
                             </div>
                             <i class="fa-solid fa-cloud-showers-heavy fa-fw" style="color: #183153"></i>
-                            {{-- {{
-                            $item['rain_hours'] != 0 ? $item['rain_hours'] : '-'
-                            }} --}}
+                            <!--{{-- {{-->
+                            <!--$item['rain_hours'] != 0 ? $item['rain_hours'] : '-'-->
+                            <!--}} --}}-->
                             <span id="rain_hours_{{$key}}"></span>
                             Jam
                         </div>
@@ -523,7 +523,6 @@
         // $( "#locList" ).datepicker( "option", "disabled", true );
 
         var select2 = document.getElementById('locList');
-        
         var defaultStation = $("#locList option:selected").val();
 
         getDataLoc(defaultStation)
@@ -632,13 +631,15 @@
     rainAll = JSON.parse(rainAll)
     tempAll = JSON.parse(tempAll)
 
+
+    console.log(tempAll)
     var options = {
         series: [{
             name: 'Aktual Temperatur (°C)',
             data: tempHistoryHour
         }, {
             name: 'Forecast Temperatur (°C)',
-            data: tempForecastOneDay
+            data: tempAll
         }],
         chart: {
             height: 350,
@@ -672,7 +673,7 @@
             data: rainHistoryHour
         }, {
             name: 'Forecast Curah Hujan  (mm)',
-            data: rainForecastOneDay
+            data: rainAll
         }],
         chart: {
             height: 350,
@@ -720,7 +721,7 @@
     // temp = temp.substring(0, temp.length - 1);
     // hum += ']'
     // temp += ']'
-
+    
     humFirst = [0, 0]
     tempFirst = [0, 0]
     categoriesHourFirst = ['07:00', '08:00']
@@ -868,6 +869,8 @@
                 var arrAktual = arrResult['dataAktual']
                 var arrPred = arrResult['dataPred']
                 var arrPagiMalam = arrResult['dataPagiMalam']
+                
+                
 
                 let node = document.createTextNode(arrAktual['temp_out']);
 
@@ -877,9 +880,6 @@
                 chDiv.innerHTML = arrAktual['rain_rate'];
 
                 wdVal = arrAktual['windDirPoint']
-
-
-                console.log(wdVal)
 
                 var wind_direction = '';
 
@@ -904,7 +904,7 @@
                 }
 
                 wdDiv.innerHTML = wind_direction;
-                wsDiv.innerHTML = arrAktual['winspeedkmh'];
+                wsDiv.innerHTML = arrAktual['windspeedkmh'];
                 // uvDiv.innerHTML = arrAktual['uv_real'];
 
                 uvVal = arrAktual['uv']
@@ -932,21 +932,23 @@
 
 
                 //perkiraan cuaca seminggu kedepan
+                console.log(arrResult)
                 var Prediksi = Object.entries(arrResult['dataPred'])
 
 
+                
                 Prediksi.forEach(element => {
                     let divTanggal = document.getElementById(element[0])
                     let divRain = document.getElementById('rain_' + element[0])
-                    let divMaxTemp = document.getElementById('max_temp_' + element[0])
-                    let divMinTemp = document.getElementById('min_temp_' + element[0])
+                    // let divMaxTemp = document.getElementById('max_temp_' + element[0])
+                    // let divMinTemp = document.getElementById('min_temp_' + element[0])
                     let divHoursRain = document.getElementById('rain_hours_' + element[0])
                     let divIcon = document.getElementById('icon_' + element[0])
 
                     divTanggal.innerHTML = element[0]
                     divRain.innerHTML = element[1]['rain']
-                    divMaxTemp.innerHTML = element[1]['max_temp']
-                    divMinTemp.innerHTML = element[1]['min_temp']
+                    // divMaxTemp.innerHTML = element[1]['max_temp']
+                    // divMinTemp.innerHTML = element[1]['min_temp']
                     divHoursRain.innerHTML = element[1]['rain_hours']
                     divIcon.innerHTML = `<i class="fa-solid fa-` + element[1]['icon'] + ` fa-2x"  style="color: #183153"></i>`
                 });
@@ -955,6 +957,7 @@
                 // detail perkiraan cuaca
                 var PagiMalam = Object.entries(arrResult['dataPagiMalam'])
 
+                
                 PagiMalam.forEach(element => {
 
                     let divHari = document.getElementById('div_hari_' + element[0])
@@ -997,58 +1000,59 @@
                 });
                 // end - detail perkiraan cuaca
 
-                var rainHistory = '['
-                var tempHistory = '['
-                var categoriesHistory = '['
-                arrResultForecast.forEach(element => {
-                    rainHistory += '"' + element[1]['rain'] + '",'
-                    tempHistory += '"' + element[1]['temp'] + '",'
-                    categoriesHistory += '"' + element[1]['jam'] + '",'
-                });
-                rainHistory = rainHistory.substring(0, rainHistory.length - 1);
-                tempHistory = tempHistory.substring(0, tempHistory.length - 1);
-                categoriesHistory = categoriesHistory.substring(0, categoriesHistory.length - 1);
-                categoriesHistory += ']'
-                rainHistory += ']'
-                tempHistory += ']'
+                // var rainHistory = '['
+                // var tempHistory = '['
+                // var categoriesHistory = '['
+                
+                // arrResultForecast.forEach(element => {
+                //     rainHistory += '"' + element[1]['rain'] + '",'
+                //     tempHistory += '"' + element[1]['temp'] + '",'
+                //     categoriesHistory += '"' + element[1]['jam'] + '",'
+                // });
+                // rainHistory = rainHistory.substring(0, rainHistory.length - 1);
+                // tempHistory = tempHistory.substring(0, tempHistory.length - 1);
+                // categoriesHistory = categoriesHistory.substring(0, categoriesHistory.length - 1);
+                // categoriesHistory += ']'
+                // rainHistory += ']'
+                // tempHistory += ']'
 
-                rainHistory = JSON.parse(rainHistory)
-                tempHistory = JSON.parse(tempHistory)
-                categoriesHistory = JSON.parse(categoriesHistory)
+                // rainHistory = JSON.parse(rainHistory)
+                // tempHistory = JSON.parse(tempHistory)
+                // categoriesHistory = JSON.parse(categoriesHistory)
 
-                var rainForecast = '['
-                var tempForecast = '['
-                var categoriesForecast = '['
-                arrResultHistory.forEach(element => {
-                    rainForecast += '"' + element[1]['rain'] + '",'
-                    tempForecast += '"' + element[1]['temp'] + '",'
-                    categoriesForecast += '"' + element[1]['jam'] + '",'
-                });
-                rainForecast = rainForecast.substring(0, rainForecast.length - 1);
-                tempForecast = tempForecast.substring(0, tempForecast.length - 1);
-                categoriesForecast = categoriesForecast.substring(0, categoriesForecast.length - 1);
-                categoriesForecast += ']'
-                rainForecast += ']'
-                tempForecast += ']'
+                // var rainForecast = '['
+                // var tempForecast = '['
+                // var categoriesForecast = '['
+                // arrResultHistory.forEach(element => {
+                //     rainForecast += '"' + element[1]['rain'] + '",'
+                //     tempForecast += '"' + element[1]['temp'] + '",'
+                //     categoriesForecast += '"' + element[1]['jam'] + '",'
+                // });
+                // rainForecast = rainForecast.substring(0, rainForecast.length - 1);
+                // tempForecast = tempForecast.substring(0, tempForecast.length - 1);
+                // categoriesForecast = categoriesForecast.substring(0, categoriesForecast.length - 1);
+                // categoriesForecast += ']'
+                // rainForecast += ']'
+                // tempForecast += ']'
 
-                rainForecast = JSON.parse(rainForecast)
-                tempForecast = JSON.parse(tempForecast)
-                categoriesForecast = JSON.parse(categoriesForecast)
+                // rainForecast = JSON.parse(rainForecast)
+                // tempForecast = JSON.parse(tempForecast)
+                // categoriesForecast = JSON.parse(categoriesForecast)
 
-                chartTemp.updateSeries([{
-                    name: 'Aktual Temperatur (°C)',
-                    data: tempForecast
-                }, {
-                    name: 'Forecast Temperatur (°C)',
-                    data: tempHistory
-                }])
-                chartCh.updateSeries([{
-                    name: 'Aktual Curah Hujan (mm)',
-                    data: rainHistory
-                }, {
-                    name: 'Forecast Temperatur (°C)',
-                    data: rainForecast
-                }])
+                // chartTemp.updateSeries([{
+                //     name: 'Aktual Temperatur (°C)',
+                //     data: tempForecast
+                // }, {
+                //     name: 'Forecast Temperatur (°C)',
+                //     data: tempHistory
+                // }])
+                // chartCh.updateSeries([{
+                //     name: 'Aktual Curah Hujan (mm)',
+                //     data: rainHistory
+                // }, {
+                //     name: 'Forecast Temperatur (°C)',
+                //     data: rainForecast
+                // }])
 
                 // if(result.length > 10){
                 //     sliceResult = result.slice(1, -1);
