@@ -97,11 +97,11 @@
                     <a class="nav-link" data-widget="pushmenu" href="#" role="hover"><i class="fas fa-bars"></i></a>
                 </li>
                 <li class="nav-item  d-sm-inline-block">
-                    <a class="nav-link">Selamat datang !</a>
+                    <a class="nav-link">Selamat datang, {{ session('user_name') }}!</a>
                 </li>
-                <li class="nav-item dropdown ml-auto">
+                {{-- <li class="nav-item dropdown ml-auto">
                     <a href="" class="nav-link dropdown-toggle" id="navbarDropdown" data-toggle="dropdown"
-                        aria-haspopup="true" aria-expanded="false"> {{Auth::user()->name}}</a>
+                        aria-haspopup="true" aria-expanded="false"> {{ session('user_name') }}</a>
                     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
                         <a href="{{asset('profile')}}" class="dropdown-item"> <i class="nav-icon fa fa-user"></i> <span
                                 class="ml-2"> Edit
@@ -114,13 +114,13 @@
                             onclick="event.preventDefault(); document.getElementById('logout-form').submit();"> <i
                                 class="nav-icon fa fa-sign-out-alt"></i><span class="ml-2"> Log Out</span></a>
                     </div>
-                </li>
+                </li> --}}
 
 
             </ul>
         </nav>
         <aside class="main-sidebar sidebar-light-primary elevation-4">
-            <a href="{{ url('/') }}" class="brand-link">
+            <a href="{{ url('/dashboard') }}" class="brand-link">
                 <img src="{{ asset('/img/CBI-logo.png') }}" alt="Covid Tracker"
                     class="brand-image img-circle elevation-3" style="opacity: .8">
                 <span class="brand-text font-weight-light">IoT</span>
@@ -198,13 +198,17 @@
                             </a>
                         </li>
                         <li class="nav-item fixed-bottom mb-3" heig style="position: absolute;">
-                            <a href="" class="nav-link "
+                            <a href="{{ route('logout') }}" class="nav-link "
                                 onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                                 <i class="nav-icon fa fa-sign-out-alt"></i>
                                 <p>
                                     Logout
                                 </p>
                             </a>
+
+                            <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                                @csrf
+                            </form>
                         </li>
 
                     </ul>

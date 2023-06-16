@@ -46,8 +46,9 @@
                                     <select disabled name="lokasi" id="locList" class="form-control">
                                         {{-- <option selected disabled>Pilih Lokasi</option> --}}
                                         @foreach($listStation as $loc)
-                                        <option value="{{ $loc->id }}">{{ $loc->loc }}</option>
+                                        <!--<option value="{{ $loc->id }}">{{ $loc->loc }}</option>-->
                                         @endforeach
+                                        <option value="15">SRS</option>
                                     </select>
 
 
@@ -164,13 +165,22 @@
 
     </div>
 </div>
-<div class="card">
+{{-- <div class="card">
     <div class="card-header card-light">
         <h5>Ringkasan Kelembaban dan Temperatur Tanah selama 24 jam terakhir</h5>
     </div>
     <div class="card-body pb-5">
         <div id="ktAktualForecast"></div>
     </div>
+</div> --}}
+<div class="card">
+    <div class="card-header card-light">
+        <h5>Ringkasan Curah Hujan Aktual selama 30 hari terakhir</h5>
+    </div>
+    <div class="card-body pb-5">
+        <div id="chAktual30"></div>
+    </div>
+    <div class="card-body" style="margin-top: -70px" id="ketRainRate"></div>
 </div>
 <div class="mt-2 mb-3">
     <span>
@@ -526,7 +536,7 @@
         var defaultStation = $("#locList option:selected").val();
 
         getDataLoc(defaultStation)
-        // });
+        getDataRainRate(defaultStation)
     });
 
     $('#locList').change(function() {
@@ -632,7 +642,7 @@
     tempAll = JSON.parse(tempAll)
 
 
-    console.log(tempAll)
+    // console.log(tempAll)
     var options = {
         series: [{
             name: 'Aktual Temperatur (°C)',
@@ -759,6 +769,71 @@
     };
     var chartKt = new ApexCharts(document.querySelector("#ktAktualForecast"), options);
     chartKt.render();
+
+    function getDataRainRate(locIndex) {
+        var _token = $('input[name="_token"]').val();
+
+        $.ajax({
+            url: "{{ route('getHistoryRainRate') }}",
+            method: "POST",
+            data: {
+                id_loc: locIndex,
+                _token: _token
+            },
+            success: function(result) {
+                var dates = [];
+                var values1 = [];
+                var values2 = [];
+
+                var parseResult = JSON.parse(result)
+                var dataChart1 = Object.entries(parseResult['dataChart1'])
+                var dataChart2 = Object.entries(parseResult['dataChart2'])
+
+                dataChart1.forEach(element => {
+                    dates.push(element[0]);
+                    values1.push(element[1]);
+                });
+
+                dataChart2.forEach(element => {
+                    values2.push(element[1]);
+                });
+
+                var avgDaily = parseResult.avgDaily
+                var sumMonth = parseResult.sumMonth.toFixed(2)
+
+                var ketRainRate = document.getElementById('ketRainRate');
+                ketRainRate.innerHTML = '<a style="font-size: 20px;">Rata-rata per hari : </a><a style="font-weight: bold; color: blue; font-size: 20px;">' + avgDaily + '</a><br><a style="font-size: 20px;">Total curah hujan dalam 30 hari : </a><a style="font-weight: bold; color: blue; font-size: 20px;">' + sumMonth + '</a>';
+                
+                var options = {
+                    series: [{
+                        name: 'Curah Hujan',
+                        data: values2
+                    }, {
+                        name: 's/d Hari ini',
+                        data: values1
+                    }],
+                    chart: {
+                        height: 350,
+                        type: 'area'
+                    },
+                    dataLabels: {
+                        enabled: false
+                    },
+                    colors: ['#1565c0', '#b71c1c'],
+                    stroke: {
+                        curve: 'smooth'
+                    },
+                    xaxis: {
+                        type: 'string',
+                        categories: dates
+                    }
+                }
+
+                var chart = new ApexCharts(document.querySelector("#chAktual30"), options);
+                chart.render();
+            }
+        })
+    }
 
     function getDataLoc(locIndex) {
 

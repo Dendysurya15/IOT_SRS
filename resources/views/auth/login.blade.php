@@ -37,31 +37,21 @@
                             style="color: #4CAF50">Web AWS IoT</span>!
                     </p>
                     {{-- {{-- @error('msg') --}}
-                    @error('email')
-                    <div id="boxAlert" style="margin: 3% 3% -3% 3%">
+                    @if (session('error'))
+                    <div id="boxAlert" style="margin: 3% 2% -3% 2%">
                         <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                            <strong> {{ $message }}</strong>
+                            <strong> {{ session('error') }}</strong>
                             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                         </div>
                     </div>
-                    @enderror
-
-                    @error('password')
-                    <div id="boxAlert" style="margin: 3% 3% -3% 3%">
-                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                            <strong> {{ $message }}</strong>
-                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                        </div>
-                    </div>
-                    @enderror
-
+                    @endif
 
                     <div class="card-body" style="font-family: Arial, Helvetica, sans-serif">
-                        <form method="POST" action="{{ route('login') }}">
+                        <form method="POST" action="{{ route('authenticate') }}">
                             @csrf
                             <div class="form-group mb-3">
                                 {{-- <label for="exampleInputEmail1" class="mb-3">Username</label> --}}
-                                <input type="email" placeholder="Masukkan username" id="username" class="form-control"
+                                <input type="text" placeholder="Masukkan username" id="username" class="form-control"
                                     name="email" required autofocus>
                             </div>
 

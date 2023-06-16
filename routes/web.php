@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\MasterController;
+use App\Http\Controllers\LoginController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -21,12 +22,13 @@ use Illuminate\Support\Facades\Route;
 
 //weather_station route
 // Route::get('/', [MasterController::class, 'homepage']);
-Route::group(['middleware' => 'auth'], function () {
+Route::middleware('checksession')->group(function () {
     Route::get('/dashboard_ws', [MasterController::class, 'dashboard_ws'])->name('dashboard_ws');
     Route::get('/grafik', [MasterController::class, 'Grafik']);
     Route::get('/tabel', [MasterController::class, 'Tabel']);
     Route::get('month_weather_forecast', [MasterController::class, 'month_weather_forecast'])->name('month_weather_forecast');
     Route::post('getHistoryForecastDay', [MasterController::class, 'getHistoryForecastDay'])->name('getHistoryForecastDay');
+    Route::post('getHistoryRainRate', [MasterController::class, 'getHistoryRainRate'])->name('getHistoryRainRate');
     Route::get('getDay/{id}', [MasterController::class, 'getDay'])->name('getDay');
 
     Route::get('/dashboard_soil', [MasterController::class, 'dashboard_soil'])->name('dashboard_soil');
@@ -49,8 +51,16 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/exportAktual', [MasterController::class, 'exportAktual'])->name('exportAktual');
     Route::get('/profile', [HomeController::class, 'profile'])->name('profile');
     Route::post('/update_profile', [HomeController::class, 'updateProfile'])->name('update_profile');
+    
+    Route::get('/stationList', [MasterController::class, 'stationList'])->name('stationList');
+    Route::post('insertStation', [MasterController::class, 'insertStation'])->name('insertStation');
+    Route::post('updateStation', [MasterController::class, 'updateStation'])->name('updateStation');
+    Route::post('deleteStation', [MasterController::class, 'deleteStation'])->name('deleteStation');
+
+    Route::get('/dashboard', [HomeController::class, 'index'])->name('dashboard');
 });
 
-Auth::routes();
-
-Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::get('/', [LoginController::class, 'index'])->name('login');
+Route::get('/login', [LoginController::class, 'index'])->name('login');
+Route::post('/', [LoginController::class, 'authenticate'])->name('authenticate');
+Route::post('logout', [LoginController::class, 'logout'])->name('logout');

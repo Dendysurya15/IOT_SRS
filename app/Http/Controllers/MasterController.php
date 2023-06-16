@@ -1508,6 +1508,70 @@ class MasterController extends Controller
         return Redirect::back()->with(['success' => 'Berhasil menghapus data oer']);
     }
 
+    public function getHistoryRainRate(Request $request) {
+        $id_loc = $request->get('id_loc');
+        $startDate = Carbon::now()->subDays(30)->format('Y-m-d H:i:s');
+        $endDate = Carbon::now()->format('Y-m-d H:i:s');
+
+        $query = DB::table('weather_station_list')
+            ->join('weather_station', 'weather_station_list.id', '=', 'weather_station.idws')
+            ->select('weather_station.*')
+            ->whereBetween('weather_station.date', [$startDate, $endDate])
+            ->where('weather_station.idws', $id_loc)
+            ->get();
+            
+        $query = $query->groupBy(function ($item) {
+            $date = Carbon::parse($item->date);
+            $indonesianMonth = [
+                1 => 'Jan',
+                2 => 'Feb',
+                3 => 'Mar',
+                4 => 'Apr',
+                5 => 'Mei',
+                6 => 'Jun',
+                7 => 'Jul',
+                8 => 'Ags',
+                9 => 'Sep',
+                10 => 'Okt',
+                11 => 'Nov',
+                12 => 'Des',
+            ];
+            $formattedDate = $date->format('d') . ' ' . $indonesianMonth[$date->month];
+            return $formattedDate;
+        });
+
+        $arrRainRate = array();
+        foreach ($query as $key => $value) {
+            $sum_rain_rate = 0;
+            foreach ($value as $key1 => $value1) {
+                $sum_rain_rate += $value1->rain_rate;
+            }
+            $arrRainRate[$key] = round($sum_rain_rate, 0);
+        }
+
+        $cumulativeSum = 0;
+        foreach ($arrRainRate as $key => $value) {
+            $cumulativeSum += $value;
+            $arrRrNow[$key] =  round($cumulativeSum, 0);
+        }
+
+        $sum_month = 0;
+        foreach ($arrRrNow as $key => $value) {
+            $sum_month += round($value, 0);
+        }
+        $averageRrDay = round($sum_month / count($arrRrNow), 0);
+        $lastIndex = end($arrRrNow);
+
+        $arrData = array();
+        $arrData['avgDaily'] = $averageRrDay;
+        $arrData['sumMonth'] = $lastIndex;
+        $arrData['dataChart1'] = $arrRrNow;
+        $arrData['dataChart2'] = $arrRainRate;
+
+        echo json_encode($arrData);
+        exit();
+    }
+
     public function getHistoryForecastDay(Request $request)
     {
         $id_loc = $request->get('id_loc');
@@ -2050,7 +2114,7 @@ class MasterController extends Controller
             $formatted = new DateTime($value['datetime']);
             $tanggal = $formatted->format('d M');
             $jam        = date('H:i', strtotime($value['datetime']));
-            $AktualPastWeekRF .= "[{v: '" . $tanggal . "', f:'" . $tanggal . "'}, {v:" . $value['rain_fall'] . ", f:'" . $value['rain_fall'] . " mm " . "'}                                
+            $AktualPastWeekRF .= "[{v: '" . $tanggal . "', f:'" . $tanggal . "'}, {v:" . $value['rain_fall_real'] . ", f:'" . $value['rain_fall_real'] . " mm " . "'}                                
                             ],";
         }
 
@@ -2064,7 +2128,7 @@ class MasterController extends Controller
 
                 $tanggal    = date('H:i d-m-Y', strtotime($value['datetime']));
                 $jam        = date('H:i', strtotime($value['datetime']));
-                $awsPerhariini .= "[{v: '" . $jam . "', f:'" . $tanggal . "'}, {v:" . $value['temperature'] . ", f:'" . $value['temperature'] . " °C " . $value['loc'] . "'}                                      
+                $awsPerhariini .= "[{v: '" . $jam . "', f:'" . $tanggal . "'}, {v:" . $value['temp_real'] . ", f:'" . $value['temp_real'] . " °C " . $value['loc'] . "'}                                      
                                 ],";
             }
 
@@ -2073,7 +2137,7 @@ class MasterController extends Controller
             if (strtotime($perMinggu) > strtotime($filMinggu)) {
                 $tanggal    = date('H:i d-m-Y', strtotime($value['datetime']));
                 $jam        = date('H:i', strtotime($value['datetime']));
-                $awsPerminggu .= "[{v: '" . $jam . "', f:'" . $tanggal . "'}, {v:" . $value['temperature'] . ", f:'" . $value['temperature'] . " °C " . $value['loc'] . "'}                                
+                $awsPerminggu .= "[{v: '" . $jam . "', f:'" . $tanggal . "'}, {v:" . $value['temp_real'] . ", f:'" . $value['temp_real'] . " °C " . $value['loc'] . "'}                                
                                 ],";
             }
 
@@ -2081,7 +2145,7 @@ class MasterController extends Controller
             if ($filBulan == $perBulan) {
                 $tanggal    = date('H:i d-m-Y', strtotime($value['datetime']));
                 $jam        = date('H:i', strtotime($value['datetime']));
-                $awsPerbulan .= "[{v: '" . $jam . "', f:'" . $tanggal . "'}, {v:" . $value['temperature'] . ", f:'" . $value['temperature'] . " °C " . $value['loc'] . "'}                                     
+                $awsPerbulan .= "[{v: '" . $jam . "', f:'" . $tanggal . "'}, {v:" . $value['temp_real'] . ", f:'" . $value['temp_real'] . " °C " . $value['loc'] . "'}                                     
                                 ],";
             }
         }
@@ -2633,6 +2697,69 @@ class MasterController extends Controller
             $sel_aws = json_decode(json_encode($sel_aws), true);
 
             return view('water_level/tabel', ['data' => $sel_aws]);
+        }
+    }
+
+    public static function stationList() {
+        $query = DB::table('weather_station_list')->get();
+        return view('weather_station.listStation', ['data' => $query]);
+    }
+
+    public function insertStation(Request $request)
+    {
+        $request->validate([
+            'loc' => 'required',
+            'flags' => 'required'
+        ]);
+
+        $check = DB::table('weather_station_list')->where('id', $request->input('id'))->pluck('id')->toArray();
+        if (empty($check)) {
+            DB::table('weather_station_list')
+                ->insert(['rain_cal' => '0', 'loc' => $request->input('loc'), 'lat' => '0', 'lon' => '0', 'desc' => '', 'flags' => $request->input('flags')]);
+
+            $version = DB::table("station_version")->where('id', 1)->first()->version;
+            DB::table("station_version")->where('id', 1)->update(['version' => $version + 1]);
+
+            return redirect('stationList')->with('status', 'Station berhasil ditambahkan!');
+        } else {
+            return redirect('stationList')->with('error', 'Station gagal ditambahkan!');
+        }
+    }
+
+    public function updateStation(Request $request)
+    {
+        $request->validate([
+            'loc' => 'required',
+            'flags' => 'required'
+        ]);
+
+        $result = DB::table('weather_station_list')
+            ->where('id', $request->input('id'))
+            ->update(['loc' => $request->input('loc'), 'flags' => $request->input('flags')]);
+
+        if ($result) {
+            $version = DB::table("station_version")->where('id', 1)->first()->version;
+            DB::table("station_version")->where('id', 1)->update(['version' => $version + 1]);
+
+            return redirect('stationList')->with('status', 'Station berhasil diperbarui!');
+        } else {
+            return redirect('stationList')->with('error', 'Station gagal diperbarui!');
+        }
+    }
+
+    public function deleteStation(Request $request)
+    {
+        $check = DB::table('weather_station_list')->where('id', $request->input('id'))->pluck('id')->toArray();
+
+        if (isset($check)) {
+            DB::table('weather_station_list')->where('id', $request->input('id'))->delete();
+
+            $version = DB::table("station_version")->where('id', 1)->first()->version;
+            DB::table("station_version")->where('id', 1)->update(['version' => $version + 1]);
+            
+            return redirect('stationList')->with('status', 'Station berhasil dihapus!');
+        } else {
+            return redirect('stationList')->with('error', 'Station gagal dihapus!');
         }
     }
 }
