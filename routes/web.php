@@ -25,6 +25,8 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('checksession')->group(function () {
     Route::get('/dashboard_ws', [MasterController::class, 'dashboard_ws'])->name('dashboard_ws');
     Route::get('/grafik', [MasterController::class, 'Grafik']);
+    Route::get('generateDataGrafik', [MasterController::class, 'generateDataGrafik'])->name('generateDataGrafik');
+
     Route::get('/tabel', [MasterController::class, 'Tabel']);
     Route::get('month_weather_forecast', [MasterController::class, 'month_weather_forecast'])->name('month_weather_forecast');
     Route::post('getHistoryForecastDay', [MasterController::class, 'getHistoryForecastDay'])->name('getHistoryForecastDay');

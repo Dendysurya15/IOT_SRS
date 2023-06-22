@@ -1,4 +1,9 @@
 @include('layout.header')
+<style>
+  .empty-field {
+    border: 2px solid red;
+  }
+</style>
 <div class="content-wrapper">
   <!-- Content Header (Page header) -->
   <section class="content-header">
@@ -7,159 +12,109 @@
   <!-- Main content -->
   <section class="content">
     <div class="container-fluid">
+
+    <div class="card p-3">
+      <h4>Filter Grafik </h4>
+      <p style="color:grey">Pilih filter data yang akan ditampilkan, adapun default parameter yaitu <i>Curah Hujan </i> </p>
+      <div class="row">
+      <div class="col-2">
+      <select name="" id="lokasi"  class="form-control">
+            <option value="" selected disabled>Pilih Lokasi</option>
+            @foreach ($listLoc as $key => $list)
+            <option value="{{$list}}">{{$list}}</option>
+            @endforeach
+          </select>
+        </div>
+        <div class="col-2">
+      <select name="" id="params"  class="form-control">
+              <option value=""  selected disabled>Parameter AWS</option>
+              <option  value="Curah Hujan">Curah Hujan ()</option>
+              <option  value="Temperatur">Temperatur ()</option>
+              <option  value="Kelembaban">Kelembaban ()</option>
+              <option  value="UV">UV ()</option>
+              <option  value="Radiasi Matahari">Radiasi Matahari ()</option>
+              <option  value="Kecepatan Angin">Kecepatan Angin ()</option>
+            </select>
+          </div>  
+          <div class="col-2">
+            <input type="date" id="tanggal" class="form-control">
+          </div>  
+         
+          <button type="button" class="btn btn-primary mr-2" onclick="getSelectedValues()">Filters</button>
+          <button type="button" class="btn btn-danger" onclick="resetForm()">Reset</button>
+          </div>
+        </div>
+       
+      </div>
+   
+ 
+     
+      <div class="resultDiv" style="display:none">
+      <div class="row">
+        <div class="col">
+          <div class="card card-green">
+            <div class="card-header">
+              <h3 class="card-title">
+                <i class="fas fa-wind pr-2"></i> <span id="cardResult1"></span> dalam 24 jam terakhir pada <span id='day'></span>
+              </h3>
+              <div class="row float-sm-right">
+              </div>
+            </div>
+            <div class="card-body">
+            <div class="col">
+            <div id="graphCard1" ></div>
+          </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
       <div class="row">
         <div class="col">
           <!-- Curah Hujan -->
-
+        
           <div class="card card-green">
             <div class="card-header">
               <h3 class="card-title">
-                <i class="fas fa-wind pr-2"></i>Prediksi Curah Hujan untuk 1 minggu kedepan
+                <i class="fas fa-wind pr-2"></i><span id="cardResult2"></span> dalam seminggu terakhir dari  <span id='startWeek' class="font-weight-bold"></span> hingga <span id='endWeek' class="font-weight-bold"></span>
               </h3>
               <div class="row float-sm-right">
               </div>
             </div>
             <div class="card-body">
-              <div id="forecastMingguan">
+              <div class="col">
+
+              <div id="graphCard2" ></div>
               </div>
             </div><!-- /.card-body -->
           </div><!-- Curah Hujan -->
 
-          <div class="card card-green">
-            <div class="card-header">
-              <h3 class="card-title">
-                <i class="fas fa-wind pr-2"></i>Data Aktual Curah Hujan Seminggu Terakhir
-              </h3>
-              <div class="row float-sm-right">
-              </div>
-            </div>
-            <div class="card-body">
-              <div id="aktualRFPastWeek">
-              </div>
-            </div><!-- /.card-body -->
-          </div><!-- Curah Hujan -->
-
-          <div class="card card-green">
-            <div class="card-header">
-              <h3 class="card-title">
-                <i class="fas fa-wind pr-2"></i>Data Aws Hari Ini
-              </h3>
-              <div class="row float-sm-right">
-                <div class="col-md-4 float-sm-right">
-                  <h3 class="card-title">
-                    PILIH DATA
-                  </h3>
-                </div>
-                <form class="col-md-5" action="{{ url('/perhari') }}" method="post">
-
-                  {{ csrf_field() }}
-                  <select name="pilih_data" class="form-control" onchange="this.form.submit()">
-                    @if(isset($fillHariini) && !empty($fillHariini))
-                    <option value="{{ $fillHariini['value'] }}" selected disabled>{{
-                      $fillHariini['data'] }}</option>
-                    @endif
-                    <option value="suhu_udara">Suhu Udara</option>
-                    <option value="kelembaban_udara">Kelembaban Udara</option>
-                    <option value="curah_hujan">Curah Hujan</option>
-                  </select>
-                </form>
-                <div class="col-md-3 float-sm-right">
-                  <div class="card-tools">
-                    <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i>
-                    </button>
-                    <button type="button" class="btn btn-tool" data-card-widget="remove"><i
-                        class="fas fa-times"></i></button>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="card-body">
-              <div class="chart" id="awsPerHariini">
-              </div>
-            </div><!-- /.card-body -->
-          </div><!-- Curah Hujan -->
-
-          <!-- Curah Hujan -->
-          <div class="card card-green">
-            <div class="card-header">
-              <h3 class="card-title">
-                <i class="fas fa-wind pr-2"></i>Data Aws Minggu Ini
-              </h3>
-
-              <div class="row float-sm-right">
-                <div class="col-md-4 float-sm-right">
-                  <h3 class="card-title">
-                    PILIH DATA
-                  </h3>
-                </div>
-                <form class="col-md-5" action="{{ url('/perminggu') }}" method="post">
-                  {{ csrf_field() }}
-                  <select name="pilih_data" class="form-control" onchange="this.form.submit()">
-                    @if(isset($fillMinggu) && !empty($fillMinggu))
-                    <option value="{{ $fillMinggu['value'] }}" selected disabled>{{
-                      $fillMinggu['data'] }}</option>
-                    @endif
-                    <option value="suhu_udara">Suhu Udara</option>
-                    <option value="kelembaban_udara">Kelembaban Udara</option>
-                    <option value="curah_hujan">Curah Hujan</option>
-                  </select>
-                </form>
-                <div class="col-md-3 float-sm-right">
-                  <div class="card-tools">
-                    <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i>
-                    </button>
-                    <button type="button" class="btn btn-tool" data-card-widget="remove"><i
-                        class="fas fa-times"></i></button>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="card-body">
-              <div class="chart" id="awsPerMinggu">
-              </div>
-            </div><!-- /.card-body -->
-          </div><!-- Curah Hujan -->
-
-          <!-- Curah Hujan -->
-          <div class="card card-green">
-            <div class="card-header">
-              <h3 class="card-title">
-                <i class="fas fa-wind pr-2"></i>Data Aws Bulan Ini
-              </h3>
-              <div class="row float-sm-right">
-                <div class="col-md-4 float-sm-right">
-                  <h3 class="card-title">
-                    PILIH DATA
-                  </h3>
-                </div>
-                <form class="col-md-5" action="{{ url('/perbulan') }}" method="post">
-                  {{ csrf_field() }}
-                  <select name="pilih_data" class="form-control" onchange="this.form.submit()">
-                    @if(isset($fillBulan) && !empty($fillBulan))
-                    <option value="{{ $fillBulan['value'] }}" selected disabled>{{
-                      $fillBulan['data'] }}</option>
-                    @endif
-                    <option value="suhu_udara">Suhu Udara</option>
-                    <option value="kelembaban_udara">Kelembaban Udara</option>
-                    <option value="curah_hujan">Curah Hujan</option>
-                  </select>
-                </form>
-                <div class="col-md-3 float-sm-right">
-                  <div class="card-tools">
-                    <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i>
-                    </button>
-                    <button type="button" class="btn btn-tool" data-card-widget="remove"><i
-                        class="fas fa-times"></i></button>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="card-body">
-              <div class="chart" id="awsPerbulan">
-              </div>
-            </div><!-- /.card-body -->
-          </div><!-- Curah Hujan -->
         </div>
+      </div>
+
+      <div class="row">
+        <div class="col">
+          <!-- Curah Hujan -->
+        
+          <div class="card card-green">
+            <div class="card-header">
+              <h3 class="card-title">
+                <i class="fas fa-wind pr-2"></i><span id="cardResult3"></span> dalam 1 bulan terakhir pada <span id="monthYear" class="font-weight-bold"></span>
+              </h3>
+              <div class="row float-sm-right">
+              </div>
+            </div>
+            <div class="card-body">
+             <div class="col">
+             <div id="graphCard3" ></div>
+             </div>
+            </div><!-- /.card-body -->
+          </div><!-- Curah Hujan -->
+
+        </div>
+      </div>
+      
       </div>
       <!-- /.row -->
     </div><!-- /.container-fluid -->
@@ -182,160 +137,258 @@
 <script src="{{ asset('public/js/demo.js') }}"></script>
 
 <script src="{{ asset('public/js/loader.js') }}"></script>
-
+<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
 <script type="text/javascript">
-  google.charts.load('current', {
-    'packages': ['corechart']
+  // Declare the chart variable outside the function
+  var chart1;
+  var chart2;
+  var chart3;
+
+ function getSelectedValues() {
+  // Retrieve the selected values
+  var lokasiValue = document.getElementById("lokasi").value;
+  var paramsValue = document.getElementById("params").value;
+  var tanggalValue = document.getElementById("tanggal").value;
+  var _token = $('input[name="_token"]').val();
+
+  var givenDate = new Date(tanggalValue); // Replace with your desired date
+
+  // Find the starting date (Sunday) of the week
+  var startingDate = new Date(givenDate);
+  startingDate.setDate(givenDate.getDate() - givenDate.getDay());
+
+  // Find the ending date (Saturday) of the week
+  var endingDate = new Date(givenDate);
+  endingDate.setDate(givenDate.getDate() + (6 - givenDate.getDay()));
+
+  // Format the dates as YYYY-MM-DD strings
+  var optionsWeek = { weekday: 'long', day: 'numeric', month: 'short', year: 'numeric', timeZone: 'Asia/Jakarta' };
+  var optionMonthYear = {  month: 'long', year: 'numeric', timeZone: 'Asia/Jakarta' };
+  var optionDay = { day: 'numeric',  month: 'long', year: 'numeric', timeZone: 'Asia/Jakarta' };
+  var varMonthYear = givenDate.toLocaleDateString('id-ID', optionMonthYear);
+  var varDay = givenDate.toLocaleDateString('id-ID', optionDay);
+  var startingDateStr = startingDate.toLocaleDateString('id-ID', optionsWeek);
+  var endingDateStr = endingDate.toLocaleDateString('id-ID', optionsWeek);
+// Reset the field highlighting
+resetFieldHighlighting();
+  if (lokasiValue !== "" && paramsValue !== "" && tanggalValue !== "") {
+    
+    $.ajax({
+    url: "{{ route('generateDataGrafik') }}", // Replace with your Laravel route URL
+    method: "GET",
+    data: {
+      lokasi: lokasiValue,
+      params: paramsValue,
+      tanggal: tanggalValue,
+      tglAwalMinggu: startingDateStr,
+      tglAkhirMinggu: endingDateStr,
+      bulan : varMonthYear,
+      _token: _token
+    },
+    success: function(response) {
+     
+      // Handle the response from the server
+      // console.log("Response:", response.arrResult.hari);
+      var hour = Object.keys(response.arrResult.hari);
+      var valDayResult = Object.values(response.arrResult.hari);
+
+      var listDateWeek = Object.keys(response.arrResult.minggu);
+      var valWeekResult = Object.values(response.arrResult.minggu);
+
+      var listDateMonth = Object.keys(response.arrResult.bulan);
+      var valMonthResult = Object.values(response.arrResult.bulan);
+
+
+      // Example: Show the resultDiv
+      document.querySelector('.resultDiv').style.display = 'block';
+
+      // Example: Set the values to the cardResult elements
+      document.getElementById("cardResult1").textContent = paramsValue;
+      document.getElementById("cardResult2").textContent = paramsValue;
+      document.getElementById("cardResult3").textContent = paramsValue;
+      document.getElementById("startWeek").textContent = startingDateStr;
+      document.getElementById("endWeek").textContent = endingDateStr;
+      document.getElementById("monthYear").textContent = varMonthYear;
+      document.getElementById("day").textContent = varDay;
+
+    
+      renderChart1(paramsValue, valDayResult, hour);
+      renderChart2(paramsValue, valWeekResult, listDateWeek);
+      renderChart3(paramsValue, valMonthResult, listDateMonth);
+
+       
+
+       
+    },
+    error: function(xhr, status, error) {
+      // Handle the error response
+      console.log("Error:", error);
+    }
   });
-  google.charts.setOnLoadCallback(drawChart);
-  google.charts.setOnLoadCallback(drawForecast);
-  google.charts.setOnLoadCallback(drawAktualRF);
+  } else {
+    if (lokasiValue === "") {
+      document.getElementById("lokasi").classList.add("empty-field");
+    }
+    if (paramsValue === "") {
+      document.getElementById("params").classList.add("empty-field");
+    }
+    if (tanggalValue === "") {
+      document.getElementById("tanggal").classList.add("empty-field");
+    }
+    // alert("Please fill in all fields.");
+  }
+}
+function resetForm() {
+  // Clear the selected values
+  document.getElementById("lokasi").value = "";
+  document.getElementById("params").value = "";
+  document.getElementById("tanggal").value = "";
+  resetFieldHighlighting();
+  // Hide the resultDiv
+  document.querySelector('.resultDiv').style.display = 'none';
+  chart.destroy();
+  chart = null;
+}
 
-  function drawAktualRF() {
-    var title = '<?php echo $arrPastWeekRF['title']; ?>';
-    var data = new google.visualization.DataTable();
-      data.addColumn('string', 'Day');
-      data.addColumn('number',title );
+function resetFieldHighlighting() {
+  // Remove the "empty-field" class from all fields
+  var fields = document.querySelectorAll('.form-control');
+  fields.forEach(function(field) {
+    field.classList.remove("empty-field");
+  });
+}
 
-      data.addRows([
-        <?php echo $arrPastWeekRF['data']; ?>
-      ]);
 
-        var options = {
-          chartArea: {},
-      series: {
-        1: {
-          targetAxisIndex: 1
+function renderChart1(paramsValue, datas, categories){
+  var options = {
+          series: [{
+            name: paramsValue,
+            data:datas
+        }],
+          chart: {
+          height: 350,
+          type: 'area',
+          zoom: {
+            enabled: false
+          }
+        },
+        dataLabels: {
+          enabled: false
+        },
+        stroke: {
+          curve: 'straight',
+           width: 4,
+        },
+        grid: {
+          row: {
+            colors: ['#f3f3f3', 'transparent'], // takes an array which will be repeated on columns
+            opacity: 0.5
+          },
+        },
+        xaxis: {
+          categories: categories,
         }
-      },
-      theme: 'material',
-      legend: {
-        position: 'top'
-      },
-      height: 300
         };
 
-        var chart = new google.visualization.LineChart(document.getElementById('aktualRFPastWeek'));
-
-        chart.draw(data, options);
-      }
-
-  function drawForecast() {
-    var title = '<?php echo $arrForecast['title']; ?>';
-    var data = new google.visualization.DataTable();
-      data.addColumn('string', 'Day');
-      data.addColumn('number',title );
-
-      data.addRows([
-        <?php echo $arrForecast['data']; ?>
-      ]);
-
-        var options = {
-          chartArea: {},
-      series: {
-        1: {
-          targetAxisIndex: 1
+        if (chart1) {
+          // Update the chart data and categories
+          chart1.updateSeries([{ name: paramsValue, data: datas }]);
+          chart1.updateOptions({ 
+            xaxis: { categories: categories },
+            stroke: { width: 4 } // Adjust the line thickness as needed
+          },true);
+        } else {
+          // Create a new chart instance
+          chart1 = new ApexCharts(document.querySelector("#graphCard1"), options);
+          chart1.render();
         }
-      },
-      theme: 'material',
-      legend: {
-        position: 'top'
-      },
-      height: 300
+}
+function renderChart2(paramsValue, datas, categories){
+  var options = {
+          series: [{
+            name: paramsValue,
+            data:datas
+        }],
+          chart: {
+          height: 350,
+          type: 'area',
+          zoom: {
+            enabled: false
+          }
+        },
+        dataLabels: {
+          enabled: false
+        },
+        stroke: {
+          curve: 'straight'
+        },
+        // title: {
+        //   text: 'Product Trends by Month',
+        //   align: 'left'
+        // },
+        grid: {
+          row: {
+            colors: ['#f3f3f3', 'transparent'], // takes an array which will be repeated on columns
+            opacity: 0.5
+          },
+        },
+        xaxis: {
+          categories: categories,
+        }
         };
 
-        var chart = new google.visualization.LineChart(document.getElementById('forecastMingguan'));
-
-        chart.draw(data, options);
-      }
-
-  function drawChart() {  
-    //--Aws Perminggu  
-    var judulPerhariini = '<?php echo $arrAwsHariIni['judul']; ?>';
-
-    var dataAwsPerHariIni = new google.visualization.DataTable();
-    dataAwsPerHariIni.addColumn('string', 'Name');
-    dataAwsPerHariIni.addColumn('number', judulPerhariini);
-    dataAwsPerHariIni.addRows([
-      <?php echo $arrAwsHariIni['data']; ?>
-    ]);
-
-    var optionsAwsPerHariIni = {
-      chartArea: {},
-      series: {
-        1: {
-          targetAxisIndex: 1
+        if (chart2) {
+          // Update the chart data and categories
+          chart2.updateSeries([{ name: paramsValue, data: datas }]);
+          chart2.updateOptions({ xaxis: { categories: categories } });
+        } else {
+          // Create a new chart instance
+          chart2 = new ApexCharts(document.querySelector("#graphCard2"), options);
+          chart2.render();
         }
-      },
-      theme: 'material',
-      legend: {
-        position: 'top'
-      },
-      height: 300
-    };
-
-    var awsPerHariIni = new google.visualization.LineChart(document.getElementById('awsPerHariini'));
-    awsPerHariIni.draw(dataAwsPerHariIni, optionsAwsPerHariIni);
-    //Aws Perminggu--
-
-    //--Aws Perminggu  
-    var judulPerminggu = '<?php echo $arrAwsPerminggu['judul']; ?>';
-
-    var dataAwsPerMinggu = new google.visualization.DataTable();
-    dataAwsPerMinggu.addColumn('string', 'Name');
-    dataAwsPerMinggu.addColumn('number', judulPerminggu);
-    dataAwsPerMinggu.addRows([
-      <?php echo $arrAwsPerminggu['data']; ?>
-    ]);
-
-    var optionsAwsPerMinggu = {
-      chartArea: {},
-      series: {
-        1: {
-          targetAxisIndex: 1
+}
+function renderChart3(paramsValue, datas, categories){
+  var options = {
+          series: [{
+            name: paramsValue,
+            data:datas
+        }],
+          chart: {
+          height: 350,
+          type: 'area',
+          zoom: {
+            enabled: false
+          }
+        },
+        dataLabels: {
+          enabled: false
+        },
+        stroke: {
+          curve: 'straight'
+        },
+        // title: {
+        //   text: 'Product Trends by Month',
+        //   align: 'left'
+        // },
+        grid: {
+          row: {
+            colors: ['#f3f3f3', 'transparent'], // takes an array which will be repeated on columns
+            opacity: 0.5
+          },
+        },
+        xaxis: {
+          categories: categories,
         }
-      },
-      theme: 'material',
-      legend: {
-        position: 'top'
-      },
-      height: 300
-    };
+        };
 
-    var awsPerMinggu = new google.visualization.LineChart(document.getElementById('awsPerMinggu'));
-    awsPerMinggu.draw(dataAwsPerMinggu, optionsAwsPerMinggu);
-    //Aws Perminggu--
-
-    //--Aws Perbulan  
-    var judulPerbulan = '<?php echo $arrAwsPerbulan['judul']; ?>';
-
-    var dataAwsPerBulan = new google.visualization.DataTable();
-    dataAwsPerBulan.addColumn('string', 'Name');
-    dataAwsPerBulan.addColumn('number', judulPerbulan);
-    dataAwsPerBulan.addRows([
-      <?php echo $arrAwsPerbulan['data']; ?>
-    ]);
-
-    var optionsAwsPerBulan = {
-      chartArea: {},
-      series: {
-        1: {
-          targetAxisIndex: 1
+        if (chart3) {
+          // Update the chart data and categories
+          chart3.updateSeries([{ name: paramsValue, data: datas }]);
+          chart3.updateOptions({ xaxis: { categories: categories } });
+        } else {
+          // Create a new chart instance
+          chart3 = new ApexCharts(document.querySelector("#graphCard3"), options);
+          chart3.render();
         }
-      },
-      theme: 'material',
-      legend: {
-        position: 'top'
-      },
-      height: 300
-    };
-
-    var awsPerBulan = new google.visualization.LineChart(document.getElementById('awsPerbulan'));
-    awsPerBulan.draw(dataAwsPerBulan, optionsAwsPerBulan);
-    //Aws Perbulann--
-
-  }  
-  $(window).resize(function() {
-    drawStuff();
-  });
+}
 </script>

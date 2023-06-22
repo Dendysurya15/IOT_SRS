@@ -2034,154 +2034,270 @@ class MasterController extends Controller
 
     public static function Grafik()
     {
-        $sel_aws = DB::table('weather_station_list')
-            ->join('db_aws_bke', 'weather_station_list.id', '=', 'db_aws_bke.idws')
-            ->select('db_aws_bke.*', 'weather_station_list.rain_cal as rain_cal', 'weather_station_list.loc as loc')
-            ->orderByDesc('db_aws_bke.id')
-            ->get();
+        
+        $listLoc = DB::table('weather_station_list')
+        ->where('desc','Real')
+        ->pluck('loc');
+        
+        return view('weather_station/grafik',['listLoc' => $listLoc]);
+    }
 
-        $date =  Carbon::now()->format('Y-m-d');
+    public static function generateDataGrafik(Request $request)
+    {
+        
+        $lokasi = $request->get('lokasi');
+        $params = $request->get('params');
+        $tgl = $request->get('tanggal');
+        $startWeek = $request->get('tglAwalMinggu');
+        $startWeek = explode(', ', $startWeek)[1];
+        $endWeek = $request->get('tglAkhirMinggu');
+        $endWeek = explode(', ', $endWeek)[1];
+        $bulanTahun = $request->get('bulan');
 
-        $formatted = new DateTime($date);
-        $formatted = $formatted->format('Y-m-d');
+        $arr = explode(' ', $bulanTahun);
+        $bulan = $arr[0];
+        $tahun = $arr[1];
 
-        $date = $formatted . ' 00:00:00';
-
-        $convert = new DateTime($date);
-
-        $from = $convert->format('Y-m-d H:i:s');
-
-        $parse = Carbon::parse($from)->subDays(6);
-        $parse = $parse->format('Y-m-d');
-
-        $pastWeek = $parse . ' 00:00:00';
-        $toToday = $formatted . ' 23:59:59';
-        // dd($toToday);
-        $dateParse = Carbon::parse($from)->addDays(6);
-        $dateParse = $dateParse->format('Y-m-d');
-
-        $dateParse = $dateParse . ' 23:59:59';
-        $to = new DateTime($dateParse);
-        $to = $to->format('Y-m-d H:i:s');
-
-        $queryPrediction =  DB::table('weather_station_list')
-            ->join('db_aws_bke', 'weather_station_list.id', '=', 'db_aws_bke.idws')
-            ->select('db_aws_bke.*', 'weather_station_list.rain_cal as rain_cal', 'weather_station_list.loc as loc')
-            ->whereBetween('db_aws_bke.datetime', [$from, $to])
-            // ->orderByDesc('db_aws_bke.id')
-            ->get();
-
-        $queryPrediction = json_decode(json_encode($queryPrediction), true);
-
-        // dd($queryPrediction);
-        $queryHistory =  DB::table('weather_station_list')
-            ->join('db_aws_bke', 'weather_station_list.id', '=', 'db_aws_bke.idws')
-            ->select('db_aws_bke.*', 'weather_station_list.rain_cal as rain_cal', 'weather_station_list.loc as loc')
-            ->whereBetween('db_aws_bke.datetime', [$pastWeek, $toToday])
-            ->get();
-
-        $queryHistory = json_decode(json_encode($queryHistory), true);
-
-        $dateToday = Carbon::now()->format('Y-m-d');
-
-        $sel_aws = json_decode(json_encode($sel_aws), true);
-        $forecastMingguan = '';
-        $AktualPastWeekRF = '';
-        #PERBULAN
-        $awsPerbulan        = '';
-        $arrAwsPerbulan     = '';
-        $filBulan           = date('m');
-
-        #PERMINGGU
-        $awsPerminggu       = '';
-        $arrAwsPerminggu    = '';
-        $filMinggu          = date('d-m-Y', strtotime("-2 week"));
-
-        #PERHARIINI
-        $awsPerhariini      = '';
-        $arrAwsPerhariini   = '';
-        // $filHariini         = date('d-m-Y', strtotime("2021-11-13"));
-
-        foreach ($queryPrediction as $key => $value) {
-            $formatted = new DateTime($value['datetime']);
-            $tanggal = $formatted->format('d M');
-            $jam        = date('H:i', strtotime($value['datetime']));
-            $forecastMingguan .= "[{v: '" . $tanggal . "', f:'" . $tanggal . "'}, {v:" . $value['rain_forecast'] . ", f:'" . $value['rain_forecast'] . " mm " . "'}                                
-                            ],";
+        
+        switch ($params) {
+            case 'Curah Hujan':
+                $params = 'rain_rate';
+                break;
+                case 'Temperatur':
+                    $params = 'temp_out';
+                    break;
+                    case 'Kelembaban':
+                        $params = 'hum_out';
+                        break;
+                        case 'UV':
+                            $params = 'uv';
+                            break;
+                            case 'Radiasi Matahari':
+                                $params = 'solar_radiation';
+                                break;
+                                case 'Kecepatan Angin':
+                                    $params = 'windspeedkmh';
+                                    break;
+                                    
+            default:
+                # code...
+                break;
+        }
+        
+        $hours = [];
+        for ($i = 0; $i < 24; $i++) {
+        $hour = str_pad($i, 2, '0', STR_PAD_LEFT);
+        $hours[] = $hour . ':00';
         }
 
-        foreach ($queryHistory as $key => $value) {
-            $formatted = new DateTime($value['datetime']);
-            $tanggal = $formatted->format('d M');
-            $jam        = date('H:i', strtotime($value['datetime']));
-            $AktualPastWeekRF .= "[{v: '" . $tanggal . "', f:'" . $tanggal . "'}, {v:" . $value['rain_fall_real'] . ", f:'" . $value['rain_fall_real'] . " mm " . "'}                                
-                            ],";
+        //nilai default
+        $arrDayResult = array();
+        foreach ($hours as $key => $value) {
+            $arrDayResult[$value] = 0;
         }
 
-        foreach ($sel_aws as $value) {
-            $perBulan   = date('m', strtotime($value['datetime']));
+        $queryID = DB::table('weather_station_list')
+            ->where('loc',$lokasi)
+            ->first()->id;
 
-            #PERHARIINI            
-            $perHariini  = date('d-m-Y', strtotime($value['datetime']));
+        $queryRawDay = DB::table('weather_station')
+            ->select('weather_station.*', DB::raw('DATE_FORMAT(date, "%H:00") as hour'))
+            
+            ->where('weather_station.idws', '=', $queryID)
+            ->whereRaw('DATE_FORMAT(date, "%Y-%m-%d") = ?', [$tgl])
+            ->orderBy('weather_station.date','asc')
+            ->get()
+            ->groupBy('hour');
 
-            if (strtotime($perHariini) > strtotime($dateToday)) {
+            if (!$queryRawDay->isEmpty()) {
+                foreach($queryRawDay as $key=>$value){
+                    $sum = 0;
+                    $inc = 0;
+                    foreach($value as $key2 => $value2){
+                        $sum+= $value2->$params;
+                        $inc++;
+        
+                        
+                    }
+                    
+                    if($params != 'rain_rate'){
+                        if($params == 'uv'){
+                            $sum = round($sum/$inc);
+                        }else{
+                            $sum = round($sum/$inc,2);
+                        }
+                    }
+        
+                    $arrDayResult[$key] = $sum;
+                }
+            }
+    
+      
+        //nilai default 0 dalam 1 week pada tanggal pilihan
+        $arrWeekResult = [];
+        // Map Indonesian month names to English month names
+        $monthTranslations = [
+            'Januari' => 'January',
+            'Februari' => 'February',
+            'Maret' => 'March',
+            'April' => 'April',
+            'Mei' => 'May',
+            'Juni' => 'June',
+            'Juli' => 'July',
+            'Agustus' => 'August',
+            'September' => 'September',
+            'Oktober' => 'October',
+            'November' => 'November',
+            'Desember' => 'December',
+        ];
+        
+        $reverseTranslations = array_flip($monthTranslations);
+        $currentDate = Carbon::createFromFormat('d F Y', strtr($startWeek, $monthTranslations));
+        $endDate = Carbon::createFromFormat('d F Y', strtr($endWeek, $monthTranslations));
+        $startDateFormatted = $currentDate->format('Y-m-d');
+        $endDateFormatted = $endDate->format('Y-m-d');
+        
+        while ($currentDate <= $endDate) {
+            $formattedDate = $currentDate->format('d M');
+            // Reverse translate the month name
+            // $englishMonth = $currentDate->format('F');
+            // $indonesianMonth = $reverseTranslations[$englishMonth];
 
-                $tanggal    = date('H:i d-m-Y', strtotime($value['datetime']));
-                $jam        = date('H:i', strtotime($value['datetime']));
-                $awsPerhariini .= "[{v: '" . $jam . "', f:'" . $tanggal . "'}, {v:" . $value['temp_real'] . ", f:'" . $value['temp_real'] . " °C " . $value['loc'] . "'}                                      
-                                ],";
+            // $formattedDate = str_replace($englishMonth, $indonesianMonth, $formattedDate);
+            $arrWeekResult[$formattedDate] = 0;
+            $currentDate->addDay();
+        }
+
+        $queryRawWeek = DB::table('weather_station')
+            // ->select('weather_station.*', DB::raw('DATE_FORMAT(date, "%d %M") as tgl'))
+            ->where('weather_station.idws', '=', $queryID)
+            ->whereRaw('DATE(date) BETWEEN ? AND ?', [$startDateFormatted, $endDateFormatted])
+            ->orderBy('weather_station.date','asc')
+            ->get();
+    
+        if (!$queryRawWeek->isEmpty()) {
+            foreach ($queryRawWeek as $key => $value) {
+                $date = Carbon::parse($value->date);
+                $indonesianMonth = [
+                    1 => 'Jan',
+                    2 => 'Feb',
+                    3 => 'Mar',
+                    4 => 'Apr',
+                    5 => 'Mei',
+                    6 => 'Jun',
+                    7 => 'Jul',
+                    8 => 'Ags',
+                    9 => 'Sep',
+                    10 => 'Okt',
+                    11 => 'Nov',
+                    12 => 'Des',
+                ];
+                $value->tgl = $date->format('d') . ' ' . $indonesianMonth[$date->month];
+            }
+    
+            $queryWeek = $queryRawWeek->groupBy('tgl');
+
+            foreach($queryWeek as $key=>$value){
+            $sum = 0;
+            $inc = 0;
+            foreach($value as $key2 => $value2){
+                $sum+= $value2->$params;
+                $inc++;
+            }
+            
+            if($params != 'rain_rate'){
+                if($params == 'uv'){
+                    $sum = round($sum/$inc);
+                }else{
+                    $sum = round($sum/$inc,2);
+                }
             }
 
-            #PERMINGGU
-            $perMinggu  = date('d-m-Y', strtotime($value['datetime']));
-            if (strtotime($perMinggu) > strtotime($filMinggu)) {
-                $tanggal    = date('H:i d-m-Y', strtotime($value['datetime']));
-                $jam        = date('H:i', strtotime($value['datetime']));
-                $awsPerminggu .= "[{v: '" . $jam . "', f:'" . $tanggal . "'}, {v:" . $value['temp_real'] . ", f:'" . $value['temp_real'] . " °C " . $value['loc'] . "'}                                
-                                ],";
-            }
+            $arrWeekResult[$key] = $sum;
+        }
+        }
+        
+        //nilai default 0 per tanggal pada bulan pilihan
+        // Get the first day of the month
+        $startDate = Carbon::createFromFormat('F Y',strtr($bulanTahun, $monthTranslations))->startOfMonth();
+        // Get the last day of the month
+        $endDate = $startDate->copy()->endOfMonth();
+        $arrMonthResult = [];
+        $currentDate = $startDate;
+        while ($currentDate <= $endDate) {
+            $formattedDate = $currentDate->format('d M');
 
-            #PERBULAN
-            if ($filBulan == $perBulan) {
-                $tanggal    = date('H:i d-m-Y', strtotime($value['datetime']));
-                $jam        = date('H:i', strtotime($value['datetime']));
-                $awsPerbulan .= "[{v: '" . $jam . "', f:'" . $tanggal . "'}, {v:" . $value['temp_real'] . ", f:'" . $value['temp_real'] . " °C " . $value['loc'] . "'}                                     
-                                ],";
+            // Reverse translate the month name
+            $englishMonth = $currentDate->format('F');
+            $indonesianMonth = $reverseTranslations[$englishMonth];
+
+            $formattedDate = str_replace($englishMonth, $indonesianMonth, $formattedDate);
+
+            $arrMonthResult[$formattedDate] = 0;
+            $currentDate->addDay();
+        }
+
+
+        $translatedBulan = $monthTranslations[$bulan];
+        $monthNumber = Carbon::parse($translatedBulan)->format('n');
+        
+        $queryRawMonth = DB::table('weather_station')
+        ->where('weather_station.idws', '=', $queryID)
+        ->whereMonth('weather_station.date', '=', $monthNumber) // Filter by month (June = 6)
+        ->orderBy('weather_station.date', 'asc')
+        ->get();
+
+    if (!$queryRawMonth->isEmpty()) {
+        foreach ($queryRawMonth as $key => $value) {
+            $date = Carbon::parse($value->date);
+            $indonesianMonth = [
+                1 => 'Jan',
+                2 => 'Feb',
+                3 => 'Mar',
+                4 => 'Apr',
+                5 => 'Mei',
+                6 => 'Jun',
+                7 => 'Jul',
+                8 => 'Ags',
+                9 => 'Sep',
+                10 => 'Okt',
+                11 => 'Nov',
+                12 => 'Des',
+            ];
+            $value->tgl = $date->format('d') . ' ' . $indonesianMonth[$date->month];
+        }
+
+        $queryMonth = $queryRawMonth->groupBy('tgl');
+
+        foreach($queryMonth as $key=>$value){
+        $sum = 0;
+        $inc = 0;
+        foreach($value as $key2 => $value2){
+            $sum+= $value2->$params;
+            $inc++;
+        }
+        
+        if($params != 'rain_rate'){
+            if($params == 'uv'){
+                $sum = round($sum/$inc);
+            }else{
+                $sum = round($sum/$inc,2);
             }
         }
-        $arrAwsPerhariini = [
-            'judul'     => 'Suhu Udara',
-            'data'      => $awsPerhariini
-        ];
 
-        $arrAwsPerminggu = [
-            'judul'     => 'Suhu Udara',
-            'data'      => $awsPerminggu
-        ];
+        $arrMonthResult[$key] = $sum;
+    }
+    }
+        
+        $arrResult['hari'] = $arrDayResult;
+        $arrResult['minggu'] = $arrWeekResult;
+        $arrResult['bulan'] = $arrMonthResult;
 
-        $arrAwsPerbulan = [
-            'judul'     => 'Suhu Udara',
-            'data'      => $awsPerbulan
-        ];
-
-        $arrForecast = [
-            'title' => 'Prediksi Curah Hujan',
-            'data' => $forecastMingguan,
-        ];
-
-        $arrPastWeekRF = [
-            'title' => 'Aktual Curah Hujan',
-            'data' => $AktualPastWeekRF,
-        ];
-
-        // dd($arrForecast);
-        return view('weather_station/grafik', [
-            'arrAwsHariIni'     => $arrAwsPerhariini,
-            'arrAwsPerminggu'   => $arrAwsPerminggu,
-            'arrAwsPerbulan'    => $arrAwsPerbulan,
-            'arrForecast' => $arrForecast,
-            'arrPastWeekRF' => $arrPastWeekRF,
+        return response()->json([
+            'arrResult'=> $arrResult,
         ]);
+      
+        
     }
 
     public static function Tabel()

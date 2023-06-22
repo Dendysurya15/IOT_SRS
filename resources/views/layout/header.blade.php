@@ -39,17 +39,17 @@
     <link rel="stylesheet" href="{{ asset('plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css') }}">
 
 
-    download
+ 
     <link href="{{ asset('css/css.css') }}" rel="stylesheet">
 
-    download
+ 
     <script type="text/javascript" src="{{ asset('js/loader.js') }}"></script>
 
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs4/dt-1.11.5/datatables.min.css" />
 
-    download
+ 
     <link rel="stylesheet" type="text/css" href="{{ asset('css/buttons.dataTables.min.css') }}" />
-    download
+ 
     <link rel="stylesheet" type="text/css" href="{{ asset('css/jquery.dataTables.min.css') }}" />
 
 
