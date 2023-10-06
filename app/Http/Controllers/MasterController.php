@@ -2321,6 +2321,7 @@ class MasterController extends Controller
         $listLoc = DB::table('water_level_list')->pluck('location', 'id');
         $dateToday = Carbon::now();
         $avg = '';
+        $arrJam = ['00:00', '01:00', '02:00', '03:00', '04:00', '05:00', '06:00', '07:00', '08:00', '09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00'];
         $dataWlperhari = DB::table('water_level_list')
             ->join('water_level', 'water_level_list.id', '=', 'water_level.idwl')
             ->select('water_level.*', 'water_level_list.location as location')
@@ -2372,6 +2373,7 @@ class MasterController extends Controller
             'maps' => $queryMaps,
             'defaultId' => $defaultId,
             'lastDataInDay' => $lastDataInDay,
+            'arrJam' => $arrJam,
         ]);
     }
 
@@ -2739,6 +2741,74 @@ class MasterController extends Controller
         return view('weather_station/month_view_forecast', ['loc' => $aws_loc, 'query' => $arrMonth, 'thisMonth' => $dateNow, 'nextMonth' => $nextMonth]);
     }
 
+    public function get_wl_dashboard(Request $request)
+    {
+        $tgl = $request->get('tgl');
+        $idLoc = $request->get('loc');
+
+        $dataWlperhari = DB::table('water_level_list')
+        ->join('water_level', 'water_level_list.id', '=', 'water_level.idwl')
+        ->select('water_level.*', 'water_level_list.location as location')
+        ->orderBy('water_level.datetime')
+        ->whereDate('water_level.datetime', '=', $tgl)
+        ->where('water_level_list.id', '=', $idLoc)
+            ->get();
+
+        $avg_lvlin = '-';
+        $avg_lvlout = '-';
+        $avg_lvlact = '-';
+        $lastlvlin = '-';
+        $lastlvlout = '-';
+        $lastlvlact = '-';
+        $lastDate = 'tidak ada';
+
+        if (!$dataWlperhari->isEmpty()) {
+            $sumlvl_in = 0;
+            $sumlvl_out = 0;
+            $sumlvl_act = 0;
+            foreach ($dataWlperhari as $item) {
+                $sumlvl_in += $item->lvl_in;
+                $sumlvl_out += $item->lvl_out;
+                $sumlvl_act += $item->lvl_act;
+            }
+
+
+            $avg_lvlin = round(($sumlvl_in / count($dataWlperhari)), 2);
+            $avg_lvlout = round(($sumlvl_out / count($dataWlperhari)), 2);
+            $avg_lvlact  =  round(($sumlvl_act / count($dataWlperhari)), 2);
+
+
+            //get last data in day
+            $lastDataInDay = DB::table('water_level_list')
+            ->join('water_level', 'water_level_list.id', '=', 'water_level.idwl')
+            ->select('water_level.*', 'water_level_list.location as location')
+            ->orderBy('water_level.datetime', 'desc')
+                ->whereDate('water_level.datetime', '=', $tgl)
+                ->where('water_level_list.id', '=', $idLoc)
+                ->first();
+
+            $getDate = Carbon::parse($lastDataInDay->datetime)->locale('id');
+            $getDate->settings(['formatFunction' => 'translatedFormat']);
+            $lastDate = $getDate->format('l, j F Y H:i');
+            $lastlvlin = $lastDataInDay->lvl_in;
+            $lastlvlout = $lastDataInDay->lvl_out;
+            $lastlvlact = $lastDataInDay->lvl_act;
+
+            $dataWlperhari = json_decode(json_encode($dataWlperhari), true);
+        }
+
+        $finalData = [
+            'avgIn' =>      $avg_lvlin,
+            'avgOut' =>      $avg_lvlout,
+            'avgAct' =>      $avg_lvlact,
+            'lastDate' => $lastDate,
+            'lastlvlin' =>      $lastlvlin,
+            'lastlvlout' =>      $lastlvlout,
+            'lastlvlact' =>      $lastlvlact,
+        ];
+
+        return response()->json($finalData);
+    }
     public function tabel_wl(Request $request)
     {
         $defaultId = '';

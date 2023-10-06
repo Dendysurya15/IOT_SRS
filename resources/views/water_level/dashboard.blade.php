@@ -1,234 +1,271 @@
 @include('layout.header')
 
 <div class="content-wrapper">
-    <!-- //Content Header AWS 1-->
 
-    <section class="content-header">
-        <div class="content-fluid">
-            <div>
-                <div class="col-sm">
-                    <div class=" row ">
-                        <div class="col-auto">
-                            <h1 class="m-0 text-dark">
-                                Water Level {{$listLoc[Request()->id ?: $defaultId]}}, Hari ini {{ $timeToday }}
-                            </h1>
-                        </div>
-                        <div class="col-auto ml-auto">
-                            <form class="" action="{{ route('dashboard_wl') }}" method="get">
-                                <select name="id" class="form-control-sm" onchange="this.form.submit()">
-                                    <option value="" selected disabled>Pilih Lokasi</option>
-                                    @foreach ($listLoc as $key => $list)
-                                    <option value="{{$key}}">{{$list}}</option>
-                                    @endforeach
-                                </select>
-                            </form>
-                        </div>
-                        {{-- <h5 class="list-inline-item">Lokasi</h5> --}}
-                    </div>
-                </div>
+<section class="content-header"></section>
+<!--Content Header AWS 1//-->
 
-
-            </div>
+<!-- // Main content AWS 1-->
+<section class="content">
+    <div class="col-12">
+        {{csrf_field()}}
+        <div class="row p-1 ">
+            Filter Tanggal dan Mill :
         </div>
-    </section>
-    <!--Content Header AWS 1//-->
+<div class="row p-1">
+    <input class="form-control col-md-3" type="date" name="tgl" id="inputDate">
+    <br>
+    <select id="listLoc" class="form-control col-md-3">
+        <option selected disabled>Pilih Lokasi</option>
+        @foreach ($listLoc as $key => $list)
+<option value="{{$key}}" {{ $key==0 ? 'selected' : '' }}>{{$list}}</option>
+@endforeach
+</select>
+</div>
+<div class="row p-1">
+    <div class="col-4 col-lg-4 m-1 p-5 mb-2 dashboard_div" style="background-color: white;border-radius: 5px;">
+        <h2 style="color:#013C5E;font-weight: 550">Water Level IoT
+        </h2>
+        <p style="color:#013C5E;">Portal website ini digunakan untuk memonitoring data dari proses pemantuan ketinggian
+            air di <span id="namePlot"></span>
+        </p>
+        <p style="color:#013C5E;">Update data device terakhir pada <span class="font-italic font-weight-bold"
+                id="last_date"></span></p>
+        <ul class="list-group">
+            <li class="list-group-item">
+                <div class="d-flex flex-row bd-highlight ">
 
-    <!-- // Main content AWS 1-->
-    <section class="content">
-        <div class="container-fluid">
-
-            <div class="row">
-
-                <div class="col-md">
-                    <div class="card card-success">
-                        <div class="card-header">
-                            <div class="card-title" style="text-transform: uppercase;"> Level In Terakhir</div>
-                        </div>
-                        <div class="card-body">
-                            <div class="row no-gutters align-items-center">
-                                <div class="col mr-2">
-                                    <div class="h5 mb-0 font-weight-bold text-gray-800" id="hum_in1">
-                                        {{
-                                        isset($lastDataInDay->lvl_in) ? ''.$lastDataInDay->lvl_in.' cm' : "Data
-                                        Level In tidak
-                                        ada"}}
-                                    </div>
-                                </div>
-                                <div class="col-auto">
-                                    <i id="s_hum_in1" class="fas fa-water fa-2x"></i>
-                                </div>
-                            </div>
-                        </div>
+                    <div class=" bd-highlight mr-2"><i class="fa-solid fa-equals" style="color:grey"></i>
                     </div>
-                </div>
+<div class="flex-grow-1  bd-highlight">Level In Terakhir</div>
+<div class=" bd-highlight" id="lastIn"></div>
+</div>
+</li>
+<li class="list-group-item">
+    <div class="d-flex flex-row bd-highlight ">
 
-                <div class="col-md">
-                    <div class="card card-success">
-                        <div class="card-header">
-                            <div class="card-title" style="text-transform: uppercase;"> Level Out Terakhir</div>
-                        </div>
-                        <div class="card-body">
-                            <div class="row no-gutters align-items-center">
-                                <div class="col mr-2">
-                                    <div class="h5 mb-0 font-weight-bold text-gray-800" id="hum_in1">
-                                        {{
-                                        isset($lastDataInDay->lvl_out) ? ''.$lastDataInDay->lvl_out.' cm' : "Data
-                                        Level In tidak
-                                        ada"}}
-                                    </div>
-                                </div>
-                                <div class="col-auto">
-                                    <i id="s_hum_in1" class="fas fa-water fa-2x"></i>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+<div class=" bd-highlight mr-2"><i class="fa-solid fa-equals" style="color:grey"></i>
+</div>
+<div class="flex-grow-1  bd-highlight">Level Out Terakhir</div>
+<div class=" bd-highlight" id="lastOut"></div>
+</div>
+</li>
+<li class="list-group-item">
+    <div class="d-flex flex-row bd-highlight ">
 
-                {{-- @if ($lastDataInDay->lvl_act_)) --}}
-                <div class="col-md">
-                    <div class="card card success">
-                        <div class="card-header">
-                            <div class="card-title" style="text-transform: uppercase;">Level Actual Terakhir</div>
-                        </div>
-                        <div class="card-body">
-                            <div class="row no-gutters align-items-center">
-                                <div class="col mr-2">
-                                    <div class="h5 mb-0 font-weight-bold text-gray-800" id="hum_in1">
-                                        {{
-                                        isset($lastDataInDay->lvl_act) ? ''.$lastDataInDay->lvl_act.' cm' : "Data
-                                        Level Actual tidak
-                                        ada"}}
-                                    </div>
-                                </div>
-                                <div class="col-auto">
-                                    <i id="s_hum_in1" class="fas fa-water fa-2x"></i>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                {{-- @endif --}}
+<div class=" bd-highlight mr-2"><i class="fa-solid fa-equals" style="color:grey"></i>
+</div>
+<div class="flex-grow-1  bd-highlight">Level Actual Terakhir</div>
+<div class=" bd-highlight" id="lastAct"></div>
+</div>
+</li>
+</ul>
 
-            </div>
-            <div class="row">
-                <!--//Suhu Ruangan Aws 1-->
-                <div class="col-md">
-                    <div class="card card-primary">
-                        <div class="card-header">
-                            <div class="card-title" style="text-transform: uppercase;">Rata-rata Level In</div>
-                        </div>
-                        <div class="card-body">
-                            <div class="row no-gutters align-items-center">
-                                <div class="col mr-2">
-                                    <div class="h5 mb-0 font-weight-bold text-gray-800" id="temp_in1">{{
-                                        isset($avg['lvl_in']) ? ''.$avg['lvl_in'].' cm' : "Data Level In tidak ada"}}
-                                    </div>
-                                </div>
-                                <div class="col-auto">
-                                    <i id="s_temp_in1" class="fas fa-water fa-2x"></i>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!--Suhu Ruangan//-->
+{{-- rata rata --}}
 
-                <!--//Kelembaban Ruangan Aws 1-->
-                <div class="col-md">
-                    <div class="card card-primary">
-                        <div class="card-header">
-                            <div class="card-title" style="text-transform: uppercase;">Rata-rata Level Out</div>
-                        </div>
-                        <div class="card-body">
-                            <div class="row no-gutters align-items-center">
-                                <div class="col mr-2">
-                                    <div class="h5 mb-0 font-weight-bold text-gray-800" id="hum_in1">
-                                        {{ isset($avg['lvl_out']) ? ''.$avg['lvl_out'].' cm' : "Data Level Out tidak
-                                        ada"}}
-                                    </div>
-                                </div>
-                                <div class="col-auto">
-                                    <i id="s_hum_in1" class="fas fa-water fa-2x"></i>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!--Kelembaban Ruangan-->
+<br>
+<ul class="list-group">
+    <li class="list-group-item">
+        <div class="d-flex flex-row bd-highlight ">
 
-                <!--//Kelembaban Ruangan Aws 1-->
-                {{-- @if ($avg['lvl_act'] != 0)) --}}
-                <div class="col-md">
-                    <div class="card card-primary">
-                        <div class="card-header">
-                            <div class="card-title" style="text-transform: uppercase;">Rata-rata Level Actual</div>
+<div class=" bd-highlight mr-2"><i class="fa-solid fa-water" style="color: #013C5E"></i>
                         </div>
-                        <div class="card-body">
-                            <div class="row no-gutters align-items-center">
-                                <div class="col mr-2">
-                                    <div class="h5 mb-0 font-weight-bold text-gray-800" id="hum_in1">
-                                        {{
-                                        isset($avg['lvl_act']) ? ''.$avg['lvl_act'].' cm' : "Data Level Actual tidak
-                                        ada"}}
-                                    </div>
-                                </div>
-                                <div class="col-auto">
-                                    <i id="s_hum_in1" class="fas fa-water fa-2x"></i>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                {{-- @endif --}}
+<div class="flex-grow-1  bd-highlight">Rata rata Level In</div>
+<div class=" bd-highlight" id="avgIn"></div>
+</div>
+</li>
+<li class="list-group-item">
+    <div class="d-flex flex-row bd-highlight ">
+
+<div class=" bd-highlight mr-2"><i class="fa-solid fa-water" style="color: #013C5E"></i>
+</div>
+<div class="flex-grow-1  bd-highlight">Rata rata Level Out</div>
+<div class=" bd-highlight" id="avgOut"></div>
+</div>
+</li>
+<li class="list-group-item">
+    <div class="d-flex flex-row bd-highlight ">
+
+<div class=" bd-highlight mr-2"><i class="fa-solid fa-water" style="color: #013C5E"></i>
+</div>
+<div class="flex-grow-1  bd-highlight">Rata rata Level Actual</div>
+<div class=" bd-highlight" id="avgAct"></div>
+</div>
+</li>
+</ul>
+
+</div>
+<div class="col p-5 mb-2 m-1 dashboard_div" style="background-color: white;border-radius: 5px;">
+    <div id="lineChart"></div>
+
+</div>
+
+</div>
+</div>
+</div>
 
 
 
-                <!--Kelembaban Ruangan-->
-
-            </div>
-            <!-- /.row -->
 
 
-            <div class="row">
 
-                <div class="col-md-6">
-                    <div class="card">
-                        @if (!is_null($maps->foto_udara))
-                        <div class=" card-header text-center">
-                            <span class="font-weight-bold" style="text-transform: uppercase;">
-                                Lokasi Pompa Air {{$listLoc[Request()->id ?: $defaultId]}} view Satelit
-                            </span>
-                        </div>
-                        <div class="card-body">
-                            <a href="https://maps.google.com/maps?t=k&q={{$maps->lat}},{{$maps->long}}" target=”_blank”>
-                                <img src="{{ asset('../img/'.$maps->foto_udara) }}" class="img-fluid"
-                                    alt="Responsive image">
-                            </a>
-                        </div>
-                        @endif
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="card">
-                        @if (!is_null($maps->foto_udara))
-                        <div class="card-header text-center">
-                            <span class="font-weight-bold" style="text-transform: uppercase;">
-                                Foto di lokasi {{$listLoc[Request()->id ?: $defaultId]}}
-                            </span>
-                        </div>
-                        <div class="card-body">
-                            <img src="{{ asset('../img/'.$maps->foto_lokasi) }}" class="img-fluid"
-                                alt="Responsive image">
-                        </div>
-                        @endif
-                    </div>
-                </div>
-            </div>
-        </div><!-- /.container-fluid -->
     </section>
 
 
     <!--Coba Tambah Koment -->
 </div>
 @include('layout.footer')
+<script src="{{ asset('/public/plugins/jquery/jquery.min.js') }}"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+
+<script>
+    var inputDate = document.getElementById('inputDate');
+    var listLokasi = document.getElementById('listLoc');
+    // var counterDay = document.getElementById('counterDay');
+
+    inputDate.valueAsDate = new Date(); // Set the date input to today's date
+    listLokasi.value = '1'; // Set the select element to option 1
+    var colorArray = ['#AB221D', '#4CAF50', '#FF9800', '#BE8C64', '#001E3C'];
+
+
+var seriesData = [];
+
+for (var i = 0; i <5; i++) {
+    var series = {
+        name: i,
+        data: [], // Replace this with your actual data
+        color: colorArray[i],
+    };
+    seriesData.push(series);
+}
+
+var initialData = {
+    series: seriesData,
+    chart: {
+        type: 'line',
+        height: 350,
+        curve: 'smooth',
+    },
+    dataLabels: {
+        enabled: false
+    },
+    stroke: {
+        curve: "smooth"
+    },
+    grid: {
+        padding: {
+            right: 30,
+            left: 20
+        }
+    },
+    xaxis: {
+        categories:@json($arrJam)
+    },
+    
+};
+
+// Initialize the chart
+var chartLine = new ApexCharts(document.querySelector("#lineChart"), initialData);
+chartLine.render();
+
+function pushData() {
+        tgl = inputDate.value
+        loc = listLokasi.value
+
+        var _token = $('input[name="_token"]').val();
+        Swal.fire({
+                title: 'Loading',
+                html: '<span class="loading-text">Mohon Tunggu...</span>',
+                allowOutsideClick: false,
+                showConfirmButton: false,
+                willOpen: () => {
+                    Swal.showLoading();
+                }
+
+            });
+        $.ajax({
+        url:"{{ route('get_wl_dashboard') }}",
+        method:"POST",
+        data:{ tgl:tgl,loc:loc, _token:_token},
+        
+        success:function(result)
+        {
+            Swal.close();
+
+            var dateRequestElement = document.getElementById('avgIn');
+            var dateRequest2Element = document.getElementById('avgOut');
+            var dateRequest3Element = document.getElementById('avgAct');
+            var dateLastInElement = document.getElementById('lastIn');
+            var dateLastOutElement = document.getElementById('lastOut');
+            var dateLastActElement = document.getElementById('lastAct');
+            var dateLastDateElement = document.getElementById('last_date');
+            dateLastDateElement.textContent =  result.lastDate
+            dateRequestElement.textContent =  result.avgIn !== '-' ? result.avgIn + ' cm' : result.avgIn
+            dateRequest2Element.textContent = result.avgOut !== '-' ? result.avgOut + ' cm' : result.avgOut
+            dateRequest3Element.textContent =  result.avgAct !== '-' ? result.avgAct + ' cm' : result.avgAct
+            dateLastInElement.textContent =  result.lastlvlin !== '-' ? result.lastlvlin + ' cm' : result.lastlvlin
+            dateLastOutElement.textContent = result.lastlvlout !== '-' ? result.lastlvlout + ' cm' : result.lastlvlout
+            dateLastActElement.textContent =  result.lastlvlact !== '-' ? result.lastlvlact + ' cm' : result.lastlvlact
+            
+
+    //         if (isSameDate) {
+    //             var dateJamLastElement = document.getElementById('jam_last');
+    //         var dateJamLast2Element = document.getElementById('jam_last2');
+    //         var dateJamLast3Element = document.getElementById('jam_last3');
+    //         dateJamLastElement.textContent = 'hingga pukul ' + result.jamLast ;
+    //         dateJamLast2Element.textContent = 'hingga pukul ' + result.jamLast ;
+    //         dateJamLast3Element.textContent = 'hingga pukul ' + result.jamLast ;
+    //         } else{
+    //             // Clear the text content of the span elements when the date is not the same
+    
+    
+    // var dateJamLastElement = document.getElementById('jam_last');
+    // var dateJamLast2Element = document.getElementById('jam_last2');
+    // var dateJamLast3Element = document.getElementById('jam_last3');
+
+    // dateJamLastElement.textContent = '';
+    // dateJamLast2Element.textContent = '';
+    // dateJamLast3Element.textContent = '';
+    //         }
+            
+            
+    //         var dateTotalCounterElement = document.getElementById('totalCounter');
+    //         dateTotalCounterElement.textContent =  result.totalCounter ;
+    //         var dateHiOerElement = document.getElementById('hiOer');
+    //         dateHiOerElement.textContent = result.hiOer;
+    //         var dateShiOerElement = document.getElementById('shiOer');
+    //         dateShiOerElement.textContent = result.shiOer;
+    //         var dateHiRipenessElement = document.getElementById('hiRipeness');
+    //         dateHiRipenessElement.textContent = result.hiRipeness;
+    //         var dateShiRipenessElement = document.getElementById('shiRipeness');
+    //         dateShiRipenessElement.textContent = result.shiRipeness;
+
+            if(result.totalCounter >0){
+    
+        //     $('#card_data_empty').hide();
+        //     removeExistingCards();
+        //     var dataArray = result.itemPerClass;
+        //     var dataChart = result.data;
+        //     createAndAppendCards(dataArray)
+        
+        //     chartLine.updateSeries([
+        //     { data: result.unripe },
+        //     { data: result.ripe },
+        //     { data: result.overripe },
+        //     { data: result.empty_bunch },
+        //     { data: result.abnormal }
+        // ]);
+        //     chartPie.updateSeries(result.totalMasingKategori)
+            }
+            // else{
+            
+            // }
+            
+        }
+        })
+    }
+    inputDate.addEventListener('change', pushData);
+    listLokasi.addEventListener('change', pushData);
+    pushData();
+</script>

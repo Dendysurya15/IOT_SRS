@@ -47,6 +47,7 @@ Route::middleware('checksession')->group(function () {
     Route::get('/dashboard_wl', [MasterController::class, 'dashboard_wl'])->name('dashboard_wl');
     Route::get('/grafik_wl', [MasterController::class, 'grafik_wl'])->name('grafik_wl');
     Route::get('/tabel_wl', [MasterController::class, 'tabel_wl'])->name('tabel_wl');
+    Route::post('/get_wl_dashboard', [MasterController::class, 'get_wl_dashboard'])->name('get_wl_dashboard');
 
     Route::get('/filltabel', [MasterController::class, 'FilterTabel']);
 
