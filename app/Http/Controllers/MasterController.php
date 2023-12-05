@@ -1508,7 +1508,8 @@ class MasterController extends Controller
         return Redirect::back()->with(['success' => 'Berhasil menghapus data oer']);
     }
 
-    public function getHistoryRainRate(Request $request) {
+    public function getHistoryRainRate(Request $request)
+    {
         $id_loc = $request->get('id_loc');
         $startDate = Carbon::now()->subDays(30)->format('Y-m-d H:i:s');
         $endDate = Carbon::now()->format('Y-m-d H:i:s');
@@ -1519,7 +1520,7 @@ class MasterController extends Controller
             ->whereBetween('weather_station.date', [$startDate, $endDate])
             ->where('weather_station.idws', $id_loc)
             ->get();
-            
+
         $query = $query->groupBy(function ($item) {
             $date = Carbon::parse($item->date);
             $indonesianMonth = [
@@ -2034,17 +2035,17 @@ class MasterController extends Controller
 
     public static function Grafik()
     {
-        
+
         $listLoc = DB::table('weather_station_list')
-        ->where('desc','Real')
-        ->pluck('loc');
-        
-        return view('weather_station/grafik',['listLoc' => $listLoc]);
+            ->where('desc', 'Real')
+            ->pluck('loc');
+
+        return view('weather_station/grafik', ['listLoc' => $listLoc]);
     }
 
     public static function generateDataGrafik(Request $request)
     {
-        
+
         $lokasi = $request->get('lokasi');
         $params = $request->get('params');
         $tgl = $request->get('tanggal');
@@ -2058,36 +2059,36 @@ class MasterController extends Controller
         $bulan = $arr[0];
         $tahun = $arr[1];
 
-        
+
         switch ($params) {
             case 'Curah Hujan':
                 $params = 'rain_rate';
                 break;
-                case 'Temperatur':
-                    $params = 'temp_out';
-                    break;
-                    case 'Kelembaban':
-                        $params = 'hum_out';
-                        break;
-                        case 'UV':
-                            $params = 'uv';
-                            break;
-                            case 'Radiasi Matahari':
-                                $params = 'solar_radiation';
-                                break;
-                                case 'Kecepatan Angin':
-                                    $params = 'windspeedkmh';
-                                    break;
-                                    
+            case 'Temperatur':
+                $params = 'temp_out';
+                break;
+            case 'Kelembaban':
+                $params = 'hum_out';
+                break;
+            case 'UV':
+                $params = 'uv';
+                break;
+            case 'Radiasi Matahari':
+                $params = 'solar_radiation';
+                break;
+            case 'Kecepatan Angin':
+                $params = 'windspeedkmh';
+                break;
+
             default:
                 # code...
                 break;
         }
-        
+
         $hours = [];
         for ($i = 0; $i < 24; $i++) {
-        $hour = str_pad($i, 2, '0', STR_PAD_LEFT);
-        $hours[] = $hour . ':00';
+            $hour = str_pad($i, 2, '0', STR_PAD_LEFT);
+            $hours[] = $hour . ':00';
         }
 
         //nilai default
@@ -2097,42 +2098,40 @@ class MasterController extends Controller
         }
 
         $queryID = DB::table('weather_station_list')
-            ->where('loc',$lokasi)
+            ->where('loc', $lokasi)
             ->first()->id;
 
         $queryRawDay = DB::table('weather_station')
             ->select('weather_station.*', DB::raw('DATE_FORMAT(date, "%H:00") as hour'))
-            
+
             ->where('weather_station.idws', '=', $queryID)
             ->whereRaw('DATE_FORMAT(date, "%Y-%m-%d") = ?', [$tgl])
-            ->orderBy('weather_station.date','asc')
+            ->orderBy('weather_station.date', 'asc')
             ->get()
             ->groupBy('hour');
 
-            if (!$queryRawDay->isEmpty()) {
-                foreach($queryRawDay as $key=>$value){
-                    $sum = 0;
-                    $inc = 0;
-                    foreach($value as $key2 => $value2){
-                        $sum+= $value2->$params;
-                        $inc++;
-        
-                        
-                    }
-                    
-                    if($params != 'rain_rate'){
-                        if($params == 'uv'){
-                            $sum = round($sum/$inc);
-                        }else{
-                            $sum = round($sum/$inc,2);
-                        }
-                    }
-        
-                    $arrDayResult[$key] = $sum;
+        if (!$queryRawDay->isEmpty()) {
+            foreach ($queryRawDay as $key => $value) {
+                $sum = 0;
+                $inc = 0;
+                foreach ($value as $key2 => $value2) {
+                    $sum += $value2->$params;
+                    $inc++;
                 }
+
+                if ($params != 'rain_rate') {
+                    if ($params == 'uv') {
+                        $sum = round($sum / $inc);
+                    } else {
+                        $sum = round($sum / $inc, 2);
+                    }
+                }
+
+                $arrDayResult[$key] = $sum;
             }
-    
-      
+        }
+
+
         //nilai default 0 dalam 1 week pada tanggal pilihan
         $arrWeekResult = [];
         // Map Indonesian month names to English month names
@@ -2150,13 +2149,13 @@ class MasterController extends Controller
             'November' => 'November',
             'Desember' => 'December',
         ];
-        
+
         $reverseTranslations = array_flip($monthTranslations);
         $currentDate = Carbon::createFromFormat('d F Y', strtr($startWeek, $monthTranslations));
         $endDate = Carbon::createFromFormat('d F Y', strtr($endWeek, $monthTranslations));
         $startDateFormatted = $currentDate->format('Y-m-d');
         $endDateFormatted = $endDate->format('Y-m-d');
-        
+
         while ($currentDate <= $endDate) {
             $formattedDate = $currentDate->format('d M');
             // Reverse translate the month name
@@ -2172,9 +2171,9 @@ class MasterController extends Controller
             // ->select('weather_station.*', DB::raw('DATE_FORMAT(date, "%d %M") as tgl'))
             ->where('weather_station.idws', '=', $queryID)
             ->whereRaw('DATE(date) BETWEEN ? AND ?', [$startDateFormatted, $endDateFormatted])
-            ->orderBy('weather_station.date','asc')
+            ->orderBy('weather_station.date', 'asc')
             ->get();
-    
+
         if (!$queryRawWeek->isEmpty()) {
             foreach ($queryRawWeek as $key => $value) {
                 $date = Carbon::parse($value->date);
@@ -2194,32 +2193,32 @@ class MasterController extends Controller
                 ];
                 $value->tgl = $date->format('d') . ' ' . $indonesianMonth[$date->month];
             }
-    
+
             $queryWeek = $queryRawWeek->groupBy('tgl');
 
-            foreach($queryWeek as $key=>$value){
-            $sum = 0;
-            $inc = 0;
-            foreach($value as $key2 => $value2){
-                $sum+= $value2->$params;
-                $inc++;
-            }
-            
-            if($params != 'rain_rate'){
-                if($params == 'uv'){
-                    $sum = round($sum/$inc);
-                }else{
-                    $sum = round($sum/$inc,2);
+            foreach ($queryWeek as $key => $value) {
+                $sum = 0;
+                $inc = 0;
+                foreach ($value as $key2 => $value2) {
+                    $sum += $value2->$params;
+                    $inc++;
                 }
-            }
 
-            $arrWeekResult[$key] = $sum;
+                if ($params != 'rain_rate') {
+                    if ($params == 'uv') {
+                        $sum = round($sum / $inc);
+                    } else {
+                        $sum = round($sum / $inc, 2);
+                    }
+                }
+
+                $arrWeekResult[$key] = $sum;
+            }
         }
-        }
-        
+
         //nilai default 0 per tanggal pada bulan pilihan
         // Get the first day of the month
-        $startDate = Carbon::createFromFormat('F Y',strtr($bulanTahun, $monthTranslations))->startOfMonth();
+        $startDate = Carbon::createFromFormat('F Y', strtr($bulanTahun, $monthTranslations))->startOfMonth();
         // Get the last day of the month
         $endDate = $startDate->copy()->endOfMonth();
         $arrMonthResult = [];
@@ -2240,64 +2239,62 @@ class MasterController extends Controller
 
         $translatedBulan = $monthTranslations[$bulan];
         $monthNumber = Carbon::parse($translatedBulan)->format('n');
-        
+
         $queryRawMonth = DB::table('weather_station')
-        ->where('weather_station.idws', '=', $queryID)
-        ->whereMonth('weather_station.date', '=', $monthNumber) // Filter by month (June = 6)
-        ->orderBy('weather_station.date', 'asc')
-        ->get();
+            ->where('weather_station.idws', '=', $queryID)
+            ->whereMonth('weather_station.date', '=', $monthNumber) // Filter by month (June = 6)
+            ->orderBy('weather_station.date', 'asc')
+            ->get();
 
-    if (!$queryRawMonth->isEmpty()) {
-        foreach ($queryRawMonth as $key => $value) {
-            $date = Carbon::parse($value->date);
-            $indonesianMonth = [
-                1 => 'Jan',
-                2 => 'Feb',
-                3 => 'Mar',
-                4 => 'Apr',
-                5 => 'Mei',
-                6 => 'Jun',
-                7 => 'Jul',
-                8 => 'Ags',
-                9 => 'Sep',
-                10 => 'Okt',
-                11 => 'Nov',
-                12 => 'Des',
-            ];
-            $value->tgl = $date->format('d') . ' ' . $indonesianMonth[$date->month];
-        }
+        if (!$queryRawMonth->isEmpty()) {
+            foreach ($queryRawMonth as $key => $value) {
+                $date = Carbon::parse($value->date);
+                $indonesianMonth = [
+                    1 => 'Jan',
+                    2 => 'Feb',
+                    3 => 'Mar',
+                    4 => 'Apr',
+                    5 => 'Mei',
+                    6 => 'Jun',
+                    7 => 'Jul',
+                    8 => 'Ags',
+                    9 => 'Sep',
+                    10 => 'Okt',
+                    11 => 'Nov',
+                    12 => 'Des',
+                ];
+                $value->tgl = $date->format('d') . ' ' . $indonesianMonth[$date->month];
+            }
 
-        $queryMonth = $queryRawMonth->groupBy('tgl');
+            $queryMonth = $queryRawMonth->groupBy('tgl');
 
-        foreach($queryMonth as $key=>$value){
-        $sum = 0;
-        $inc = 0;
-        foreach($value as $key2 => $value2){
-            $sum+= $value2->$params;
-            $inc++;
-        }
-        
-        if($params != 'rain_rate'){
-            if($params == 'uv'){
-                $sum = round($sum/$inc);
-            }else{
-                $sum = round($sum/$inc,2);
+            foreach ($queryMonth as $key => $value) {
+                $sum = 0;
+                $inc = 0;
+                foreach ($value as $key2 => $value2) {
+                    $sum += $value2->$params;
+                    $inc++;
+                }
+
+                if ($params != 'rain_rate') {
+                    if ($params == 'uv') {
+                        $sum = round($sum / $inc);
+                    } else {
+                        $sum = round($sum / $inc, 2);
+                    }
+                }
+
+                $arrMonthResult[$key] = $sum;
             }
         }
 
-        $arrMonthResult[$key] = $sum;
-    }
-    }
-        
         $arrResult['hari'] = $arrDayResult;
         $arrResult['minggu'] = $arrWeekResult;
         $arrResult['bulan'] = $arrMonthResult;
 
         return response()->json([
-            'arrResult'=> $arrResult,
+            'arrResult' => $arrResult,
         ]);
-      
-        
     }
 
     public static function Tabel()
@@ -2743,17 +2740,6 @@ class MasterController extends Controller
 
     public function get_wl_dashboard(Request $request)
     {
-        $tgl = $request->get('tgl');
-        $idLoc = $request->get('loc');
-
-        $dataWlperhari = DB::table('water_level_list')
-        ->join('water_level', 'water_level_list.id', '=', 'water_level.idwl')
-        ->select('water_level.*', 'water_level_list.location as location')
-        ->orderBy('water_level.datetime')
-        ->whereDate('water_level.datetime', '=', $tgl)
-        ->where('water_level_list.id', '=', $idLoc)
-            ->get();
-
         $avg_lvlin = '-';
         $avg_lvlout = '-';
         $avg_lvlact = '-';
@@ -2762,7 +2748,84 @@ class MasterController extends Controller
         $lastlvlact = '-';
         $lastDate = 'tidak ada';
 
-        if (!$dataWlperhari->isEmpty()) {
+        $tgl = $request->get('tgl');
+        $idLoc = $request->get('loc');
+
+        $tglDate = Carbon::parse($tgl);
+        $currentDate = Carbon::now();
+
+        $isSameDay = $tglDate->isSameDay($currentDate);
+
+        $dataWlperhari = DB::table('water_level_list')
+            ->leftJoin('water_level', 'water_level_list.id', '=', 'water_level.idwl')
+            ->select('water_level.*', 'water_level_list.location as location')
+            ->orderBy('water_level.datetime', 'desc')
+            ->where(function ($query) use ($tgl, $idLoc) {
+                $query->whereDate('water_level.datetime', '=', $tgl)
+                    ->where('water_level_list.id', '=', $idLoc);
+            })
+            ->get();
+
+        if ($dataWlperhari->isEmpty()) {
+            if ($isSameDay) {
+                $lastData = DB::table('water_level_list')
+                    ->leftJoin('water_level', 'water_level_list.id', '=', 'water_level.idwl')
+                    ->select('water_level.*', 'water_level_list.location as location')
+                    ->orderBy('water_level.datetime', 'desc')
+                    ->where('water_level_list.id', '=', $idLoc)
+                    ->first();
+
+                if ($lastData) {
+                    $getDate = Carbon::parse($lastData->datetime)->locale('id');
+                    $getDate->settings(['formatFunction' => 'translatedFormat']);
+                    $lastDate = $getDate->format('l, j F Y H:i');
+                    $lastlvlin = $lastData->lvl_in;
+                    $lastlvlout = $lastData->lvl_out;
+                    $lastlvlact = $lastData->lvl_act;
+
+                    $lastDataDate =    Carbon::parse($lastData->datetime)->format('Y-m-d');
+                }
+
+                $datas = DB::table('water_level_list')
+                    ->leftJoin('water_level', 'water_level_list.id', '=', 'water_level.idwl')
+                    ->select('water_level.*', 'water_level_list.location as location')
+                    ->orderBy('water_level.datetime', 'desc')
+                    ->where(function ($query) use ($lastDataDate, $idLoc) {
+                        $query->whereDate('water_level.datetime', '=', $lastDataDate)
+                            ->where('water_level_list.id', '=', $idLoc);
+                    })->get();
+
+                if ($datas) {
+                    $sumlvl_in = 0;
+                    $sumlvl_out = 0;
+                    $sumlvl_act = 0;
+                    foreach ($datas as $item) {
+                        $sumlvl_in += $item->lvl_in;
+                        $sumlvl_out += $item->lvl_out;
+                        $sumlvl_act += $item->lvl_act;
+                    }
+                    $avg_lvlin = round(($sumlvl_in / count($datas)), 2);
+                    $avg_lvlout = round(($sumlvl_out / count($datas)), 2);
+                    $avg_lvlact  =  round(($sumlvl_act / count($datas)), 2);
+                }
+            } else {
+                $avg_lvlin = '-';
+                $avg_lvlout = '-';
+                $avg_lvlact = '-';
+                $lastlvlin = '-';
+                $lastlvlout = '-';
+                $lastlvlact = '-';
+                $lastDate = 'tidak ada';
+            }
+        } else {
+            $lastData = $dataWlperhari[0];
+            $getDate = Carbon::parse($lastData->datetime)->locale('id');
+            $getDate->settings(['formatFunction' => 'translatedFormat']);
+            $lastDate = $getDate->format('l, j F Y H:i');
+            $lastlvlin = $lastData->lvl_in;
+            $lastlvlout = $lastData->lvl_out;
+            $lastlvlact = $lastData->lvl_act;
+
             $sumlvl_in = 0;
             $sumlvl_out = 0;
             $sumlvl_act = 0;
@@ -2771,30 +2834,9 @@ class MasterController extends Controller
                 $sumlvl_out += $item->lvl_out;
                 $sumlvl_act += $item->lvl_act;
             }
-
-
             $avg_lvlin = round(($sumlvl_in / count($dataWlperhari)), 2);
             $avg_lvlout = round(($sumlvl_out / count($dataWlperhari)), 2);
             $avg_lvlact  =  round(($sumlvl_act / count($dataWlperhari)), 2);
-
-
-            //get last data in day
-            $lastDataInDay = DB::table('water_level_list')
-            ->join('water_level', 'water_level_list.id', '=', 'water_level.idwl')
-            ->select('water_level.*', 'water_level_list.location as location')
-            ->orderBy('water_level.datetime', 'desc')
-                ->whereDate('water_level.datetime', '=', $tgl)
-                ->where('water_level_list.id', '=', $idLoc)
-                ->first();
-
-            $getDate = Carbon::parse($lastDataInDay->datetime)->locale('id');
-            $getDate->settings(['formatFunction' => 'translatedFormat']);
-            $lastDate = $getDate->format('l, j F Y H:i');
-            $lastlvlin = $lastDataInDay->lvl_in;
-            $lastlvlout = $lastDataInDay->lvl_out;
-            $lastlvlact = $lastDataInDay->lvl_act;
-
-            $dataWlperhari = json_decode(json_encode($dataWlperhari), true);
         }
 
         $finalData = [
@@ -2886,7 +2928,8 @@ class MasterController extends Controller
         }
     }
 
-    public static function stationList() {
+    public static function stationList()
+    {
         $query = DB::table('weather_station_list')->get();
         return view('weather_station.listStation', ['data' => $query]);
     }
@@ -2942,7 +2985,7 @@ class MasterController extends Controller
 
             $version = DB::table("station_version")->where('id', 1)->first()->version;
             DB::table("station_version")->where('id', 1)->update(['version' => $version + 1]);
-            
+
             return redirect('stationList')->with('status', 'Station berhasil dihapus!');
         } else {
             return redirect('stationList')->with('error', 'Station gagal dihapus!');

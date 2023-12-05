@@ -13,57 +13,59 @@
   <section class="content">
     <div class="container-fluid">
 
-    <div class="card p-3">
-      <h4>Filter Grafik </h4>
-      <p style="color:grey">Pilih filter data yang akan ditampilkan, adapun default parameter yaitu <i>Curah Hujan </i> </p>
-      <div class="row">
-      <div class="col-2">
-      <select name="" id="lokasi"  class="form-control">
-            <option value="" selected disabled>Pilih Lokasi</option>
-            @foreach ($listLoc as $key => $list)
-            <option value="{{$list}}">{{$list}}</option>
-            @endforeach
-          </select>
-        </div>
-        <div class="col-2">
-      <select name="" id="params"  class="form-control">
-              <option value=""  selected disabled>Parameter AWS</option>
-              <option  value="Curah Hujan">Curah Hujan ()</option>
-              <option  value="Temperatur">Temperatur ()</option>
-              <option  value="Kelembaban">Kelembaban ()</option>
-              <option  value="UV">UV ()</option>
-              <option  value="Radiasi Matahari">Radiasi Matahari ()</option>
-              <option  value="Kecepatan Angin">Kecepatan Angin ()</option>
+      <div class="card p-3">
+        <h4>Filter Grafik </h4>
+        <p style="color:grey">Pilih filter data yang akan ditampilkan, adapun default parameter yaitu <i>Curah Hujan
+          </i> </p>
+        <div class="row">
+          <div class="col-2">
+            <select name="" id="lokasi" class="form-control">
+              <option value="" selected disabled>Pilih Lokasi</option>
+              @foreach ($listLoc as $key => $list)
+              <option value="{{$list}}">{{$list}}</option>
+              @endforeach
             </select>
-          </div>  
+          </div>
+          <div class="col-2">
+            <select name="" id="params" class="form-control">
+              <option value="" selected disabled>Parameter AWS</option>
+              <option value="Curah Hujan">Curah Hujan ()</option>
+              <option value="Temperatur">Temperatur ()</option>
+              <option value="Kelembaban">Kelembaban ()</option>
+              <option value="UV">UV ()</option>
+              <option value="Radiasi Matahari">Radiasi Matahari ()</option>
+              <option value="Kecepatan Angin">Kecepatan Angin ()</option>
+            </select>
+          </div>
           <div class="col-2">
             <input type="date" id="tanggal" class="form-control">
-          </div>  
-         
+          </div>
+
           <button type="button" class="btn btn-primary mr-2" onclick="getSelectedValues()">Filters</button>
           <button type="button" class="btn btn-danger" onclick="resetForm()">Reset</button>
-          </div>
         </div>
-       
       </div>
-   
- 
-     
-      <div class="resultDiv" style="display:none">
+
+    </div>
+
+
+
+    <div class="resultDiv" style="display:none">
       <div class="row">
         <div class="col">
           <div class="card card-green">
             <div class="card-header">
               <h3 class="card-title">
-                <i class="fas fa-wind pr-2"></i> <span id="cardResult1"></span> dalam 24 jam terakhir pada <span id='day'></span>
+                <i class="fas fa-wind pr-2"></i> <span id="cardResult1"></span> dalam 24 jam terakhir pada <span
+                  id='day'></span>
               </h3>
               <div class="row float-sm-right">
               </div>
             </div>
             <div class="card-body">
-            <div class="col">
-            <div id="graphCard1" ></div>
-          </div>
+              <div class="col">
+                <div id="graphCard1"></div>
+              </div>
             </div>
           </div>
 
@@ -73,11 +75,13 @@
       <div class="row">
         <div class="col">
           <!-- Curah Hujan -->
-        
+
           <div class="card card-green">
             <div class="card-header">
               <h3 class="card-title">
-                <i class="fas fa-wind pr-2"></i><span id="cardResult2"></span> dalam seminggu terakhir dari  <span id='startWeek' class="font-weight-bold"></span> hingga <span id='endWeek' class="font-weight-bold"></span>
+                <i class="fas fa-wind pr-2"></i><span id="cardResult2"></span> dalam seminggu terakhir dari <span
+                  id='startWeek' class="font-weight-bold"></span> hingga <span id='endWeek'
+                  class="font-weight-bold"></span>
               </h3>
               <div class="row float-sm-right">
               </div>
@@ -85,7 +89,7 @@
             <div class="card-body">
               <div class="col">
 
-              <div id="graphCard2" ></div>
+                <div id="graphCard2"></div>
               </div>
             </div><!-- /.card-body -->
           </div><!-- Curah Hujan -->
@@ -96,30 +100,31 @@
       <div class="row">
         <div class="col">
           <!-- Curah Hujan -->
-        
+
           <div class="card card-green">
             <div class="card-header">
               <h3 class="card-title">
-                <i class="fas fa-wind pr-2"></i><span id="cardResult3"></span> dalam 1 bulan terakhir pada <span id="monthYear" class="font-weight-bold"></span>
+                <i class="fas fa-wind pr-2"></i><span id="cardResult3"></span> dalam 1 bulan terakhir pada <span
+                  id="monthYear" class="font-weight-bold"></span>
               </h3>
               <div class="row float-sm-right">
               </div>
             </div>
             <div class="card-body">
-             <div class="col">
-             <div id="graphCard3" ></div>
-             </div>
+              <div class="col">
+                <div id="graphCard3"></div>
+              </div>
             </div><!-- /.card-body -->
           </div><!-- Curah Hujan -->
 
         </div>
       </div>
-      
-      </div>
-      <!-- /.row -->
-    </div><!-- /.container-fluid -->
-  </section>
-  <!-- /.content -->
+
+    </div>
+    <!-- /.row -->
+</div><!-- /.container-fluid -->
+</section>
+<!-- /.content -->
 </div>
 
 
@@ -356,8 +361,8 @@ function renderChart3(paramsValue, datas, categories){
           chart: {
           height: 350,
           type: 'area',
-          zoom: {
-            enabled: false
+        zoom: {
+            enabled: falsesdfsdf
           }
         },
         dataLabels: {
