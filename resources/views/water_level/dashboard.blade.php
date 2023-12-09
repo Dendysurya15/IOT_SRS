@@ -13,13 +13,16 @@
                 Filter Tanggal :
             </div>
             <div class="row p-1">
-                <input class="form-control col-md-3" type="date" name="tgl" id="inputDate">
+                <input class="form-control col-md-2" type="date" name="tgl" id="inputDate">
                 <br>
-                <select id="listLoc" class="form-control col-md-3">
-                    <option selected disabled>Pilih Lokasi</option>
-                    @foreach ($listLoc as $key => $list)
-                    <option value="{{$key}}" {{ $key==0 ? 'selected' : '' }}>{{$list}}</option>
+                <select id="listWil" class="form-control col-md-2">
+                    {{-- <option selected disabled>Pilih Wilayah</option> --}}
+                    @foreach ($listWil as $key => $list)
+                    <option value="{{$list}}" {{ $key==0 ? 'selected' : '' }}>{{$list}}</option>
                     @endforeach
+                </select>
+                <select id="listLoc" class="form-control col-md-2">
+
                 </select>
             </div>
             <div class="row p-1">
@@ -123,86 +126,74 @@
 <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
 
 <script>
-    var inputDate = document.getElementById('inputDate');
-    var listLokasi = document.getElementById('listLoc');
-    // var counterDay = document.getElementById('counterDay');
-
-    inputDate.valueAsDate = new Date(); // Set the date input to today's date
-    listLokasi.value = '1'; // Set the select element to option 1
-    var colorArray = ['#AB221D', '#4CAF50', '#FF9800', '#BE8C64', '#001E3C'];
-
-
-var seriesData = [];
-
-for (var i = 0; i <5; i++) {
-    var series = {
-        name: i,
-        data: [], // Replace this with your actual data
-        color: colorArray[i],
-    };
-    seriesData.push(series);
-}
-
-var initialData = {
-    series: seriesData,
-    chart: {
-        type: 'line',
-        height: 350,
-        curve: 'smooth',
-    },
-    dataLabels: {
-        enabled: false
-    },
-    stroke: {
-        curve: "smooth"
-    },
-    grid: {
-        padding: {
-            right: 30,
-            left: 20
-        }
-    },
-    xaxis: {
-        categories:@json($arrJam)
-    },
-    
-};
-
-// Initialize the chart
-var chartLine = new ApexCharts(document.querySelector("#lineChart"), initialData);
-chartLine.render();
-
-function pushData() {
-        tgl = inputDate.value
-        loc = listLokasi.value
-
-        var _token = $('input[name="_token"]').val();
-        // Swal.fire({
-        //         title: 'Loading',
-        //         html: '<span class="loading-text">Mohon Tunggu...</span>',
-        //         allowOutsideClick: false,
-        //         showConfirmButton: false,
-        //         willOpen: () => {
-        //             Swal.showLoading();
-        //         }
-
-        //     });
-        $.ajax({
-        url:"{{ route('get_wl_dashboard') }}",
-        method:"POST",
-        data:{ tgl:tgl,loc:loc, _token:_token},
-        
-        success:function(result)
-        {
-            // Swal.close();
-
-            var dateRequestElement = document.getElementById('avgIn');
+    var dateRequestElement = document.getElementById('avgIn');
             var dateRequest2Element = document.getElementById('avgOut');
             var dateRequest3Element = document.getElementById('avgAct');
             var dateLastInElement = document.getElementById('lastIn');
             var dateLastOutElement = document.getElementById('lastOut');
             var dateLastActElement = document.getElementById('lastAct');
             var dateLastDateElement = document.getElementById('last_date');
+    function handleAjaxRequest(selectedValue, currentDate) {
+        
+        $.ajax({
+            url: '{{ route("get_estate") }}', // Replace with your actual endpoint URL
+            type: 'GET',
+            data: {  wil: selectedValue,
+            tgl: currentDate },
+              success: function (data) {
+
+                console.log(data)
+                  // Update the content or perform other actions based on the AJAX response
+                  var selectLoc = $('#listLoc');
+                  selectLoc.empty(); // Clear existing options
+
+                  // Check if data is empty
+                  if ($.isEmptyObject(data)) {
+                      // If data is empty, add a disabled option
+                      selectLoc.append($('<option>', {
+                          value: '',
+                          text: 'Tidak ada implementasi pada wilayah ini',
+                          disabled: true
+                      }));
+
+                      dateLastInElement.innerHTML = '-';
+                      dateLastOutElement.innerHTML = '-';
+                      dateLastActElement.innerHTML = '-';
+                      dateRequestElement.innerHTML = '-';
+                      dateRequest2Element.innerHTML = '-';
+                      dateRequest3Element.innerHTML = '-';
+                      dateLastDateElement.innerHTML = 'tidak ada';
+                  } else {
+                      // Iterate through the object and append options to the select element
+                      $.each(data, function (index, location) {
+                          selectLoc.append($('<option>', {
+                              value: location,
+                              text: location
+                          }));
+                      });
+
+                      var defaultSelectedValue = selectLoc.val();
+                      handleListLocClick(defaultSelectedValue,currentDate);
+                  }
+              },
+            error: function (xhr, status, error) {
+                console.error(error);
+            }
+        });
+    }
+
+    function handleListLocClick(selectedValue, currentDate) {      
+        var _token = $('input[name="_token"]').val();
+        $.ajax({
+        url:"{{ route('get_wl_dashboard') }}",
+        method:"POST",
+        data:{ tgl:currentDate,loc:selectedValue, _token:_token},
+        
+        success:function(result)
+        {
+            // Swal.close();
+
+           
             dateLastDateElement.textContent =  result.lastDate
             dateRequestElement.textContent =  result.avgIn !== '-' ? result.avgIn + ' cm' : result.avgIn
             dateRequest2Element.textContent = result.avgOut !== '-' ? result.avgOut + ' cm' : result.avgOut
@@ -211,65 +202,40 @@ function pushData() {
             dateLastOutElement.textContent = result.lastlvlout !== '-' ? result.lastlvlout + ' cm' : result.lastlvlout
             dateLastActElement.textContent =  result.lastlvlact !== '-' ? result.lastlvlact + ' cm' : result.lastlvlact
             
-
-    //         if (isSameDate) {
-    //             var dateJamLastElement = document.getElementById('jam_last');
-    //         var dateJamLast2Element = document.getElementById('jam_last2');
-    //         var dateJamLast3Element = document.getElementById('jam_last3');
-    //         dateJamLastElement.textContent = 'hingga pukul ' + result.jamLast ;
-    //         dateJamLast2Element.textContent = 'hingga pukul ' + result.jamLast ;
-    //         dateJamLast3Element.textContent = 'hingga pukul ' + result.jamLast ;
-    //         } else{
-    //             // Clear the text content of the span elements when the date is not the same
-    
-    
-    // var dateJamLastElement = document.getElementById('jam_last');
-    // var dateJamLast2Element = document.getElementById('jam_last2');
-    // var dateJamLast3Element = document.getElementById('jam_last3');
-
-    // dateJamLastElement.textContent = '';
-    // dateJamLast2Element.textContent = '';
-    // dateJamLast3Element.textContent = '';
-    //         }
-            
-            
-    //         var dateTotalCounterElement = document.getElementById('totalCounter');
-    //         dateTotalCounterElement.textContent =  result.totalCounter ;
-    //         var dateHiOerElement = document.getElementById('hiOer');
-    //         dateHiOerElement.textContent = result.hiOer;
-    //         var dateShiOerElement = document.getElementById('shiOer');
-    //         dateShiOerElement.textContent = result.shiOer;
-    //         var dateHiRipenessElement = document.getElementById('hiRipeness');
-    //         dateHiRipenessElement.textContent = result.hiRipeness;
-    //         var dateShiRipenessElement = document.getElementById('shiRipeness');
-    //         dateShiRipenessElement.textContent = result.shiRipeness;
-
-            console.log(result.totalCounter)
-            if(result.totalCounter >0){
-    
-        //     $('#card_data_empty').hide();
-        //     removeExistingCards();
-        //     var dataArray = result.itemPerClass;
-        //     var dataChart = result.data;
-        //     createAndAppendCards(dataArray)
-        
-        //     chartLine.updateSeries([
-        //     { data: result.unripe },
-        //     { data: result.ripe },
-        //     { data: result.overripe },
-        //     { data: result.empty_bunch },
-        //     { data: result.abnormal }
-        // ]);
-        //     chartPie.updateSeries(result.totalMasingKategori)
             }
-            // else{
+        
             
-            // }
-            
-        }
+        
         })
+  
     }
-    inputDate.addEventListener('change', pushData);
-    listLokasi.addEventListener('change', pushData);
-    pushData();
+
+    
+    $(document).ready(function () {
+    
+        var defaultSelectedValue = $('#listWil option:first').val();
+        
+        var currentDate = $('#inputDate').val(); // Get initial date value
+
+        $('#listWil').val(defaultSelectedValue);
+        handleAjaxRequest(defaultSelectedValue, currentDate);
+
+        $('#listWil').on('change', function () {
+            var selectedValue = $(this).val();
+            handleAjaxRequest(selectedValue, currentDate);
+        });
+
+        $('#inputDate').on('change', function () {
+            currentDate = $(this).val(); // Update currentDate when the date changes
+            
+            handleAjaxRequest($('#listWil').val(), currentDate);
+        });
+        $('#listLoc').on('change', function () {
+                var selectedValue = $(this).val();
+
+                handleListLocClick(selectedValue , currentDate);
+            });
+           
+    });
+   
 </script>

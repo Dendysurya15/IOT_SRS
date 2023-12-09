@@ -46,7 +46,7 @@ Route::middleware('checksession')->group(function () {
     //water_level route
     Route::get('/dashboard_wl', [MasterController::class, 'dashboard_wl'])->name('dashboard_wl');
     Route::get('/grafik_wl', [MasterController::class, 'grafik_wl'])->name('grafik_wl');
-    Route::get('/get_estate_grafik', [MasterController::class, 'get_estate_grafik'])->name('get_estate_grafik');
+    Route::get('/get_estate', [MasterController::class, 'get_estate'])->name('get_estate');
     Route::get('/get_data_bulan', [MasterController::class, 'get_data_bulan'])->name('get_data_bulan');
     Route::get('/tabel_wl', [MasterController::class, 'tabel_wl'])->name('tabel_wl');
     Route::post('/get_wl_dashboard', [MasterController::class, 'get_wl_dashboard'])->name('get_wl_dashboard');

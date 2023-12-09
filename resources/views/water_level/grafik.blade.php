@@ -17,7 +17,6 @@
                         <input class="form-control col-md-2" type="date" name="tgl" id="inputDate">
                         <br>
                         <select id="listWil" class="form-control col-md-2">
-                            {{-- <option selected disabled>Pilih Wilayah</option> --}}
                             @foreach ($listWil as $key => $list)
                             <option value="{{$list}}" {{ $key==0 ? 'selected' : '' }}>{{$list}}</option>
                             @endforeach
@@ -104,7 +103,7 @@
   function handleAjaxRequest(selectedValue, currentDate) {
         
         $.ajax({
-            url: '{{ route("get_estate_grafik") }}', // Replace with your actual endpoint URL
+            url: '{{ route("get_estate") }}', // Replace with your actual endpoint URL
             type: 'GET',
             data: {  wil: selectedValue,
             tgl: currentDate },

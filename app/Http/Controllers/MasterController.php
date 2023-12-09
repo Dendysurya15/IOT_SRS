@@ -2361,13 +2361,15 @@ class MasterController extends Controller
             $dataWlperhari = json_decode(json_encode($dataWlperhari), true);
         }
 
-        // dd($dataWlperhari);
+        $listWil =  DB::connection('mysql3')->table('wil')
+            ->pluck('nama');
 
         return view('water_level/dashboard', [
             'dataWlperhari' => $dataWlperhari,
             'avg' => $avg,
             'timeToday' =>  Carbon::now()->format('d-m-Y H:i:s'),
             'listLoc' => $listLoc,
+            'listWil' => $listWil,
             'maps' => $queryMaps,
             'defaultId' => $defaultId,
             'lastDataInDay' => $lastDataInDay,
@@ -2390,7 +2392,7 @@ class MasterController extends Controller
         ]);
     }
 
-    public function get_estate_grafik(Request $request)
+    public function get_estate(Request $request)
     {
         $tgl = $request->get('tgl');
         $wil = $request->get('wil');
@@ -2585,7 +2587,9 @@ class MasterController extends Controller
         $lastDate = 'tidak ada';
 
         $tgl = $request->get('tgl');
-        $idLoc = $request->get('loc');
+        $namaLoc = $request->get('loc');
+
+
 
         $tglDate = Carbon::parse($tgl);
         $currentDate = Carbon::now();
@@ -2596,9 +2600,9 @@ class MasterController extends Controller
             ->leftJoin('water_level', 'water_level_list.id', '=', 'water_level.idwl')
             ->select('water_level.*', 'water_level_list.location as location')
             ->orderBy('water_level.datetime', 'desc')
-            ->where(function ($query) use ($tgl, $idLoc) {
+            ->where(function ($query) use ($tgl, $namaLoc) {
                 $query->whereDate('water_level.datetime', '=', $tgl)
-                    ->where('water_level_list.id', '=', $idLoc);
+                    ->where('water_level_list.location', '=', $namaLoc);
             })
             ->get();
 
@@ -2608,7 +2612,7 @@ class MasterController extends Controller
                     ->leftJoin('water_level', 'water_level_list.id', '=', 'water_level.idwl')
                     ->select('water_level.*', 'water_level_list.location as location')
                     ->orderBy('water_level.datetime', 'desc')
-                    ->where('water_level_list.id', '=', $idLoc)
+                    ->where('water_level_list.location', '=', $namaLoc)
                     ->first();
 
                 if ($lastData) {
@@ -2626,9 +2630,9 @@ class MasterController extends Controller
                     ->leftJoin('water_level', 'water_level_list.id', '=', 'water_level.idwl')
                     ->select('water_level.*', 'water_level_list.location as location')
                     ->orderBy('water_level.datetime', 'desc')
-                    ->where(function ($query) use ($lastDataDate, $idLoc) {
+                    ->where(function ($query) use ($lastDataDate, $namaLoc) {
                         $query->whereDate('water_level.datetime', '=', $lastDataDate)
-                            ->where('water_level_list.id', '=', $idLoc);
+                            ->where('water_level_list.location', '=', $namaLoc);
                     })->get();
 
                 if ($datas) {
