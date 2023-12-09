@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Carbon\Carbon;
+use Carbon\CarbonPeriod;
 use DateTime;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -2376,287 +2377,123 @@ class MasterController extends Controller
 
     public function grafik_wl(Request $request)
     {
-        $defaultId = '';
-        //deklarasi default empty
-        $wlhariini      = '';
-        $wlperminggu = '';
-        $wlperbulan = '';
-        $latestDataToday = '';
-        $avgLvlActHariIni = '';
-        $arrWlPerhariiniView = [
-            'plot1'     => '',
-            'plot2'     => '',
-            'plot3'     => '',
-            'data'      => ''
-        ];
-
-        $arrWlPermingguView = [
-            'plot1'     => 'Level In',
-            'plot2'     => 'Level Out',
-            'plot3'     => 'Level Actual',
-            'data'      => $wlperminggu
-        ];
-
-        $arrWlPerbulanView = [
-            'plot1'     => 'Level In',
-            'plot2'     => 'Level Out',
-            'plot3'     => 'Level Actual',
-            'data'      => $wlperbulan
-        ];;
-
-        //mendapatkan id lokasi di table water level list atau default id record paling pertama
-        $idLoc = $request->has('id') ? $request->input('id') : $defaultId = 99;
-
-        $dateToday = Carbon::now();
-
-        //get all list lokasi
-        $listLoc = DB::table('water_level_list')->pluck('location', 'id');
-
-        $lastData = DB::table('water_level_list')
-            ->join('water_level', 'water_level_list.id', '=', 'water_level.idwl')
-            ->select('water_level.*', 'water_level_list.location as location')
-            ->orderBy('water_level.datetime', 'desc')
-            // ->where(DB::raw("(DATE_FORMAT(water_level.datetime,'%Y-%m-%d'))"), '=', $dateToday->format('Y-m-d'))
-            ->where('water_level_list.id', '=', $idLoc)
-            ->first();
-
-        // dd($lastData);
-        $to = $lastData->datetime;
-
-        $convert = new DateTime($to);
-        $to = $convert->format('Y-m-d H:i:s');
-
-        $dateFrom = Carbon::parse($to)->subDays();
-        $dateFrom = $dateFrom->format('Y-m-d H:i:s');
-
-        $from = date($dateFrom);
-        $to = date($lastData->datetime);
-
-        $dataWlperhari = DB::table('water_level_list')
-            ->join('water_level', 'water_level_list.id', '=', 'water_level.idwl')
-            ->select('water_level.*', 'water_level_list.location as location')
-            ->orderBy('water_level.datetime')
-            ->whereBetween('water_level.datetime', [$from, $to])
-            // ->where(DB::raw("(DATE_FORMAT(water_level.datetime,'%Y-%m-%d'))"), '=', $dateToday->format('Y-m-d'))
-            ->where('water_level_list.id', '=', $idLoc)
-            ->get();
-
-        // dd($dataWlperhari[0  ]);
-
-        $totalHariIni = 0;
-        $counterLvlAct = 0;
-        if (!$dataWlperhari->isEmpty()) {
-
-            //mencari lvl act max
-            foreach ($dataWlperhari as  $value) {
-                $query[] = $value->lvl_act;
-            }
-            $maxValueLvlAct = max($query);
-            $dataWlperhari = json_decode(json_encode($dataWlperhari), true);
-
-            foreach ($dataWlperhari as  $value) {
-
-                //Perhari
-                $jam        = date('H:i', strtotime($value['datetime']));
-                $wlhariini .=
-                    "[{v:'" . $jam . "'}, {v:" . $value['lvl_in'] . ", f:'" . $value['lvl_in'] . "'},
-                         {v:" . $value['lvl_out'] . ", f:'" . $value['lvl_out'] . "'";
-                if ($maxValueLvlAct == 0) {
-                    $wlhariini .= "}],";
-                } else {
-                    $wlhariini .= "},{v:" . $value['lvl_act'] . ", f:'" . $value['lvl_act'] . "'}],";
-                }
-
-                $counterLvlAct += $value['lvl_act'];
-                $totalHariIni++;
-            }
-            $avgLvlActHariIni = $counterLvlAct / $totalHariIni;
-
-            $arrWlPerhariiniView = [
-                'plot1'     => 'Level_in (cm)',
-                'plot2'     => 'Level_out (cm)',
-                'plot3'     => 'Level Actual (cm)',
-                'data'      => $wlhariini
-            ];
-
-            $latestDataToday = DB::table('water_level_list')
-                ->join('water_level', 'water_level_list.id', '=', 'water_level.idwl')
-                ->select('water_level.*', 'water_level_list.location as location')
-                ->orderBy('water_level.id', 'desc')
-                ->where(DB::raw("(DATE_FORMAT(water_level.datetime,'%Y-%m-%d'))"), '=', $dateToday->format('Y-m-d'))
-                ->where('water_level_list.id', '=', $idLoc)
-                ->limit(1)
-                ->first();
-
-            // $latestDataToday =  Carbon::parse($latestDataToday->datetime)->format('d-m-Y H:i:s');
-        }
-
-        $dateParse = Carbon::parse($to)->subDays(7);
-        $dateParse = $dateParse->format('Y-m-d H:i:s');
-
-        $pastWeek = date($dateParse);
-        $dataWlperminggu = DB::table('water_level_list')
-            ->join('water_level', 'water_level_list.id', '=', 'water_level.idwl')
-            ->select('water_level.*', 'water_level_list.location as location', DB::raw("DATE_FORMAT(water_level.datetime,'%d-%m-%Y') as datetime"))
-            ->whereBetween('water_level.datetime', [$pastWeek, $to])
-            // ->whereBetween('water_level.datetime', [$dateToday->startOfWeek()->format('Y-m-d'), $dateToday->endOfWeek()->format('Y-m-d')])
-            ->where('water_level_list.id', '=', $idLoc)
-            ->get()
-            ->groupBy(function ($item) {
-                return $item->datetime;
-            });
-
-        if (!$dataWlperminggu->isEmpty()) {
-            foreach ($dataWlperminggu as $sub_array) {
-                foreach ($sub_array as $data) {
-                    $data->nameDay = Carbon::parse($data->datetime)->format('D d M');
-                }
-            }
-
-            $arrDataPerminggu = array();
-
-            $dataWlpermingguJson = json_decode($dataWlperminggu, true);
-
-            $counterLvlinminggu = 0;
-            $counterLvloutminggu = 0;
-            $counterLvlactminggu = 0;
-            $totaldataLevelinminggu = 0;
-            $totaldataLeveloutminggu = 0;
-            $totaldataLevelactminggu = 0;
-
-            foreach ($dataWlpermingguJson as $index => $sub_array) {
-                foreach ($sub_array as $data) {
-                    $counterLvlinminggu += $data['lvl_in'];
-                    $counterLvloutminggu += $data['lvl_out'];
-                    $counterLvlactminggu += $data['lvl_act'];
-                    $totaldataLevelinminggu++;
-                    $totaldataLeveloutminggu++;
-                    $totaldataLevelactminggu++;
-
-                    $arrDataPerminggu[$index]['nameDay'] = $data['nameDay'];
-                    $arrDataPerminggu[$index]['datetime'] = $data['datetime'];
-                    $arrDataPerminggu[$index]['lvl_in'] = round(($counterLvlinminggu / $totaldataLevelinminggu), 2);
-                    $arrDataPerminggu[$index]['lvl_out'] = round(($counterLvloutminggu / $totaldataLeveloutminggu), 2);
-                    $arrDataPerminggu[$index]['lvl_act'] = round(($counterLvlactminggu / $totaldataLevelactminggu), 2);
-                }
-            }
-
-            $sumLvlActMinggu = 0;
-            foreach ($arrDataPerminggu as $key => $value) {
-                $sumLvlActMinggu += $value['lvl_act'];
-            }
-
-            //ubah skema array per minggu menjadi ploting pada grafik
-            foreach ($arrDataPerminggu as $key => $data) {
-                $hari = $data['nameDay'];
-                $wlperminggu .=
-                    "[{v:'" . $hari . "'}, {v:" . $data['lvl_in'] . ", f:'" . $data['lvl_in'] . "'},
-                {v:" . $data['lvl_out'] . ", f:'" . $data['lvl_out'] .  "'";
-                if ($sumLvlActMinggu == 0) {
-                    $wlperminggu .= "}],";
-                } else {
-                    $wlperminggu .= "},{v:" . $data['lvl_act'] . ", f:'" . $data['lvl_act'] . "'}],";
-                }
-            }
-
-            $arrWlPermingguView = [
-                'plot1'     => 'Level_in (cm)',
-                'plot2'     => 'Level_out (cm)',
-                'plot3'     => 'Level Actual (cm)',
-                'data'      => $wlperminggu
-            ];
-        }
-
-        $dateParse = Carbon::parse($to)->subDays(30);
-        $dateParse = $dateParse->format('Y-m-d H:i:s');
-
-        $pastMonth = date($dateParse);
-
-        $dataWlperbulan = DB::table('water_level_list')
-            ->join('water_level', 'water_level_list.id', '=', 'water_level.idwl')
-            ->select('water_level.*', 'water_level_list.location as location',  DB::raw("DATE_FORMAT(water_level.datetime,'%d-%m') as day_month"))
-            ->where('water_level_list.id', '=', $idLoc)
-            ->whereBetween('water_level.datetime', [$pastMonth, $to])
-            ->orderBy('water_level.datetime', 'asc')
-            ->get()
-            ->groupBy('day_month');
 
 
-        $arrDataPerbulan = array();
-
-        $wlperbulan = '';
-        if (!$dataWlperbulan->isEmpty()) {
-            foreach ($dataWlperbulan as $sub_array) {
-                foreach ($sub_array as $data) {
-                    $data->nameDay = $data->datetime;
-                    // $data->date = $data->datetime;
-                }
-            }
-            //perhitungan rata-rata semua data per hari dalam satu bulan
-            $dataWlperbulanJson = json_decode($dataWlperbulan, true);
-
-            $counterLvlinbulan = 0;
-            $counterLvloutbulan = 0;
-            $counterLvlactbulan = 0;
-            $totaldataLevelinbulan = 0;
-            $totaldataLeveloutbulan = 0;
-            $totaldataLevelactbulan = 0;
-
-            foreach ($dataWlperbulanJson as $index => $sub_array) {
-                foreach ($sub_array as $data) {
-                    $counterLvlinbulan += $data['lvl_in'];
-                    $counterLvloutbulan += $data['lvl_out'];
-                    $counterLvlactbulan += $data['lvl_act'];
-                    $totaldataLevelinbulan++;
-                    $totaldataLeveloutbulan++;
-                    $totaldataLevelactbulan++;
-
-                    $arrDataPerbulan[$index]['datetime'] = Carbon::parse($data['datetime'])->format('D d');
-                    $arrDataPerbulan[$index]['lvl_in'] = round(($counterLvlinbulan / $totaldataLevelinbulan), 2);
-                    $arrDataPerbulan[$index]['lvl_out'] = round(($counterLvloutbulan / $totaldataLeveloutbulan), 2);
-                    $arrDataPerbulan[$index]['lvl_act'] = round(($counterLvlactbulan / $totaldataLevelactbulan), 2);
-                }
-            }
-
-            // dd($arrDataPerbulan);
-            // $sumLvlActBulan = 0;
-            // foreach ($arrDataPerbulan as $key => $value) {
-            //     $sumLvlActBulan += $value['lvl_act'];
-            // }
-
-            // dd($sumLvlActBulan);
-            // dd($sumLvlActBulan);
-            //ubah skema array per bulan menjadi ploting pada grafik
-            foreach ($arrDataPerbulan as $key => $data) {
-                //
-                $hari = $data['datetime'];
-                $wlperbulan .=
-                    "[{v:'" . $hari . "'}, {v:" . $data['lvl_in'] . ", f:'" . $data['lvl_in'] . "'},
-                    {v:" . $data['lvl_out'] . ", f:'" . $data['lvl_out'] . "'},
-                    {v:" . $data['lvl_act'] . ", f:'" . $data['lvl_act'] . "'}
-                ],";
-            }
-
-            $arrWlPerbulanView = [
-                'plot1'     => 'Level In',
-                'plot2'     => 'Level Out',
-                'plot3'     => 'Level Actual',
-                'data'      => $wlperbulan
-            ];
-        }
+        $listWil =  DB::connection('mysql3')->table('wil')
+            ->pluck('nama');
 
 
         return view('water_level/grafik', [
-            'arrWlPerhariiniView' => $arrWlPerhariiniView,
-            'arrWlPermingguView' => $arrWlPermingguView,
-            'arrWlPerbulanView' => $arrWlPerbulanView,
-            'avgLvlActHariIni' => $avgLvlActHariIni,
-            'sumLvlActMinggu' => $sumLvlActMinggu,
-            // 'sumLvlActBulan' => $sumLvlActBulan,
-            'dateToday' =>  Carbon::now()->format('d-m-Y H:i:s'),
-            'listLoc' => $listLoc,
-            'defaultId' => $defaultId,
+
+            'listWil' => $listWil,
+
         ]);
+    }
+
+    public function get_estate_grafik(Request $request)
+    {
+        $tgl = $request->get('tgl');
+        $wil = $request->get('wil');
+        $excludeValues = ['Central Workshop', 'PLASMA'];
+        $arrEstate =  DB::connection('mysql3')->table('wil')
+            ->join('estate', 'wil.id', '=', 'estate.wil')
+            ->where('wil.nama', $wil)
+            ->whereNotIn('estate.nama', $excludeValues)
+            ->get()->toArray();
+
+        $listAllWaterPump = DB::table('water_level_list')->get()->toArray();
+
+        $matchingWaterPumps = array_filter($listAllWaterPump, function ($item) use ($arrEstate) {
+            // Check if 'location' contains any 'est' value
+            foreach ($arrEstate as $estate) {
+                if (strpos($item->location, $estate->est) !== false) {
+                    return true; // Found a match
+                }
+            }
+            return false; // No match found
+        });
+
+        $matchingLocations = array_map(function ($item) {
+            return $item->location;
+        }, $matchingWaterPumps);
+
+        return response()->json($matchingLocations);
+    }
+
+
+    public function get_data_bulan(Request $request)
+    {
+        $tgl = $request->get('tgl');
+        $titik = $request->get('titikPompa');
+        $carbonDate = Carbon::parse($tgl);
+        $numberOfDays = $carbonDate->daysInMonth;
+
+        $formattedDates = [];
+
+        for ($day = 1; $day <= $numberOfDays; $day++) {
+            $formattedDates[] = $carbonDate->copy()->day($day)->format('d M');
+        }
+
+        $queryData = DB::table('water_level_list')
+            ->select('water_level.*')
+            ->join('water_level', 'water_level_list.id', '=', 'water_level.idwl')
+            ->where('water_level_list.location', $titik)
+            ->whereMonth('water_level.datetime', Carbon::parse($tgl)->month)
+            ->whereYear('water_level.datetime', Carbon::parse($tgl)->year)
+            ->get();
+
+        $collection = collect($queryData);
+
+        $groupedByDate = $collection->groupBy(function ($item) {
+            // You can adjust the date format based on your actual datetime column format
+            return Carbon::parse($item->datetime)->toDateString();
+        });
+
+        // Get all the dates within the month
+        $allDates = CarbonPeriod::create(
+            Carbon::parse($tgl)->startOfMonth(),
+            Carbon::parse($tgl)->endOfMonth()
+        )->toArray();
+
+        // Convert the dates to strings
+        $allDateStrings = array_map(function ($date) {
+            return $date->toDateString();
+        }, $allDates);
+
+        //group by setiap tanggal 
+        $mergedCollection = collect($allDateStrings)->mapWithKeys(function ($date) use ($groupedByDate) {
+            return [$date => $groupedByDate->get($date, collect([]))];
+        });
+
+        $averages = [
+            'date' => $mergedCollection->keys()->toArray(),
+            'avg_lvl_in' => [],
+            'avg_lvl_out' => [],
+            'avg_lvl_act' => [],
+        ];
+
+        foreach ($mergedCollection as $items) {
+            if ($items->isNotEmpty()) {
+                // Calculate the average for lvl_in, lvl_out, and lvl_act
+                $avgLvlIn = round($items->avg('lvl_in'), 2);
+                $avgLvlOut = round($items->avg('lvl_out'), 2);
+                $avgLvlAct = round($items->avg('lvl_act'), 2);
+
+                // Push the averages to the respective arrays
+                $averages['avg_lvl_in'][] = $avgLvlIn;
+                $averages['avg_lvl_out'][] = $avgLvlOut;
+                $averages['avg_lvl_act'][] = $avgLvlAct;
+            } else {
+                // If there are no items for the current date, push 0 or any default value
+                $averages['avg_lvl_in'][] = 0;
+                $averages['avg_lvl_out'][] = 0;
+                $averages['avg_lvl_act'][] = 0;
+            }
+        }
+
+
+
+        return response()->json(['rangeDays' => $formattedDates, 'lvl_in' => $averages['avg_lvl_in'], 'lvl_out' => $averages['avg_lvl_out'], 'lvl_act' => $averages['avg_lvl_act']]);
     }
 
     public function month_weather_forecast()
@@ -2682,7 +2519,6 @@ class MasterController extends Controller
             ->get()
             ->groupBy('hari');
 
-        // dd($dataLog);
         $arrMonth = array();
 
         foreach ($dataLog as $inc =>  $value) {

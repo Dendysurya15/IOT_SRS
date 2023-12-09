@@ -1,87 +1,88 @@
 @include('layout.header')
 <div class="content-wrapper">
-  <!-- Content Header (Page header) -->
-  <section class="content-header">
-  </section>
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+    </section>
 
-  <!-- Main content -->
-  <section class="content">
-    <div class="container-fluid">
-      <div class="row">
-        <div class="col">
-          <!-- Curah Hujan -->
-          <div class="card card-red">
-            <div class="card-header" ">
+    <!-- Main content -->
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col">
+
+                    <div class="row p-1 ">
+                        Filter Tanggal :
+                    </div>
+                    <div class="row p-1">
+                        <input class="form-control col-md-2" type="date" name="tgl" id="inputDate">
+                        <br>
+                        <select id="listWil" class="form-control col-md-2">
+                            {{-- <option selected disabled>Pilih Wilayah</option> --}}
+                            @foreach ($listWil as $key => $list)
+                            <option value="{{$list}}" {{ $key==0 ? 'selected' : '' }}>{{$list}}</option>
+                            @endforeach
+                        </select>
+                        <select id="listLoc" class="form-control col-md-2">
+
+                        </select>
+                    </div>
+                    <!-- Curah Hujan -->
+                    <div class="card card-red mt-3">
+                        <div class="card-header">
                             <div class=" card-title">
-              <i class="fas fa-water pr-2"></i>Water Level {{$listLoc[Request()->id ?: $defaultId]}} dalam 24 jam
-              terakhir
+                                <i class="fas fa-water pr-2"></i>Water Level Per Bulan
+                            </div>
+                            <div class="float-right">
+                                <div class="list-inline">
+                                    {{-- <h5 class="list-inline-item">Lokasi</h5> --}}
+                                    {{-- <form class="list-inline-item col-md-5" action="{{ route('grafik_wl') }}"
+                                        method="get">
+                                        <select name="id" class="form-control-sm" onchange="this.form.submit()">
+                                            <option value="" selected disabled>Pilih Lokasi</option>
+                                            @foreach ($listLoc as $key => $list)
+                                            <option value="{{$key}}">{{$list}}</option>
+                                            @endforeach
+                                        </select>
+                                    </form> --}}
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="card-body">
+
+                            <div class="chart" id="chartBulanan">
+                            </div>
+
+                        </div><!-- /.card-body -->
+                    </div><!-- Curah Hujan -->
+
+
+                    <!-- Curah Hujan -->
+                    {{-- <div class="card card-cyan">
+                        <div class="card-header">
+                            <div class=" card-title">
+                                <i class="fas fa-water pr-2"></i>Water Level {{$listLoc[Request()->id ?: $defaultId]}}
+                                dalam
+                                7 hari terakhir
+                            </div>
+                            <div class="float-right">
+
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="chart" id="wlPerminggu">
+                            </div>
+                        </div><!-- /.card-body -->
+                    </div><!-- Curah Hujan --> --}}
+
+                    <!-- Curah Hujan -->
+
+                </div>
             </div>
-            <div class="float-right">
-              <div class="list-inline">
-                {{-- <h5 class="list-inline-item">Lokasi</h5> --}}
-                <form class="list-inline-item col-md-5" action="{{ route('grafik_wl') }}" method="get">
-                  <select name="id" class="form-control-sm" onchange="this.form.submit()">
-                    <option value="" selected disabled>Pilih Lokasi</option>
-                    @foreach ($listLoc as $key => $list)
-                    <option value="{{$key}}">{{$list}}</option>
-                    @endforeach
-                  </select>
-                </form>
-              </div>
-            </div>
-
-          </div>
-          <div class="card-body">
-
-            <div class="chart" id="wlPerhariini">
-            </div>
-
-          </div><!-- /.card-body -->
-        </div><!-- Curah Hujan -->
-
-
-        <!-- Curah Hujan -->
-        <div class="card card-cyan">
-          <div class="card-header">
-            <div class=" card-title">
-              <i class="fas fa-water pr-2"></i>Water Level {{$listLoc[Request()->id ?: $defaultId]}} dalam
-              7 hari terakhir
-            </div>
-            <div class="float-right">
-
-            </div>
-          </div>
-          <div class="card-body">
-            <div class="chart" id="wlPerminggu">
-            </div>
-          </div><!-- /.card-body -->
-        </div><!-- Curah Hujan -->
-
-        <!-- Curah Hujan -->
-        <div class="card card-purple">
-          <div class="card-header">
-            <div class=" card-title">
-              <i class="fas fa-water pr-2"></i>Water Level {{$listLoc[Request()->id ?: $defaultId]}} dalam 30 hari
-              terakhir
-            </div>
-            <div class="float-right">
-
-            </div>
-          </div>
-          <div class="card-body">
-
-            <div class="chart" id="wlPerbulan">
-            </div>
-
-          </div><!-- /.card-body -->
-        </div><!-- Curah Hujan -->
-
-      </div>
-    </div>
-    <!-- /.row -->
-</div><!-- /.container-fluid -->
-</section>
-<!-- /.content -->
+            <!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
 </div>
 @include('layout.footer')
 
@@ -97,117 +98,212 @@
 <script src="{{ asset('/js/demo.js') }}"></script>
 
 <script src="{{ asset('/js/loader.js') }}"></script>
-
+<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
 <script type="text/javascript">
-  google.charts.load('current', {
-    'packages': ['corechart']
-  });
-  google.charts.setOnLoadCallback(drawChart);
+    var chart;
+  function handleAjaxRequest(selectedValue, currentDate) {
+        
+        $.ajax({
+            url: '{{ route("get_estate_grafik") }}', // Replace with your actual endpoint URL
+            type: 'GET',
+            data: {  wil: selectedValue,
+            tgl: currentDate },
+              success: function (data) {
+                  // Update the content or perform other actions based on the AJAX response
+                  var selectLoc = $('#listLoc');
+                  selectLoc.empty(); // Clear existing options
 
-  function drawChart() {  
-    
-    //perhari
-    var plotlvl_in = '<?php echo $arrWlPerhariiniView['plot1']; ?>';
-    var plotlvl_out = '<?php echo $arrWlPerhariiniView['plot2']; ?>';
-    var plotlvl_act = '<?php echo $arrWlPerhariiniView['plot3']; ?>';
-    var avgLvlAct = '<?php echo $avgLvlActHariIni; ?>'
-    
+                  // Check if data is empty
+                  if ($.isEmptyObject(data)) {
+                      // If data is empty, add a disabled option
+                      selectLoc.append($('<option>', {
+                          value: '',
+                          text: 'Tidak ada implementasi pada wilayah ini',
+                          disabled: true
+                      }));
+                  } else {
+                      // Iterate through the object and append options to the select element
+                      $.each(data, function (index, location) {
+                          selectLoc.append($('<option>', {
+                              value: location,
+                              text: location
+                          }));
+                      });
 
-    var dataWlPerHariIni = new google.visualization.DataTable();
-    dataWlPerHariIni.addColumn('string', 'Name');
-    dataWlPerHariIni.addColumn('number', plotlvl_in);
-    dataWlPerHariIni.addColumn('number', plotlvl_out);
-
-    if(avgLvlAct != 0){
-    dataWlPerHariIni.addColumn('number', plotlvl_act);
+                      var defaultSelectedValue = selectLoc.val();
+                      handleListLocClick(defaultSelectedValue,currentDate);
+                  }
+              },
+            error: function (xhr, status, error) {
+                console.error(error);
+            }
+        });
     }
 
-    dataWlPerHariIni.addRows([
-      <?php echo $arrWlPerhariiniView['data']; ?>
-    ]);
+    function handleListLocClick(selectedValue, currentDate) {      
+      var rangeDays, lvl_in;
+      $.ajax({
+            url: '{{ route("get_data_bulan") }}', // Replace with your actual endpoint URL
+            type: 'GET',
+            data: {  titikPompa: selectedValue,
+            tgl: currentDate },
+              success: function (data) {
 
-    var optionsWlPerHariIIni = {
-      chartArea: {},
-      theme: 'material',
-        legend: {
-            position: 'top',
-      },
-      height: 400,
-     
+                  rangeDays = data.rangeDays;
+                  lvl_in = data.lvl_in;
+                  lvl_out = data.lvl_out;
+                  lvl_act = data.lvl_act;
+
+                  renderApexChart(rangeDays, lvl_in, lvl_out, lvl_act);
+              },
+            error: function (xhr, status, error) {
+                console.error(error);
+            }
+        });
+  
+    }
+
+  
+
+
+function renderApexChart(rangeDays, lvl_in, lvl_out, lvl_act) {
+    
+  var options = {
+        chart: {
+            type: 'area',
+            height: 350
+        },
+        series: [
+            {
+                name: 'lvl_in',
+                data: lvl_in
+            },
+            {
+                name: 'lvl_out',
+                data: lvl_out
+            },
+            {
+                name: 'lvl_act',
+                data: lvl_act
+            }
+        ],
+        dataLabels: {
+            enabled: false
+        },
+        stroke: {
+            curve: 'smooth'
+        },
+        title: {
+            text: 'Rekap rata-rata harian ',
+            align: 'left',
+            style: {
+                fontSize: '14px'
+            }
+        },
+        xaxis: {
+            type: 'category',
+            categories: rangeDays,
+            axisBorder: {
+                show: false
+            },
+            axisTicks: {
+                show: false
+            },
+            labels: {
+                formatter: function (value) {
+                    return value;
+                }
+            }
+        },
+        yaxis: {
+            type: 'numeric', // Set the y-axis type to numeric
+            tickAmount: 4,
+            floating: false,
+            labels: {
+                style: {
+                    colors: '#8e8da4',
+                },
+                offsetY: -7,
+                offsetX: 0,
+            },
+            axisBorder: {
+                show: false,
+            },
+            axisTicks: {
+                show: false
+            }
+        },
+        fill: {
+            opacity: 0.5
+        },
+        tooltip: {
+            x: {
+                format: 'dd MMM'
+            },
+            fixed: {
+                enabled: false,
+                position: 'topRight'
+            }
+        },
+        grid: {
+            yaxis: {
+                lines: {
+                    offsetX: -30
+                }
+            },
+            padding: {
+                left: 20
+            }
+        }
     };
 
-    var arrWlPerhariiniView = new google.visualization.LineChart(document.getElementById('wlPerhariini'));
-    arrWlPerhariiniView.draw(dataWlPerHariIni,optionsWlPerHariIIni );
-   
- 
- //perminggu
-    var plotlvl_in_minggu = '<?php echo $arrWlPermingguView['plot1']; ?>';
-    var plotlvl_out_minggu = '<?php echo $arrWlPermingguView['plot2']; ?>';
-    var plotlvl_act_minggu = '<?php echo $arrWlPermingguView['plot3']; ?>';
-    var sumLvlActMinggu = '<?php echo $sumLvlActMinggu; ?>';
 
-    var dataWlPerMinggu = new google.visualization.DataTable();
-    dataWlPerMinggu.addColumn('string', 'Name');
-    dataWlPerMinggu.addColumn('number', plotlvl_in_minggu);
-    dataWlPerMinggu.addColumn('number', plotlvl_out_minggu);
+    if (!chart) {
+        chart = new ApexCharts(document.querySelector("#chartBulanan"), options);
+        chart.render();
+    } else {
 
-    if(sumLvlActMinggu != 0){
-      dataWlPerMinggu.addColumn('number', plotlvl_act_minggu);
+        chart.updateSeries([
+            {
+                name: 'lvl_in',
+                data: lvl_in
+            },
+            {
+                name: 'lvl_out',
+                data: lvl_out
+            },{
+                name: 'lvl_act',
+                data: lvl_act
+            }
+        ]);
     }
-
-    dataWlPerMinggu.addRows([
-      <?php echo $arrWlPermingguView['data']; ?>
-    ]);
-
-    var optionsWlPerHariIMinggu = {
-      chartArea: {},
-      theme: 'material',
-        legend: {
-            position: 'top',
-      },
-      colors:['#027E91', '#6FC6B9', '#E6631C'],
-      height: 400,
-    };       
-   
-    var arrWlPermingguView = new google.visualization.ColumnChart(document.getElementById('wlPerminggu'));
-    arrWlPermingguView.draw(dataWlPerMinggu,optionsWlPerHariIMinggu );
-
-
-    //perbulan
-    var plotlvl_in_bulan= '<?php echo $arrWlPerbulanView['plot1']; ?>';
-    var plotlvl_out_bulan= '<?php echo $arrWlPerbulanView['plot2']; ?>';
-    var plotlvl_act_bulan= '<?php echo $arrWlPerbulanView['plot3']; ?>';
-    
-    
-    var dataWlPerbulan= new google.visualization.DataTable();
-    dataWlPerbulan.addColumn('string', 'Name');
-    dataWlPerbulan.addColumn('number', plotlvl_in_minggu);
-    dataWlPerbulan.addColumn('number', plotlvl_out_minggu);
+}
 
     
-      dataWlPerbulan.addColumn('number', plotlvl_act_minggu);
+    $(document).ready(function () {
     
+        var defaultSelectedValue = $('#listWil option:first').val();
+        
+        var currentDate = $('#inputDate').val(); // Get initial date value
 
-    dataWlPerbulan.addRows([
-      <?php echo $arrWlPerbulanView['data']; ?>
-    ]);
+        $('#listWil').val(defaultSelectedValue);
+        handleAjaxRequest(defaultSelectedValue, currentDate);
 
-    var optionsWlPerHariIbulan= {
-      chartArea: {},
-      theme: 'material',
-        legend: {
-            position: 'top',
-      },
-      colors:['#1B9E77', '#D95F02', '#7570B3'],
-      height: 400,
-      
-    };       
-   
-    var arrWlPerbulanView = new google.visualization.LineChart(document.getElementById('wlPerbulan'));
-    arrWlPerbulanView.draw(dataWlPerbulan,optionsWlPerHariIbulan );
+        $('#listWil').on('change', function () {
+            var selectedValue = $(this).val();
+            handleAjaxRequest(selectedValue, currentDate);
+        });
 
-  }  
-  $(window).resize(function() {
-    drawStuff();
-  });
+        $('#inputDate').on('change', function () {
+            currentDate = $(this).val(); // Update currentDate when the date changes
+            
+            handleAjaxRequest($('#listWil').val(), currentDate);
+        });
+
+            $('#listLoc').on('change', function () {
+                var selectedValue = $(this).val();
+
+                handleListLocClick(selectedValue , currentDate);
+            });
+    });
 </script>
