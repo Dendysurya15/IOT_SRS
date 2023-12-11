@@ -112,16 +112,13 @@
                   var selectLoc = $('#listLoc');
                   selectLoc.empty(); // Clear existing options
 
-                  // Check if data is empty
                   if ($.isEmptyObject(data)) {
-                      // If data is empty, add a disabled option
                       selectLoc.append($('<option>', {
                           value: '',
                           text: 'Tidak ada implementasi pada wilayah ini',
                           disabled: true
                       }));
                   } else {
-                      // Iterate through the object and append options to the select element
                       $.each(data, function (index, location) {
                           selectLoc.append($('<option>', {
                               value: location,
@@ -261,7 +258,11 @@ function renderApexChart(rangeDays, lvl_in, lvl_out, lvl_act) {
         chart = new ApexCharts(document.querySelector("#chartBulanan"), options);
         chart.render();
     } else {
-
+        chart.updateOptions({
+        xaxis: {
+            categories: rangeDays,
+        },
+    });
         chart.updateSeries([
             {
                 name: 'lvl_in',
