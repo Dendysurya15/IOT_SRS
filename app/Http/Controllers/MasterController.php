@@ -2430,6 +2430,8 @@ class MasterController extends Controller
         $carbonDate = Carbon::parse($tgl);
         $numberOfDays = $carbonDate->daysInMonth;
 
+        // dd($tgl);
+
         $formattedDates = [];
 
         for ($day = 1; $day <= $numberOfDays; $day++) {
@@ -2445,6 +2447,8 @@ class MasterController extends Controller
             ->get();
 
         $collection = collect($queryData);
+
+        // dd($collection);
 
         $groupedByDate = $collection->groupBy(function ($item) {
             // You can adjust the date format based on your actual datetime column format
@@ -2492,10 +2496,204 @@ class MasterController extends Controller
                 $averages['avg_lvl_act'][] = 0;
             }
         }
+        $query = DB::table('water_level_list')
+            ->select(
+                'water_level.*',
+                'water_level.datetime as datetime',
+                DB::raw('DATE_FORMAT(water_level.datetime, "%Y-%m-%d") as tanggal'),
+                DB::raw('CONCAT(LPAD(HOUR(water_level.datetime), 2, "0"), ":00") as jam')
+            )
+
+            ->join('water_level', 'water_level_list.id', '=', 'water_level.idwl')
+            ->where('water_level_list.location', $titik)
+            ->where('water_level.datetime', 'LIKE', '%' . $tgl . '%')
+            ->get();
+
+        $query = $query->groupBy('jam');
+
+        $query = json_decode($query, true);
 
 
+        $resultH = array();
 
-        return response()->json(['rangeDays' => $formattedDates, 'lvl_in' => $averages['avg_lvl_in'], 'lvl_out' => $averages['avg_lvl_out'], 'lvl_act' => $averages['avg_lvl_act']]);
+        foreach ($query as $key => $value) {
+            # code...
+            $count = 0;
+            $sumlvl_in = 0;
+            $sumlvl_out = 0;
+            $sumlvl_act = 0;
+            foreach ($value as $key2 => $value2) {
+                # code...
+                $sumlvl_in += $value2['lvl_in'];
+                $sumlvl_out += $value2['lvl_out'];
+                $sumlvl_act += $value2['lvl_act'];
+
+                $count = count($value);
+            }
+
+
+            $resultH[$key]['jumdata'] = $count;
+            $resultH[$key]['total_lvlin'] = $sumlvl_in;
+            $resultH[$key]['total_lvl_out'] = $sumlvl_out;
+            $resultH[$key]['total_lvl_act'] = $sumlvl_act;
+            $resultH[$key]['avg_lvlin'] = $count !== 0 ? round($sumlvl_in / $count, 2) : 0;
+            $resultH[$key]['avg_lvlout'] = $count !== 0 ? round($sumlvl_out / $count, 2) : 0;
+            $resultH[$key]['avg_lvlact'] = $sumlvl_act !== 0 ? round($sumlvl_in / $count, 2) : 0;
+        }
+
+
+        foreach ($resultH as $key => $value) {
+            # code...
+            $keyH[] = $key;
+            $avg_lvlin[] = $value['avg_lvlin'];
+            $avg_lvlout[] =  $value['avg_lvlout'];
+            $avg_lvlact[] =  $value['avg_lvlact'];
+        }
+
+        $queryWeek = DB::table('water_level_list')
+            ->select(
+                'water_level.*',
+                'water_level.datetime as datetime',
+                DB::raw('DATE_FORMAT(water_level.datetime, "%Y-%m-%d") as tanggal'),
+                DB::raw('CONCAT(LPAD(HOUR(water_level.datetime), 2, "0"), ":00") as jam')
+            )
+
+            ->join('water_level', 'water_level_list.id', '=', 'water_level.idwl')
+            ->where('water_level_list.location', $titik)
+            ->whereMonth('water_level.datetime', Carbon::parse($tgl)->month)
+            ->whereYear('water_level.datetime', Carbon::parse($tgl)->year)
+            ->get();
+
+        $queryWeek = $queryWeek->groupBy('tanggal');
+
+        $queryWeek = json_decode($queryWeek, true);
+
+
+        $getmonth = Carbon::parse($tgl)->format('Y-m');
+
+        $weeks = [];
+
+        // Create Carbon instances for the given year and month
+        $startOfMonth = Carbon::parse($getmonth)->startOfMonth();
+        $endOfMonth = Carbon::parse($getmonth)->endOfMonth();
+
+        $weekStart = $startOfMonth->copy()->startOfWeek(); // Start of the first week
+        $weekNumber = 1;
+
+        while ($weekStart->lte($endOfMonth)) {
+            $weekEnd = $weekStart->copy()->endOfWeek();
+            $weekDates = [];
+
+            $currentDate = $weekStart->copy();
+            while ($currentDate->lte($weekEnd)) {
+                $weekDates[] = $currentDate->format('Y-m-d');
+                $currentDate->addDay();
+            }
+
+            $weeks["week$weekNumber"] = $weekDates;
+            $weekStart = $weekEnd->copy()->addDay(); // Move to the start of the next week
+            $weekNumber++;
+        }
+
+        $dataweek = [];
+        foreach ($weeks as $weekKey => $weekDates) {
+            $dataweek[$weekKey] = [];
+            foreach ($weekDates as $date) {
+                $found = false; // Flag to track if the date is found in $queryWeek
+                foreach ($queryWeek as $queryDate => $data) {
+                    if ($date == $queryDate) {
+                        $dataweek[$weekKey][] = $data;
+                        $found = true;
+                        break;
+                    }
+                }
+            }
+        }
+
+        $resultweek = [];
+        foreach ($dataweek as $key => $value) {
+            # code...value
+            $sumlvl_in2 = 0;
+            $sumlvl_out2 = 0;
+            $sumlvl_act2 = 0;
+            $count2 = 0;
+            foreach ($value as $key2 => $value2) if (is_array($value2)) {
+                # code...
+                $count = 0;
+                $sumlvl_in = 0;
+                $sumlvl_out = 0;
+                $sumlvl_act = 0;
+                foreach ($value2 as $key3 => $value3) if (is_array($value3)) {
+                    # code...
+                    # code...
+                    $sumlvl_in += $value3['lvl_in'];
+                    $sumlvl_out += $value3['lvl_out'];
+                    $sumlvl_act += $value3['lvl_act'];
+
+                    $count = count($value2);
+                }
+
+                $resultweek[$key][$key2]['jumdata'] = $count;
+                $resultweek[$key][$key2]['total_lvlin'] = $sumlvl_in;
+                $resultweek[$key][$key2]['total_lvl_out'] = $sumlvl_out;
+                $resultweek[$key][$key2]['total_lvl_act'] = $sumlvl_act;
+                $resultweek[$key][$key2]['avg_lvlin'] = $count !== 0 ? round($sumlvl_in / $count, 2) : 0;
+                $resultweek[$key][$key2]['avg_lvlout'] = $count !== 0 ? round($sumlvl_out / $count, 2) : 0;
+                $resultweek[$key][$key2]['avg_lvlact'] = $sumlvl_act !== 0 ? round($sumlvl_in / $count, 2) : 0;
+
+                $sumlvl_in2 += $sumlvl_in;
+                $sumlvl_out2 += $sumlvl_out;
+                $sumlvl_act2 += $sumlvl_act;
+
+                $count2 += $count;
+            } else {
+                $resultweek[$key][$key2]['jumdata'] = 0;
+                $resultweek[$key][$key2]['total_lvlin'] = 0;
+                $resultweek[$key][$key2]['total_lvl_out'] = 0;
+                $resultweek[$key][$key2]['total_lvl_act'] = 0;
+                $resultweek[$key][$key2]['avg_lvlin'] = 0;
+                $resultweek[$key][$key2]['avg_lvlout'] = 0;
+                $resultweek[$key][$key2]['avg_lvlact'] = 0;
+            }
+
+            $resultweek[$key]['jumdata'] = $count2;
+            $resultweek[$key]['total_lvlin'] = $sumlvl_in2;
+            $resultweek[$key]['total_lvl_out'] = $sumlvl_out2;
+            $resultweek[$key]['total_lvl_act'] = $sumlvl_act2;
+            $resultweek[$key]['avg_lvlin'] = $count !== 0 ? round($sumlvl_in2 / $count, 2) : 0;
+            $resultweek[$key]['avg_lvlout'] = $count !== 0 ? round($sumlvl_out2 / $count, 2) : 0;
+            $resultweek[$key]['avg_lvlact'] = $sumlvl_act !== 0 ? round($sumlvl_act2 / $count, 2) : 0;
+        }
+
+
+        foreach ($resultweek as $key => $value) {
+            # code...
+            $keyWeek[] = $key;
+            $week_lvlin[] = $value['avg_lvlin'];
+            $week_lvlout[] =  $value['avg_lvlout'];
+            $week_lvlact[] =  $value['avg_lvlact'];
+        }
+
+        return response()->json([
+            'rangeDays' => $formattedDates,
+            'lvl_in' => $averages['avg_lvl_in'],
+            'lvl_out' => $averages['avg_lvl_out'],
+            'lvl_act' => $averages['avg_lvl_act'],
+
+            // perhour
+            'ktgH' => $keyH,
+            'avg_lvlin' => $avg_lvlin,
+            'avg_lvlout' => $avg_lvlout,
+            'avg_lvlact' => $avg_lvlact,
+
+
+            // perweek
+            'keyWeek' => $keyWeek,
+            'week_lvlin' => $week_lvlin,
+            'week_lvlout' => $week_lvlout,
+            'week_lvlact' => $week_lvlact,
+
+        ]);
     }
 
     public function month_weather_forecast()
