@@ -2691,6 +2691,8 @@ class MasterController extends Controller
 
         return response()->json($finalData);
     }
+
+
     public function tabel_wl(Request $request)
     {
         $defaultId = '';

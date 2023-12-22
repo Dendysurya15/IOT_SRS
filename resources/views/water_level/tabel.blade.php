@@ -60,8 +60,7 @@
                                             @endif --}}
                                         </div>
                                         <div class="form-group float-sm-right ml-3" style="margin-top:4.5%;">
-                                            <button type="submit" class="btn btn-primary"><i
-                                                    class="fas fa-search"></i></button>
+                                            <button type="submit" class="btn btn-primary"><i class="fas fa-search"></i></button>
                                         </div>
                                     </div>
                                 </form>
@@ -81,21 +80,22 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @foreach($data as $value)
+
+                                        <!-- @foreach($data as $value)
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
                                             <td>{{$value['idwl']}}</td>
                                             <td>
                                                 <?php
-                                                        $tanggal = date('H:i:s d-m-Y', strtotime($value['datetime']));
-                                                    ?>
+                                                $tanggal = date('H:i:s d-m-Y', strtotime($value['datetime']));
+                                                ?>
                                                 {{ $tanggal }}
                                             </td>
                                             <td>{{ $value['lvl_in'] }}</td>
                                             <td>{{ $value['lvl_out'] }}</td>
                                             <td>{{ $value['lvl_act'] }}</td>
                                         </tr>
-                                        @endforeach
+                                        @endforeach -->
                                     </tbody>
                                 </table>
                             </div>
@@ -113,14 +113,50 @@
 
 <script>
     var judul = 'DATA AWS';
-    $(function() {
-        $('#rekapWaterLevel').DataTable({
-            "searching": true,
-            dom: 'Bfrtip',
-            buttons: [{
-                extend : 'excelHtml5',
-                title   : judul
-            }],
-        });
+
+    var data = @json($data);
+    // console.log(data);
+
+    var iotTable = $('#rekapWaterLevel').DataTable({
+        columns: [{
+                title: 'ID',
+                data: 'id'
+            },
+            {
+                title: 'id WL',
+                data: 'idwl'
+            },
+            {
+                title: 'Waktu',
+                data: 'datetime',
+
+            },
+
+            {
+                title: 'Level In',
+                data: 'lvl_in'
+            },
+            {
+                title: 'Level Out',
+                data: 'lvl_out'
+            },
+            {
+                title: 'Level Aktual',
+                data: 'lvl_act'
+            }
+        ]
     });
+
+    iotTable.clear().rows.add(data).draw();
+
+    // $(function() {
+    //     $('#rekapWaterLevel').DataTable({
+    //         "searching": true,
+    //         dom: 'Bfrtip',
+    //         buttons: [{
+    //             extend: 'excelHtml5',
+    //             title: judul
+    //         }],
+    //     });
+    // });
 </script>
