@@ -494,6 +494,9 @@
         var select2 = document.getElementById('locList');
         var defaultStation = $("#locList option:selected").val();
 
+
+        
+
         getDataLoc(defaultStation)
         getDataRainRate(defaultStation)
     });

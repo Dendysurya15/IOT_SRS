@@ -1512,6 +1512,8 @@ class MasterController extends Controller
     public function getHistoryRainRate(Request $request)
     {
         $id_loc = $request->get('id_loc');
+
+        dd($id_loc);
         $startDate = Carbon::now()->subDays(30)->format('Y-m-d H:i:s');
         $endDate = Carbon::now()->format('Y-m-d H:i:s');
 
@@ -1611,6 +1613,8 @@ class MasterController extends Controller
             ->where('idws', $id_loc)
             ->get()
             ->groupBy('hari');
+
+        dd($queryPredDetail);
 
         $arrPagiMalam = array();
         $arrPred = array();
