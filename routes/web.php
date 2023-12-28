@@ -29,7 +29,7 @@ Route::middleware('checksession')->group(function () {
 
     Route::get('/tabel', [MasterController::class, 'Tabel']);
     Route::get('month_weather_forecast', [MasterController::class, 'month_weather_forecast'])->name('month_weather_forecast');
-    Route::post('getHistoryForecastDay', [MasterController::class, 'getHistoryForecastDay'])->name('getHistoryForecastDay');
+    Route::get('getHistoryForecastDay', [MasterController::class, 'getHistoryForecastDay'])->name('getHistoryForecastDay');
     Route::post('getHistoryRainRate', [MasterController::class, 'getHistoryRainRate'])->name('getHistoryRainRate');
     Route::get('getDay/{id}', [MasterController::class, 'getDay'])->name('getDay');
 
