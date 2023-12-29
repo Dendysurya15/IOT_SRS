@@ -64,6 +64,7 @@ Route::middleware('checksession')->group(function () {
     Route::post('deleteStation', [MasterController::class, 'deleteStation'])->name('deleteStation');
 
     Route::get('/dashboard', [HomeController::class, 'index'])->name('dashboard');
+    Route::post('gettabelaws', [MasterController::class, 'gettabelaws'])->name('gettabelaws');
 });
 
 Route::get('/', [LoginController::class, 'index'])->name('login');

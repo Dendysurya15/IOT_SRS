@@ -1,100 +1,78 @@
 @include('layout.header')
-
 <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
     <section class="content-header">
-        <div class="content-fluid ">
-            <div class="row mb-2">
-                <div class="col-sm-6">
-                    <h1 class="m-0 pl-2 text-dark">
-                        AWS
-                    </h1>
-                </div>
-            </div>
-        </div>
     </section>
-    <section class="content">
-        <div class="container-fluid">
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="card">
-                        <div class="card-header">
-                            <div class="row">
-                                <div class="col-sm-5">
-                                    <h1 class="m-0 text-primary">
-                                        DATA AWS
-                                    </h1>
-                                </div>
-                                <form class="col-sm-7" action="{{ url('/filltabel') }}" method="post">
-                                    {{ csrf_field() }}
-                                    <div class="row">
-                                        <div class="form-group float-sm-right col-md-5">
-                                            <label>Tanggal Mulai :</label>
-                                            <input class="form-control" type="date" name="tglMulai">
-                                            @if(session('error_select'))
-                                            @if ($errors->has('tglMulai'))
-                                            <span class="text-danger">{{ $errors->first('tglMulai') }}</span>
-                                            @endif
-                                            @endif
-                                        </div>
-                                        <div class="form-group float-sm-right ml-3 col-md-5">
-                                            <label>Tanggal Selesai :</label>
-                                            <input class="form-control" type="date" name="tglSelesai">
-                                            @if(session('error_select'))
-                                            @if ($errors->has('tglSelesai'))
-                                            <span class="text-danger">{{ $errors->first('tglSelesai') }}</span>
-                                            @endif
-                                            @endif
-                                        </div>
-                                        <div class="form-group float-sm-right ml-3" style="margin-top:4.5%;">
-                                            <button type="submit" class="btn btn-primary"><i class="fas fa-search"></i></button>
-                                        </div>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-                        <div class="card-body table-responsive">
-                            <div style="margin-left: auto; margin-right: auto;">
-                                <table class="table table-bordered table-hover text-center" id="rekapTaksasi">
-                                    <thead>
-                                        <tr>
-                                            <th>NO</th>
-                                            <th style="width:15%;">WAKTU</th>
-                                            <th>LOKASI</th>
-                                            <th>SUHU UDARA ºC</th>
-                                            <th>KELEMBABAN UDARA %</th>
-                                            <th>KECEPATAN ANGIN</th>
-                                            <th>ARAH ANGIN <i id="s_hum_in1" class="fas fa-compass"></i></th>
-                                            <th>CURAH HUJAN</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach($aws as $value)
-                                        <tr>
-                                            <td>{{ $loop->iteration }}</td>
-                                            <td>
-                                                <?php
-                                                $tanggal = date('H:i:s d-m-Y', strtotime($value['date']));
-                                                ?>
-                                                {{ $tanggal }}
-                                            </td>
-                                            <td>{{ $value['loc'] }}</td>
-                                            <td>{{ $value['temp_out'] }} ºC</td>
-                                            <td>{{ $value['hum_out'] }} %</td>
-                                            <td>{{ $value['windspeedkmh'] }} m/s</td>
-                                            <td>{{ $value['winddir'] }}</td>
-                                            <td>{{ $value['wind_gust'] * $value['rain_cal'] }} mm</td>
-                                        </tr>
-                                        @endforeach
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
 
+    <!-- Main content -->
+    <section class="content">
+
+        <div class="container-fluid">
+            <div class="card p-4">
+                <div class="row">
+                    <div class="col-8">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h4 class="mb-0">Table AWS</h4>
+
+                        </div>
+                        <p style="color: grey">Pilih filter data yang akan ditampilkan, adapun default parameter yaitu <i>Curah Hujan</i></p>
+                        <div class="row">
+                            <div class="col-2">
+                                <select name="" id="lokasi" class="form-control">
+
+                                    @foreach ($list as $item)
+                                    <option value="{{$item -> id}}">{{$item -> loc}}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="col-2">
+                                <input type="date" id="tanggal" class="form-control">
+                            </div>
+                            <div class="col-4">
+                                <button type="button" id="finddata" class="btn btn-primary mr-2">Filters</button>
+                                <button type="button" class="btn btn-danger">Reset</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-4 d-flex align-items-center justify-content-end pl-4">
+                        <div style="padding: 5px;">
+
+                        </div>
                     </div>
                 </div>
             </div>
+        </div>
 
-        </div><!-- /.container-fluid -->
+
+
+
+        <div class="container-fluid">
+            <div class="card">
+
+                <div class="card-body">
+                    <div class="row">
+
+                        <div class="col-lg-12">
+                            <div class="card mb-3">
+                                <div class="card-header">
+                                    <h4 class="card-title"><i class="fas fa-calendar-alt"></i> Monthly Trends</h4>
+                                </div>
+                                <div class="card-body" a>
+
+                                    <table class="table table-primary" id="tableaws">
+
+                                    </table>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+
     </section>
     <!-- /.content -->
 </div>
@@ -110,6 +88,84 @@
                 extend: 'excelHtml5',
                 title: judul
             }],
+        });
+    });
+
+
+    $('#finddata').click(function() {
+        const lokasi = $('#lokasi').val();
+        const tanggal = $('#tanggal').val();
+
+        // Check if the date field is empty
+        if (tanggal === '') {
+            alert('Please select a date before clicking Find Data.');
+            return; // Prevent further execution if the date is not selected
+        }
+        var _token = $('input[name="_token"]').val();
+        // Create an object with data to be sent in the AJAX request
+        const requestData = {
+            lokasi: lokasi,
+            tanggal: tanggal,
+            _token: _token
+            // Add more data if needed for your AJAX request
+        };
+        if ($.fn.DataTable.isDataTable('#tableaws')) {
+            $('#tableaws').DataTable().destroy();
+        }
+        // AJAX request using jQuery
+        $.ajax({
+            url: 'gettabelaws', // Replace with your server endpoint URL
+            method: 'POST', // Specify the HTTP method (POST, GET, etc.)
+            data: requestData, // Data to be sent in the request
+            success: function(result) {
+                var parseResult = JSON.parse(result)
+
+
+                var datatableweek1 = $('#tableaws').DataTable({
+                    columns: [{
+                            title: 'ID',
+                            data: 'id'
+                        },
+                        {
+                            title: 'Kecepatan Angin',
+                            data: 'windspeedkmh'
+                        },
+                        {
+                            title: 'Arah Angin',
+                            data: 'winddir'
+                        },
+                        {
+                            title: 'Curah Hujan',
+                            data: 'rain_rate'
+                        },
+                        {
+                            title: 'Suhu',
+                            data: 'temp_in'
+                        },
+                        {
+                            title: 'Kelembapan',
+                            data: 'hum_out'
+                        },
+                        {
+                            title: 'Sinar UV',
+                            data: 'uv'
+                        },
+                    ],
+                    dom: 'Bfrtip', // Add the Bfrtip option for Buttons
+                    buttons: [
+                        'excel' // Enable Excel export button
+                    ]
+                });
+
+                datatableweek1.clear().rows.add(parseResult['data']).draw();
+
+            },
+            error: function(xhr, status, error) {
+                // Handle errors in the AJAX request
+                console.error('AJAX Error:', status, error);
+
+                // Add logic to handle errors
+            }
         });
     });
 </script>
