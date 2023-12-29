@@ -1614,7 +1614,7 @@ class MasterController extends Controller
             ->get()
             ->groupBy('hari');
 
-        dd($queryPredDetail);
+        // dd($queryPredDetail);
 
         $arrPagiMalam = array();
         $arrPred = array();
@@ -1882,10 +1882,97 @@ class MasterController extends Controller
     {
 
         $listLoc = DB::table('weather_station_list')
-            ->where('desc', 'Real')
+            ->where('flags', '1')
             ->pluck('loc');
 
-        return view('weather_station/grafik', ['listLoc' => $listLoc]);
+        $arrJam = ['00:00', '01:00', '02:00', '03:00', '04:00', '05:00', '06:00', '07:00', '08:00', '09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00'];
+        return view('weather_station/grafik', ['listStation' => $listLoc, 'arrJam' => $arrJam]);
+    }
+
+
+    public static function get_data_24hour(Request $request)
+    {
+
+        $loc = $request->get('loc');
+        $tgl = $request->get('tgl');
+        $params = $request->get('params');
+
+        $arrJam = ['00:00', '01:00', '02:00', '03:00', '04:00', '05:00', '06:00', '07:00', '08:00', '09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00'];
+        $query = DB::table('weather_station_list')
+            ->join('weather_station', 'weather_station_list.id', '=', 'weather_station.idws')
+            ->select('weather_station.*', DB::raw('DATE_FORMAT(date, "%H:00") as hour'))
+
+            ->where(DB::raw("(DATE_FORMAT(weather_station.date,'%Y-%m-%d'))"), '=', $tgl)
+            ->where('weather_station_list.loc', '=', $loc)
+            ->get()->groupBy('hour');
+
+
+
+        $arr_per_hour = [];
+        if ($query) {
+            foreach ($query as $key => $value) {
+                $sum = 0;
+                $inc = 0;
+                $result = 0;
+                foreach ($value as $key2 => $value2) {
+
+                    $value2 = json_decode(json_encode($value2), true);
+                    $sum += $value2[$params];
+                    $inc++;
+                }
+
+                $result = $sum;
+                if ($params == 'temp_out' || $params == 'hum_out' || $params == 'uv' || $params == 'solar_radiation' || $params == 'windspeedkmh') {
+                    $result = round($sum / $inc, 2);
+                }
+
+                $formattedNumber = number_format($result, 2);
+                $floatValue = floatval($formattedNumber);
+                $arr_per_hour[$key] = $floatValue;
+            }
+        }
+
+
+
+        switch ($params) {
+            case 'rain_rate':
+
+                $params_name = 'Curah Hujan';
+                break;
+            case 'temp_out':
+
+                $params_name = 'Temperatur';
+                break;
+            case 'hum_out':
+
+                $params_name = 'Kelembaban';
+                break;
+            case 'uv':
+
+                $params_name = 'UV';
+                break;
+            case 'solar_radiation':
+
+                $params_name = 'Radiasi Matahari';
+                break;
+            case 'windspeedkmh':
+
+                $params_name = 'Kecepatan Angin';
+                break;
+
+            default:
+                // Handle the default case if needed
+                break;
+        }
+        $resultArray = array_merge(array_fill_keys($arrJam, 0), $arr_per_hour);
+        $resultArray = array_values($resultArray);
+
+        $arrData = array();
+        $arrData['data'] = $resultArray;
+        $arrData['jam'] = $arrJam;
+        $arrData['params'] = $params_name;
+
+        echo json_encode($arrData);
     }
 
     public static function generateDataGrafik(Request $request)

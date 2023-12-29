@@ -26,14 +26,16 @@
                 </select>
             </div>
             <div class="row p-1">
-                <div class="col-lg-4 col-md- col-sm-12 m-1 p-5 mb-2 dashboard_div" style="background-color: white;border-radius: 5px;">
+                <div class="col-lg-4 col-md- col-sm-12 m-1 p-5 mb-2 dashboard_div"
+                    style="background-color: white;border-radius: 5px;">
                     <h2 style="color:#013C5E;font-weight: 550">Water Level IoT
                     </h2>
                     <p style="color:#013C5E;">Portal website ini digunakan untuk memonitoring data dari proses pemantuan
                         ketinggian
                         air di <span id="namePlot"></span>
                     </p>
-                    <p style="color:#013C5E;">Update data device terakhir pada <span class="font-italic font-weight-bold" id="last_date"></span></p>
+                    <p style="color:#013C5E;">Update data device terakhir pada <span
+                            class="font-italic font-weight-bold" id="last_date"></span></p>
                     <ul class="list-group">
                         <li class="list-group-item">
                             <div class="d-flex flex-row bd-highlight ">
@@ -98,7 +100,8 @@
                     </ul>
 
                 </div>
-                <div class="col-lg-7 col-md-12 col-sm-12 p-5 mb-2 m-1 dashboard_div" style="background-color: white;border-radius: 5px;" style="border: 1px solid red">
+                <div class="col-lg-7 col-md-12 col-sm-12 p-5 mb-2 m-1 dashboard_div"
+                    style="background-color: white;border-radius: 5px;" style="border: 1px solid red">
                     <div id="lineChart"></div>
 
                 </div>

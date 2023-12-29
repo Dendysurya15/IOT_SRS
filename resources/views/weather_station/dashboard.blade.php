@@ -55,13 +55,14 @@
                     </div>
                     {{-- <div class="col-md">
                         <form class="" action="{{ route('dashboard_ws') }}" method="get">
-                    <input class="form-control" type="date" name="tgl" id="inputDate" onchange="this.form.submit()">
-                    </form>
+                            <input class="form-control" type="date" name="tgl" id="inputDate"
+                                onchange="this.form.submit()">
+                        </form>
 
-                </div> --}}
+                    </div> --}}
+                </div>
             </div>
         </div>
-</div>
 </div>
 <div class="row">
     <!--//Suhu Ruangan Aws 1-->
@@ -110,6 +111,12 @@
                             <br>
                             <i class="fas fa-wind" style="color: #183153"></i>
                             <span id="wsReal"></span> m/s
+                        </div>
+                        <div class="col ml-5">
+                            Hembusan angin
+                            <br>
+                            <i class="fas fa-sun" style="color: #183153"></i>
+                            <span id="wgReal"></span>
                         </div>
                         <div class="col ml-5">
                             Indeks UV
@@ -237,7 +244,8 @@
                         <span id="div_hari_{{$key}}"></span>
                     </div>
                 </div>
-                <div style="background:white;border-radius:5px;height:340px;box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;">
+                <div
+                    style="background:white;border-radius:5px;height:340px;box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;">
                     @foreach ($item as $data)
 
                     <div style="height: 170px;">
@@ -246,7 +254,8 @@
                                 <span style="font-size:13px">
                                     <span id="div_waktu_{{$data['waktu']}}_{{$key}}"></span> (
                                     <span id="div_jam_{{$data['waktu']}}_{{$key}}"></span> )</span> <br>
-                                <span class="font-italic" style="color:#6C757D"><span id="div_title_{{$data['waktu']}}_{{$key}}"></span></span>
+                                <span class="font-italic" style="color:#6C757D"><span
+                                        id="div_title_{{$data['waktu']}}_{{$key}}"></span></span>
                             </p>
                             <p class="alignright" style="float:right;margin-top:25px;margin-right:15px;">
                                 <span id="div_icon_{{$data['waktu']}}_{{$key}}"></span>
@@ -257,12 +266,14 @@
                             <div class="row m-2" style="">
                                 <div class="col-6" style="">
                                     <i class="fa-solid fa-water fa-sm fa-fw m-1" style="color:#183153;"></i>
-                                    <span style="font-size:11px"> <span id="div_rain_{{$data['waktu']}}_{{$key}}"></span> mm</span>
+                                    <span style="font-size:11px"> <span
+                                            id="div_rain_{{$data['waktu']}}_{{$key}}"></span> mm</span>
                                 </div>
                                 <div class="col-6" style="">
                                     <i class="fa-solid fa-temperature-low fa-sm fa-fw m-1" style="color:#183153;"></i>
 
-                                    <span style="font-size:11px"> <span id="div_temp_{{$data['waktu']}}_{{$key}}"></span> C</span>
+                                    <span style="font-size:11px"> <span
+                                            id="div_temp_{{$data['waktu']}}_{{$key}}"></span> C</span>
                                 </div>
                             </div>
                             <div class="row m-2" style="">
@@ -275,7 +286,8 @@
                                 <div class="col-6" style="">
                                     <i class="fa-solid fa-wind fa-sm fa-fw m-1" style="color:#183153;"></i>
 
-                                    <span style="font-size:11px"> <span id="div_ws_{{$data['waktu']}}_{{$key}}"></span>m/s</span>
+                                    <span style="font-size:11px"> <span
+                                            id="div_ws_{{$data['waktu']}}_{{$key}}"></span>m/s</span>
                                 </div>
                             </div>
                         </div>
@@ -358,14 +370,14 @@
                     <div class="h5 mb-0 font-weight-bold text-gray-800" id="hum">{{
                         $data[0]['hum_real'] ?? 0
                         }} %
-</div>
-</div>
-<div class="col-auto">
-    <i id="s_hum_in1" class="fas fa-thermometer-three-quarters fa-2x"></i>
-</div>
-</div>
-</div>
-</div>
+                    </div>
+                </div>
+                <div class="col-auto">
+                    <i id="s_hum_in1" class="fas fa-thermometer-three-quarters fa-2x"></i>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 <!--Kelembaban Ruangan-->
 
@@ -473,7 +485,9 @@
 </div>
 @include('layout.footer')
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.9.4/lottie.min.js" integrity="sha512-ilxj730331yM7NbrJAICVJcRmPFErDqQhXJcn+PLbkXdE031JJbcK87Wt4VbAK+YY6/67L+N8p7KdzGoaRjsTg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.9.4/lottie.min.js"
+    integrity="sha512-ilxj730331yM7NbrJAICVJcRmPFErDqQhXJcn+PLbkXdE031JJbcK87Wt4VbAK+YY6/67L+N8p7KdzGoaRjsTg=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <!-- jQuery -->
 
 <!-- Bootstrap 4 -->
@@ -642,8 +656,13 @@
 
                 // console.log(arrResult['historyForecast']);
 
+                
+
 
                 var arrAktual = arrResult['dataAktual']
+
+
+                console.log(arrAktual)
 
                 // console.log(arrAktual);
 
@@ -667,6 +686,8 @@
                 wdReal.textContent = arrAktual['windDirIndonesian']
                 var wsReal = document.getElementById('wsReal');
                 wsReal.textContent = arrAktual['winddir']
+                var wgReal = document.getElementById('wgReal');
+                wgReal.textContent = arrAktual['wind_gust']
 
                 uvVal = arrAktual['uv'];
 
