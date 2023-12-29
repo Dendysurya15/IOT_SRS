@@ -2147,6 +2147,8 @@ class MasterController extends Controller
             ->get();
         $sel_aws = json_decode(json_encode($sel_aws), true);
 
+        // dd($sel_aws);
+
         return view('weather_station/tabel', ['aws' => $sel_aws]);
     }
 
