@@ -11,47 +11,54 @@
 
   <!-- Main content -->
   <section class="content">
+
     <div class="container-fluid">
-
-      <div class="card p-3">
-        <h4>Filter Grafik </h4>
-        <p style="color:grey">Pilih filter data yang akan ditampilkan, adapun default parameter yaitu <i>Curah Hujan
-          </i> </p>
+      <div class="card p-4">
         <div class="row">
-          <div class="col-2">
-            <select name="" id="lokasi" class="form-control">
-              <option value="" selected disabled>Pilih Lokasi</option>
-              @foreach ($listLoc as $key => $list)
-              <option value="{{$list}}">{{$list}}</option>
-              @endforeach
-            </select>
-          </div>
-          <div class="col-2">
-            <select name="" id="params" class="form-control">
-              <option value="" selected disabled>Parameter AWS</option>
-              <option value="Curah Hujan">Curah Hujan ()</option>
-              <option value="Temperatur">Temperatur ()</option>
-              <option value="Kelembaban">Kelembaban ()</option>
-              <option value="UV">UV ()</option>
-              <option value="Radiasi Matahari">Radiasi Matahari ()</option>
-              <option value="Kecepatan Angin">Kecepatan Angin ()</option>
-            </select>
-          </div>
-          <div class="col-2">
-            <input type="date" id="tanggal" class="form-control">
-          </div>
+          <div class="col-8">
+            <div class="d-flex justify-content-between align-items-center">
+              <h4 class="mb-0">Filter Grafik</h4>
 
-          <button type="button" class="btn btn-primary mr-2" onclick="getSelectedValues()">Filters</button>
-          <button type="button" class="btn btn-danger" onclick="resetForm()">Reset</button>
+            </div>
+            <p style="color: grey">Pilih filter data yang akan ditampilkan, adapun default parameter yaitu <i>Curah Hujan</i></p>
+            <div class="row">
+              <div class="col-2">
+                <select name="" id="lokasi" class="form-control">
+                  <option value="" selected disabled>Pilih Lokasi</option>
+                  <!-- ... (options generated dynamically) ... -->
+                </select>
+              </div>
+              <div class="col-2">
+                <select name="" id="params" class="form-control">
+                  <option value="" selected disabled>Parameter AWS</option>
+                  <!-- ... (options generated dynamically) ... -->
+                </select>
+              </div>
+              <div class="col-2">
+                <input type="date" id="tanggal" class="form-control">
+              </div>
+              <div class="col-4">
+                <button type="button" class="btn btn-primary mr-2" onclick="getSelectedValues()">Filters</button>
+                <button type="button" class="btn btn-danger" onclick="resetForm()">Reset</button>
+              </div>
+            </div>
+          </div>
+          <div class="col-4 d-flex align-items-center justify-content-end pl-4">
+            <div style="padding: 5px;">
+              <i class="fas fa-sun" style="font-size: 80px;"></i>
+              <p>Berawan</p>
+            </div>
+          </div>
         </div>
       </div>
-
     </div>
+
+
+
+
     <div class="container-fluid">
       <div class="card">
-        <div class="card-header">
-          <h2 class="text-center">Weather Station Dashboard</h2>
-        </div>
+
         <div class="card-body">
           <div class="row">
             <div class="col-lg-6">
@@ -99,6 +106,8 @@
         </div>
       </div>
     </div>
+
+
   </section>
   <!-- /.content -->
 </div>
