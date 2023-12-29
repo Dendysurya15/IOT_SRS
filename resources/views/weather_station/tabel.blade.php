@@ -46,8 +46,7 @@
                                             @endif
                                         </div>
                                         <div class="form-group float-sm-right ml-3" style="margin-top:4.5%;">
-                                            <button type="submit" class="btn btn-primary"><i
-                                                    class="fas fa-search"></i></button>
+                                            <button type="submit" class="btn btn-primary"><i class="fas fa-search"></i></button>
                                         </div>
                                     </div>
                                 </form>
@@ -74,16 +73,16 @@
                                             <td>{{ $loop->iteration }}</td>
                                             <td>
                                                 <?php
-                                                        $tanggal = date('H:i:s d-m-Y', strtotime($value['datetime']));
-                                                    ?>
+                                                $tanggal = date('H:i:s d-m-Y', strtotime($value['date']));
+                                                ?>
                                                 {{ $tanggal }}
                                             </td>
                                             <td>{{ $value['loc'] }}</td>
-                                            <td>{{ $value['t'] }} ºC</td>
-                                            <td>{{ $value['h'] }} %</td>
-                                            <td>{{ $value['ws'] }} m/s</td>
-                                            <td>{{ $value['wc'] }}</td>
-                                            <td>{{ $value['r'] * $value['rain_cal'] }} mm</td>
+                                            <td>{{ $value['temp_out'] }} ºC</td>
+                                            <td>{{ $value['hum_out'] }} %</td>
+                                            <td>{{ $value['windspeedkmh'] }} m/s</td>
+                                            <td>{{ $value['winddir'] }}</td>
+                                            <td>{{ $value['wind_gust'] * $value['rain_cal'] }} mm</td>
                                         </tr>
                                         @endforeach
                                     </tbody>
@@ -108,8 +107,8 @@
             "searching": false,
             dom: 'Bfrtip',
             buttons: [{
-                extend : 'excelHtml5',
-                title   : judul
+                extend: 'excelHtml5',
+                title: judul
             }],
         });
     });
