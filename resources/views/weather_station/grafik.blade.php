@@ -137,7 +137,7 @@
 $.ajax({
 
     
-    url: '{{ route("get_data_24hour") }}', // Replace with your actual endpoint URL
+    url: '{{ route("get_data_24hour") }}',
     type: 'GET',
     data: {
         loc: selectedValue,
@@ -146,8 +146,6 @@ $.ajax({
     },
     success: function(data) {
 
-  
-        // Update the content or perform other actions based on the AJAX response
         arrResult = JSON.parse(data)
 
         var arrData = arrResult['data']
@@ -171,34 +169,7 @@ $.ajax({
             data: arrData
 
         }])
-        // // Check if data is empty
-        // if ($.isEmptyObject(data)) {
-        //     // If data is empty, add a disabled option
-        //     selectLoc.append($('<option>', {
-        //         value: '',
-        //         text: 'Tidak ada implementasi pada wilayah ini',
-        //         disabled: true
-        //     }));
-
-        //     dateLastInElement.innerHTML = '-';
-        //     dateLastOutElement.innerHTML = '-';
-        //     dateLastActElement.innerHTML = '-';
-        //     dateRequestElement.innerHTML = '-';
-        //     dateRequest2Element.innerHTML = '-';
-        //     dateRequest3Element.innerHTML = '-';
-        //     dateLastDateElement.innerHTML = 'tidak ada';
-        // } else {
-        //     // Iterate through the object and append options to the select element
-        //     $.each(data, function(index, location) {
-        //         selectLoc.append($('<option>', {
-        //             value: location,
-        //             text: location
-        //         }));
-        //     });
-
-        //     var defaultSelectedValue = selectLoc.val();
-        //     handleListLocClick(defaultSelectedValue, currentDate);
-        // }
+     
     },
     error: function(xhr, status, error) {
         console.error(error);
@@ -248,7 +219,7 @@ var chart24hour = new ApexCharts(document.querySelector("#id_chart_24_hour"), op
 
     $('#lokasiDevice').on('change', function() {
             var selectedValue = $(this).val();
-            handleAjaxRequest(selectedValue, currentDate);
+            handleAjaxRequest(selectedValue,defaultSelectedParamsValue, currentDate);
         });
 
         $('#params').on('change', function() {

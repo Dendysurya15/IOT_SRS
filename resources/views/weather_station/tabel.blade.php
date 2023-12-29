@@ -28,10 +28,7 @@
                             <div class="col-2">
                                 <input type="date" id="tanggal" class="form-control">
                             </div>
-                            <div class="col-4">
-                                <button type="button" id="finddata" class="btn btn-primary mr-2">Filters</button>
 
-                            </div>
                         </div>
                     </div>
                     <div class="col-4 d-flex align-items-center justify-content-end pl-4">
@@ -49,24 +46,14 @@
         <div class="container-fluid">
             <div class="card">
 
-                <div class="card-body">
-                    <div class="row">
+                <div class="card-header bg-success">
+                    <h4 class="card-title"><i class="fas fa-calendar-alt"></i> Rekap data secara tabel</h4>
+                </div>
+                <div class="card-body" a>
 
-                        <div class="col-lg-12">
-                            <div class="card mb-3">
-                                <div class="card-header">
-                                    <h4 class="card-title"><i class="fas fa-calendar-alt"></i> Table AWS</h4>
-                                </div>
-                                <div class="card-body" a>
+                    <table class="table " id="tableaws">
 
-                                    <table class="table table-primary" id="tableaws">
-
-                                    </table>
-
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    </table>
 
                 </div>
             </div>
@@ -79,12 +66,9 @@
 @include('layout.footer')
 
 <script>
-    $('#finddata').click(function() {
-        const lokasi = $('#lokasi').val();
-        let tanggal = $('#tanggal').val(); // Use let instead of const
+    function handleAjaxRequest(lokasi,tanggal) {
 
-        // Check if the date field is empty
-        if (tanggal === '') {
+ if (tanggal === '') {
             const today = new Date(); // Get today's date
             const year = today.getFullYear();
             const month = String(today.getMonth() + 1).padStart(2, '0'); // Month starts from 0
@@ -164,5 +148,26 @@
                 // Add logic to handle errors
             }
         });
-    });
+}
+    
+
+
+    $(document).ready(function() {
+    var defaultSelectedLocValue = $('#lokasi option:first').val();
+    var currentDate = new Date().toISOString().split('T')[0];
+        
+    $('#tanggal').val(currentDate);
+    handleAjaxRequest(defaultSelectedLocValue, currentDate);
+
+    $('#lokasi').on('change', function() {
+            var selectedValue = $(this).val();
+            handleAjaxRequest(selectedValue, currentDate);
+        });
+
+        $('#tanggal').on('change', function() {
+          currentDate = $(this).val(); 
+
+          handleAjaxRequest($('#lokasi').val(), currentDate);
+        });
+  })
 </script>

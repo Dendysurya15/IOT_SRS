@@ -1937,27 +1937,23 @@ class MasterController extends Controller
         switch ($params) {
             case 'rain_rate':
 
-                $params_name = 'Curah Hujan';
+                $params_name = 'Curah Hujan (mm/jam)';
                 break;
             case 'temp_out':
 
-                $params_name = 'Temperatur';
+                $params_name = 'Temperatur (°C)';
                 break;
             case 'hum_out':
-
-                $params_name = 'Kelembaban';
+                $params_name = 'Kelembaban (%RH)';
                 break;
             case 'uv':
-
                 $params_name = 'UV';
                 break;
             case 'solar_radiation':
-
-                $params_name = 'Radiasi Matahari';
+                $params_name = 'Radiasi Matahari (W/m²)';
                 break;
             case 'windspeedkmh':
-
-                $params_name = 'Kecepatan Angin';
+                $params_name = 'Kecepatan Angin (km/jam)';
                 break;
 
             default:
