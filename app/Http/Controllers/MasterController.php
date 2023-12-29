@@ -2149,7 +2149,40 @@ class MasterController extends Controller
 
         // dd($sel_aws);
 
-        return view('weather_station/tabel', ['aws' => $sel_aws]);
+        $listStation = DB::table('weather_station_list')
+            ->select('weather_station_list.*')
+            ->orderBy('flags', 'desc')
+            ->get();
+
+        // dd($listStation);
+
+        return view('weather_station/tabel', [
+            'aws' => $sel_aws,
+            'list' => $listStation
+        ]);
+    }
+
+    public function gettabelaws(Request $request)
+    {
+        $loc = $request->input('lokasi');
+        $date = $request->input('tanggal');
+
+        $data = DB::table('weather_station')
+            ->select('*')
+            ->where('idws', $loc)
+            ->where('date', 'LIKE', '%' . $date . '%')
+            ->get();
+
+        $data = json_decode($data, true);
+
+
+        $arr = array();
+
+        $arr['data'] = $data;
+
+
+        echo json_encode($arr); //di decode ke dalam bentuk json dalam vaiavel arrview yang dapat menampung banyak isi array
+        exit();
     }
 
     public function dashboard_wl(Request $request)
