@@ -12,10 +12,10 @@
                 <div class="row">
                     <div class="col-8">
                         <div class="d-flex justify-content-between align-items-center">
-                            <h4 class="mb-0">Table AWS</h4>
+
 
                         </div>
-                        <p style="color: grey">Pilih filter data yang akan ditampilkan, adapun default parameter yaitu <i>Curah Hujan</i></p>
+                        <p style="color: grey">Pilih filter data yang akan ditampilkan</p>
                         <div class="row">
                             <div class="col-2">
                                 <select name="" id="lokasi" class="form-control">
@@ -30,7 +30,7 @@
                             </div>
                             <div class="col-4">
                                 <button type="button" id="finddata" class="btn btn-primary mr-2">Filters</button>
-                                <button type="button" class="btn btn-danger">Reset</button>
+
                             </div>
                         </div>
                     </div>
@@ -55,7 +55,7 @@
                         <div class="col-lg-12">
                             <div class="card mb-3">
                                 <div class="card-header">
-                                    <h4 class="card-title"><i class="fas fa-calendar-alt"></i> Monthly Trends</h4>
+                                    <h4 class="card-title"><i class="fas fa-calendar-alt"></i> Table AWS</h4>
                                 </div>
                                 <div class="card-body" a>
 
@@ -79,28 +79,21 @@
 @include('layout.footer')
 
 <script>
-    var judul = 'DATA AWS';
-    $(function() {
-        $('#rekapTaksasi').DataTable({
-            "searching": false,
-            dom: 'Bfrtip',
-            buttons: [{
-                extend: 'excelHtml5',
-                title: judul
-            }],
-        });
-    });
-
-
     $('#finddata').click(function() {
         const lokasi = $('#lokasi').val();
-        const tanggal = $('#tanggal').val();
+        let tanggal = $('#tanggal').val(); // Use let instead of const
 
         // Check if the date field is empty
         if (tanggal === '') {
-            alert('Please select a date before clicking Find Data.');
-            return; // Prevent further execution if the date is not selected
+            const today = new Date(); // Get today's date
+            const year = today.getFullYear();
+            const month = String(today.getMonth() + 1).padStart(2, '0'); // Month starts from 0
+            const day = String(today.getDate()).padStart(2, '0');
+            tanggal = `${year}-${month}-${day}`; // Format the date as YYYY-MM-DD
         }
+
+
+        console.log(tanggal);
         var _token = $('input[name="_token"]').val();
         // Create an object with data to be sent in the AJAX request
         const requestData = {
@@ -123,8 +116,8 @@
 
                 var datatableweek1 = $('#tableaws').DataTable({
                     columns: [{
-                            title: 'ID',
-                            data: 'id'
+                            title: 'Tanggal',
+                            data: 'date'
                         },
                         {
                             title: 'Kecepatan Angin',
@@ -151,9 +144,13 @@
                             data: 'uv'
                         },
                     ],
-                    dom: 'Bfrtip', // Add the Bfrtip option for Buttons
+                    dom: 'B<"top"lf>rtip', // Explicitly define the DOM layout
                     buttons: [
                         'excel' // Enable Excel export button
+                    ],
+                    lengthMenu: [
+                        [10, 20, 50, -1],
+                        [10, 20, 50, "All"]
                     ]
                 });
 
