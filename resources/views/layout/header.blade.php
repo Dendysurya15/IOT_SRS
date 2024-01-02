@@ -6,9 +6,9 @@ session_start();
 
 <head>
     <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>IoT DASHBOARD</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="shortcut icon" type="image/x-icon" href="{{ asset('/img/CBI-logo.png') }}">
     <link href="{{asset('fontawesome6/css/all.css')}}" rel="stylesheet">
     {{-- <script src="https://kit.fontawesome.com/3d2c665316.js" crossorigin="anonymous"></script> --}}
@@ -29,6 +29,9 @@ session_start();
 
     {{--
     <link href="{{ asset('fontawesome6/css/solid.css') }}" rel="stylesheet"> --}}
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
 
     <link rel="stylesheet" href="{{ asset('css/ionicons.min.css') }}">
     <link rel="stylesheet" href="{{ asset('plugins/datatables-bs4/css/dataTables.bootstrap4.min.css') }}">
@@ -102,15 +105,18 @@ session_start();
                 {{-- <li class="nav-item dropdown ml-auto">
                     <a href="" class="nav-link dropdown-toggle" id="navbarDropdown" data-toggle="dropdown"
                         aria-haspopup="true" aria-expanded="false"> {{ session('user_name') }}</a>
-                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-                    <a href="{{asset('profile')}}" class="dropdown-item"> <i class="nav-icon fa fa-user"></i> <span class="ml-2"> Edit
-                            Profile</span>
-                    </a>
-                    <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-                        @csrf
-                    </form>
-                    <a href="" class="dropdown-item" onclick="event.preventDefault(); document.getElementById('logout-form').submit();"> <i class="nav-icon fa fa-sign-out-alt"></i><span class="ml-2"> Log Out</span></a>
-                </div>
+                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+                        <a href="{{asset('profile')}}" class="dropdown-item"> <i class="nav-icon fa fa-user"></i> <span
+                                class="ml-2"> Edit
+                                Profile</span>
+                        </a>
+                        <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                            @csrf
+                        </form>
+                        <a href="" class="dropdown-item"
+                            onclick="event.preventDefault(); document.getElementById('logout-form').submit();"> <i
+                                class="nav-icon fa fa-sign-out-alt"></i><span class="ml-2"> Log Out</span></a>
+                    </div>
                 </li> --}}
 
 
@@ -118,13 +124,15 @@ session_start();
         </nav>
         <aside class="main-sidebar sidebar-light-primary elevation-4">
             <a href="{{ url('/dashboard') }}" class="brand-link">
-                <img src="{{ asset('/img/CBI-logo.png') }}" alt="Covid Tracker" class="brand-image img-circle elevation-3" style="opacity: .8">
+                <img src="{{ asset('/img/CBI-logo.png') }}" alt="Covid Tracker"
+                    class="brand-image img-circle elevation-3" style="opacity: .8">
                 <span class="brand-text font-weight-light">IoT</span>
             </a>
 
             <div class="sidebar">
                 <nav class="" style="height: 100%">
-                    <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false" style="height: 100%">
+                    <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu"
+                        data-accordion="false" style="height: 100%">
                         <!-- USER LAB -->
 
                         <!-- TABEL -->
@@ -193,7 +201,8 @@ session_start();
                             </a>
                         </li>
                         <li class="nav-item fixed-bottom mb-3" heig style="position: absolute;">
-                            <a href="{{ route('logout') }}" class="nav-link " onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                            <a href="{{ route('logout') }}" class="nav-link "
+                                onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                                 <i class="nav-icon fa fa-sign-out-alt"></i>
                                 <p>
                                     Logout

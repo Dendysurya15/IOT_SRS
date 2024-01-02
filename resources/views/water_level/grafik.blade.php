@@ -35,13 +35,13 @@
                                 <div class="list-inline">
                                     {{-- <h5 class="list-inline-item">Lokasi</h5> --}}
                                     {{-- <form class="list-inline-item col-md-5" action="{{ route('grafik_wl') }}"
-                                    method="get">
-                                    <select name="id" class="form-control-sm" onchange="this.form.submit()">
-                                        <option value="" selected disabled>Pilih Lokasi</option>
-                                        @foreach ($listLoc as $key => $list)
-                                        <option value="{{$key}}">{{$list}}</option>
-                                        @endforeach
-                                    </select>
+                                        method="get">
+                                        <select name="id" class="form-control-sm" onchange="this.form.submit()">
+                                            <option value="" selected disabled>Pilih Lokasi</option>
+                                            @foreach ($listLoc as $key => $list)
+                                            <option value="{{$key}}">{{$list}}</option>
+                                            @endforeach
+                                        </select>
                                     </form> --}}
                                 </div>
                             </div>
@@ -69,27 +69,27 @@
                         <div class="card-header">
                             <div class=" card-title">
                                 <i class="fas fa-water pr-2"></i>Water Level {{$listLoc[Request()->id ?: $defaultId]}}
-                    dalam
-                    7 hari terakhir
-                </div>
-                <div class="float-right">
+                                dalam
+                                7 hari terakhir
+                            </div>
+                            <div class="float-right">
+
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="chart" id="wlPerminggu">
+                            </div>
+                        </div><!-- /.card-body -->
+                    </div><!-- Curah Hujan --> --}}
+
+                    <!-- Curah Hujan -->
 
                 </div>
             </div>
-            <div class="card-body">
-                <div class="chart" id="wlPerminggu">
-                </div>
-            </div><!-- /.card-body -->
-        </div><!-- Curah Hujan --> --}}
-
-        <!-- Curah Hujan -->
-
-</div>
-</div>
-<!-- /.row -->
-</div><!-- /.container-fluid -->
-</section>
-<!-- /.content -->
+            <!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
 </div>
 @include('layout.footer')
 
@@ -158,8 +158,6 @@
             },
             success: function(data) {
 
-
-
                 renderApexChart(data);
             },
             error: function(xhr, status, error) {
@@ -174,6 +172,8 @@
 
     function renderApexChart(data) {
 
+
+        
         rangeDays = data.rangeDays;
         lvl_in = data.lvl_in;
         lvl_out = data.lvl_out;
@@ -189,23 +189,24 @@
         lvl_in3 = data.week_lvlin;
         lvl_out3 = data.week_lvlout;
         lvl_act3 = data.week_lvlact;
-
+        
+        
         var options = {
             chart: {
                 type: 'area',
                 height: 350
             },
             series: [{
-                    name: 'lvl_in',
-                    data: lvl_in
+                    name: '',
+                    data: ''
                 },
                 {
-                    name: 'lvl_out',
-                    data: lvl_out
+                    name: '',
+                    data: ''
                 },
                 {
-                    name: 'lvl_act',
-                    data: lvl_act
+                    name: '',
+                    data: ''
                 }
             ],
             dataLabels: {
@@ -215,7 +216,7 @@
                 curve: 'smooth'
             },
             title: {
-                text: 'Rekap rata-rata  ',
+                text: '',
                 align: 'left',
                 style: {
                     fontSize: '14px'
@@ -223,7 +224,7 @@
             },
             xaxis: {
                 type: 'category',
-                categories: rangeDays,
+                categories: '',
                 axisBorder: {
                     show: false
                 },
@@ -277,17 +278,22 @@
                 }
             }
         };
-
-
-        if (!chart) {
-            chart = new ApexCharts(document.querySelector("#chartBulanan"), options);
+        chart = new ApexCharts(document.querySelector("#chartBulanan"), options);
             chart.render();
-
-            chart2 = new ApexCharts(document.querySelector("#charthour"), options);
+        chart2 = new ApexCharts(document.querySelector("#charthour"), options);
             chart2.render();
-            chart3 = new ApexCharts(document.querySelector("#chartweek"), options);
+    chart3 = new ApexCharts(document.querySelector("#chartweek"), options);
             chart3.render();
-        } else {
+
+        // if (!chart) {
+        //     // chart = new ApexCharts(document.querySelector("#chartBulanan"), options);
+        //     // chart.render();
+
+        //     // chart2 = new ApexCharts(document.querySelector("#charthour"), options);
+        //     // chart2.render();
+        //     chart3 = new ApexCharts(document.querySelector("#chartweek"), options);
+        //     chart3.render();
+        // } else {
             chart.updateOptions({
                 xaxis: {
                     categories: rangeDays,
@@ -364,15 +370,16 @@
                 }
             ]);
         }
-    }
+    // }
 
 
     $(document).ready(function() {
 
         var defaultSelectedValue = $('#listWil option:first').val();
 
-        var currentDate = $('#inputDate').val(); // Get initial date value
+        var currentDate = new Date().toISOString().split('T')[0];
 
+        $('#inputDate').val(currentDate);
         $('#listWil').val(defaultSelectedValue);
         handleAjaxRequest(defaultSelectedValue, currentDate);
 

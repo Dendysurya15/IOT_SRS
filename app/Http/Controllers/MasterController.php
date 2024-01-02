@@ -2619,21 +2619,20 @@ class MasterController extends Controller
             }
 
             $resultweek[$key]['jumdata'] = $count2;
-            $resultweek[$key]['total_lvlin'] = $sumlvl_in2;
-            $resultweek[$key]['total_lvl_out'] = $sumlvl_out2;
-            $resultweek[$key]['total_lvl_act'] = $sumlvl_act2;
-            $resultweek[$key]['avg_lvlin'] = $count !== 0 ? round($sumlvl_in2 / $count, 2) : 0;
-            $resultweek[$key]['avg_lvlout'] = $count !== 0 ? round($sumlvl_out2 / $count, 2) : 0;
-            $resultweek[$key]['avg_lvlact'] = $sumlvl_act !== 0 ? round($sumlvl_act2 / $count, 2) : 0;
+            $resultweek[$key]['total_lvlin'] = ($sumlvl_in2 == 0) ? null : $sumlvl_in2;
+            $resultweek[$key]['total_lvl_out'] = ($sumlvl_out2 == 0) ? null : $sumlvl_out2;
+            $resultweek[$key]['total_lvl_act'] = ($sumlvl_act2 == 0) ? null : $sumlvl_act2;
+            $resultweek[$key]['avg_lvlin'] = $count !== 0 ? round($sumlvl_in2 / $count, 2) : null;
+            $resultweek[$key]['avg_lvlout'] = $count !== 0 ? round($sumlvl_out2 / $count, 2) : null;
+            $resultweek[$key]['avg_lvlact'] = $sumlvl_act !== 0 ? round($sumlvl_act2 / $count, 2) : null;
         }
 
 
         foreach ($resultweek as $key => $value) {
-            # code...
             $keyWeek[] = $key;
             $week_lvlin[] = $value['avg_lvlin'];
-            $week_lvlout[] =  $value['avg_lvlout'];
-            $week_lvlact[] =  $value['avg_lvlact'];
+            $week_lvlout[] = $value['avg_lvlout'];
+            $week_lvlact[] = $value['avg_lvlact'];
         }
 
         return response()->json([
@@ -2756,6 +2755,18 @@ class MasterController extends Controller
 
         $isSameDay = $tglDate->isSameDay($currentDate);
 
+        $query = DB::table('water_level_list')
+            ->select('*')
+            ->where('location', $namaLoc)
+            ->first();
+
+        $max = $query->max ?? '-';
+        $min = $query->min ?? '-';
+
+        $lat = $query->lat;
+        $lon = $query->lon;
+
+
         $dataWlperhari = DB::table('water_level_list')
             ->leftJoin('water_level', 'water_level_list.id', '=', 'water_level.idwl')
             ->select('water_level.*', 'water_level_list.location as location')
@@ -2847,6 +2858,12 @@ class MasterController extends Controller
             'lastlvlin' =>      $lastlvlin,
             'lastlvlout' =>      $lastlvlout,
             'lastlvlact' =>      $lastlvlact,
+            'foto' => $query->foto_lokasi,
+            'max' => $max,
+            'min' => $min,
+            'lat' => $lat,
+            'lon' => $lon,
+            'namePlot' => $query->location
         ];
 
         return response()->json($finalData);
