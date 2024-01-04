@@ -1513,7 +1513,6 @@ class MasterController extends Controller
     {
         $id_loc = $request->get('id_loc');
 
-        dd($id_loc);
         $startDate = Carbon::now()->subDays(30)->format('Y-m-d H:i:s');
         $endDate = Carbon::now()->format('Y-m-d H:i:s');
 

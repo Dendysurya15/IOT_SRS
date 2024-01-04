@@ -36,6 +36,247 @@
     <section class="content">
         <div class="container-fluid">
             <div class="row">
+                <div class="col-lg-3 order-lg-1 order-sm-2 order-2">
+                    <div class="col-12">
+                        <div class="card" style="height:550px;border-radius: 20px;">
+                            <div class="card-body">
+
+                                <div style="width: 100%;"><span id="tanggal_update">Jan 2, 08:02</span> -
+                                    Weather Report</div>
+                                <div class="row align-items-center" style="height:230px;">
+                                    <div class="col-6 text-center">
+                                        <img src="{{ asset('img/sunny.png') }}" alt="Sunny Day Image"
+                                            style="height: 140px" class="img-fluid">
+                                    </div>
+                                    <div class="col-6">
+                                        <table class="table" style="">
+                                            <tr>
+                                                <td style="height: 80px;border-top:1px solid white" colspan="2">
+                                                    <div class="col-12"
+                                                        style="font-size:15px;font-weight:600;border-bottom:1px solid white;">
+                                                        Berawan
+                                                    </div>
+                                                    <div class="col-12"
+                                                        style="font-size:55px;font-weight: bold;margin-top:-5px;margin-bottom:-15px">
+                                                        20°C
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr class="text-center" style="font-size: 22px">
+                                                <td style="height: 20px;border-right:1px solid #E5E4E2;border-top:1px solid white;width: 93px; max-width: 93px; min-width: 93px;"
+                                                    class="align-middle">68°F</td>
+                                                <td class="align-middle" style="border-top:1px solid white">16°R</td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                </div>
+
+                                <table class="table">
+                                    <tr>
+                                        <td style="width: 50px; max-width: 50px; min-width: 50px; height: 70px;border:1px solid white;border-right:1px solid #E5E4E2"
+                                            class="align-middle">
+
+
+                                            <div class="d-flex justify-content-center align-items-center">
+                                                <div style="width: 100px;" class="text-center">
+                                                    <img src="{{ asset('img/sun.png') }}" alt="Sunny Day Image"
+                                                        style="height: 65px" class="img-fluid">
+                                                </div>
+                                                <div style="width: 100px;">
+                                                    <div class="text-left" style="font-weight: 500">Sedang (4)</div>
+                                                    <div class="text-left" style="color: #B6BBC4;font-size:13px">
+                                                        Indeks UV</div>
+                                                </div>
+                                            </div>
+
+
+
+
+                                        </td>
+                                        <td style="width: 50px; max-width: 50px; min-width: 50px; height: 70px;border:1px solid white;border-right:1px solid #E5E4E2"
+                                            class="align-middle">
+                                            <div class="d-flex justify-content-center align-items-center">
+                                                <div style="width: 100px;" class="text-center">
+                                                    <img src="{{ asset('img/humidity.png') }}" alt="Sunny Day Image"
+                                                        style="height: 50px" class="img-fluid">
+                                                </div>
+                                                <div style="width: 100px;">
+                                                    <div class="text-left" id="humReal">77%</div>
+                                                    <div class="text-left" id style="color: #B6BBC4;font-size:13px">
+                                                        Kelembaban</div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="width: 50px; max-width: 50px; min-width: 50px; height: 70px; border:1px solid white;border-right:1px solid #E5E4E2"
+                                            class="align-middle">
+                                            <div class="d-flex justify-content-center align-items-center">
+                                                <div style="width: 100px;" class="text-center">
+                                                    <img src="{{ asset('img/rain.png') }}" alt="Sunny Day Image"
+                                                        style="height: 55px" class="img-fluid">
+                                                </div>
+                                                <div style="width: 100px;">
+                                                    <div class="text-left">0 mm</div>
+                                                    <div class="text-left" style="color: #B6BBC4;font-size:13px">Curah
+                                                        Hujan</div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td style="width: 50px; max-width: 50px; min-width: 50px; height: 70px;border:1px solid white;border-right:1px solid #E5E4E2"
+                                            class="align-middle">
+                                            <div class="d-flex justify-content-center align-items-center">
+                                                <div style="width: 100px;" class="text-center">
+                                                    <img src="{{ asset('img/wind_speed.png') }}" alt="Sunny Day Image"
+                                                        style="height: 50px" class="img-fluid">
+                                                </div>
+                                                <div style="width: 100px;">
+                                                    <div class="text-left">196 km/jam</div>
+                                                    <div class="text-left" style="color: #B6BBC4;font-size:13px">
+                                                        Kec. Angin</div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="height: 70px;" colspan="2">
+                                            <div class="d-flex justify-content-center align-items-center">
+                                                <div style="width: 130px;" class="text-center">
+                                                    <img src="{{ asset('img/winddir.png') }}" alt="Sunny Day Image"
+                                                        style="height: 50px" class="img-fluid">
+                                                </div>
+                                                <div style="width: 130px;">
+                                                    <div class="text-left">Barat Daya Selatan</div>
+                                                    <div class="text-left" style="color: #B6BBC4;font-size:13px">
+                                                        Arah Angin</div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </table>
+
+
+
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="list-group">
+                            <button type="button"
+                                class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                                Lokasi
+                                <span class="ml-auto"> <img src="{{ asset('img/location.png') }}" alt="Sunny Day Image"
+                                        style="height: 25px" class="img-fluid"></span>
+                            </button>
+                        </div>
+                        <br>
+                        @php
+                        $inc = 0;
+                        @endphp
+                        @foreach($listStation as $loc)
+                        <div class="list-group mb-1">
+
+                            <button type="button"
+                                class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                                {{ $loc->loc }}
+                                <span class="ml-auto">20%</span>
+                            </button>
+
+                        </div>
+                        @php
+                        $inc++;
+
+                        if ($inc ==3) { break; } @endphp @endforeach
+                    </div>
+                </div>
+                <div class="col-lg-9  col-sm-12  order-lg-2 order-sm-1 order-1">
+                    <div>
+                        <div class="float-lg-right">
+                            <select name="lokasi" id="locList" class="form-control">
+                                @foreach($listStation as $loc)
+                                <option value="{{ $loc->id }}">{{ $loc->loc }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="float-lg-left">
+                            <h2>Dashboard AWS</h2>
+                            <p>Informasi terkait kebutuhan data-data cuaca saat ini</p>
+                        </div>
+                    </div>
+
+                    <div class="clearfix"></div>
+                    <div class="row">
+                        <div class="col-lg-12 order-3">
+                            <div class="card" style="height:350px;border-radius: 20px;">
+                                <div class="card-body">
+                                    <div id="tempGraphAktualForecast"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-12 order-3">
+                            <div class="card" style="height:350px;border-radius: 20px;">
+                                <div class="card-body">
+                                    <div id="chAktualForecast "></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+
+
+
+            {{-- <div class="float-lg-right">
+                <div class="row">
+                    <div class="col-8" style="border: 1px solid red;width:300px">
+                        <select name="lokasi" id="locList" class="form-control">
+                            @foreach($listStation as $loc)
+                            <option value="{{ $loc->id }}">{{ $loc->loc }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="col-4">
+                        aksdjfklajsdfkjaslk
+                    </div>
+                </div>
+            </div> --}}
+            {{-- <div class="row">
+                <div class="col-lg-12" style="border: 1px solid red">
+
+                    <div class="float-lg-right" style="border: 1px solid green">
+                        <div class="col-12">
+                            asdkfjasdlf
+                        </div>
+                    </div>
+
+
+                </div>
+            </div> --}}
+            {{-- <div class="float-lg-right float-md-left">
+
+                <div class="col-lg-3" style="border: 1px solid red">
+                    <p>This content will float right on lg screens and above.</p>
+                </div>
+
+            </div> --}}
+
+
+
+            {{-- <div class=" col-lg-2 d-flex flex-row-reverse" style="border: 1px solid red">
+                <select name="lokasi" id="locList" class="form-control">
+                    @foreach($listStation as $loc)
+                    <option value="{{ $loc->id }}">{{ $loc->loc }}</option>
+                    @endforeach
+                </select>
+            </div> --}}
+
+
+            {{-- <div class="row">
                 <div class="col-lg-6 mb-3">
                     <div class="row">
 
@@ -53,18 +294,12 @@
 
                         </form>
                     </div>
-                    {{-- <div class="col-md">
-                        <form class="" action="{{ route('dashboard_ws') }}" method="get">
-                            <input class="form-control" type="date" name="tgl" id="inputDate"
-                                onchange="this.form.submit()">
-                        </form>
 
-                    </div> --}}
                 </div>
-            </div>
+            </div> --}}
         </div>
 </div>
-<div class="row">
+{{-- <div class="row" style="border: 1px solid red">
     <!--//Suhu Ruangan Aws 1-->
     <div class="col-md-12">
         <div class="card">
@@ -78,7 +313,8 @@
                         </div>
                         <div class="col-2">
                             <div style="font-size: 13px;margin-bottom:-10px">
-                                <span id="locTitle" style="font-style: italic;font-weight: bold">Last Update : </span>
+                                <span id="locTitle" style="font-style: italic;font-weight: bold">Last Update :
+                                </span>
 
                             </div>
                             <div class="" style="font-size: 15px;margin-top:10px">
@@ -126,17 +362,13 @@
                         </div>
                     </div>
 
-                    {{-- <div class="row mt-4">
-
-                    </div> --}}
                 </div>
             </div>
         </div>
     </div>
-    <!--Suhu Ruangan//-->
 
-</div>
-<div class="card">
+</div> --}}
+{{-- <div class="card">
     <div class="card-header card-light">
         <h5>Ringkasan Temperatur Aktual dalam 24 jam</h5>
     </div>
@@ -155,7 +387,7 @@
 
 
     </div>
-</div>
+</div> --}}
 <!-- 
 <div class="card">
     <div class="card-header card-light">
@@ -587,13 +819,13 @@
         }],
         chart: {
             background: '#ffffff',
-            height: 350,
+            height: 300,
             type: 'area'
         },
 
 
         colors: [
-            '#00FF00',
+            '#48abfc',
             '#00FF00',
             '#00FF00',
             '#00FF00',
@@ -661,33 +893,30 @@
 
                 var arrAktual = arrResult['dataAktual']
 
-
-                console.log(arrAktual)
-
                 // console.log(arrAktual);
 
-                var iconElement = document.getElementById('iconweather');
+                // var iconElement = document.getElementById('iconweather');
 
-                // Replace the icon's class with the dynamically obtained class
-                iconElement.className = 'fa-solid ' + arrAktual['icon'];
-                var titleElement = document.getElementById('locTitle');
+                // // Replace the icon's class with the dynamically obtained class
+                // iconElement.className = 'fa-solid ' + arrAktual['icon'];
+                // var titleElement = document.getElementById('locTitle');
 
-                // Update the text content of the span element
-                titleElement.textContent = 'Last Update: ' + arrAktual['date_format'];
+                // // Update the text content of the span element
+                // titleElement.textContent = 'Last Update: ' + arrAktual['date_format'];
 
 
-                var tempReal = document.getElementById('tempReal');
-                tempReal.textContent = arrAktual['titleIcon']
-                var humReal = document.getElementById('humReal');
-                humReal.textContent = arrAktual['hum_out']
-                var chReal = document.getElementById('chReal');
-                chReal.textContent = arrAktual['rain_rate']
-                var wdReal = document.getElementById('wdReal');
-                wdReal.textContent = arrAktual['windDirIndonesian']
-                var wsReal = document.getElementById('wsReal');
-                wsReal.textContent = arrAktual['winddir']
-                var wgReal = document.getElementById('wgReal');
-                wgReal.textContent = arrAktual['wind_gust']
+                // var tempReal = document.getElementById('tempReal');
+                 //tempReal.textContent = arrAktual['titleIcon']
+                 var humReal = document.getElementById('humReal');
+                 humReal.textContent = arrAktual['hum_out']
+                // var chReal = document.getElementById('chReal');
+                // chReal.textContent = arrAktual['rain_rate']
+                // var wdReal = document.getElementById('wdReal');
+                // wdReal.textContent = arrAktual['windDirIndonesian']
+                // var wsReal = document.getElementById('wsReal');
+                // wsReal.textContent = arrAktual['winddir']
+                // var wgReal = document.getElementById('wgReal');
+                // wgReal.textContent = arrAktual['wind_gust']
 
                 uvVal = arrAktual['uv'];
 
@@ -702,8 +931,8 @@
                     uvTitle = 'Sangat Tinggi';
                 }
 
-                var uvReal = document.getElementById('uvReal');
-                uvReal.textContent = uvTitle + '(' + uvVal + ')'
+                // var uvReal = document.getElementById('uvReal');
+                // uvReal.textContent = uvTitle + '(' + uvVal + ')'
 
 
 
@@ -809,8 +1038,8 @@
                 var avgDaily = parseResult.avgDaily
                 var sumMonth = parseResult.sumMonth.toFixed(2)
 
-                var ketRainRate = document.getElementById('ketRainRate');
-                ketRainRate.innerHTML = '<a style="font-size: 20px;">Rata-rata per hari : </a><a style="font-weight: bold; color: blue; font-size: 20px;">' + avgDaily + '</a><br><a style="font-size: 20px;">Total curah hujan dalam 30 hari : </a><a style="font-weight: bold; color: blue; font-size: 20px;">' + sumMonth + '</a>';
+                // var ketRainRate = document.getElementById('ketRainRate');
+                // ketRainRate.innerHTML = '<a style="font-size: 20px;">Rata-rata per hari : </a><a style="font-weight: bold; color: blue; font-size: 20px;">' + avgDaily + '</a><br><a style="font-size: 20px;">Total curah hujan dalam 30 hari : </a><a style="font-weight: bold; color: blue; font-size: 20px;">' + sumMonth + '</a>';
 
                 // var options = {
                 //     series: [{
