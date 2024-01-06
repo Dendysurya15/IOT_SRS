@@ -819,24 +819,12 @@ class MasterController extends Controller
 
         $sel_aws = $sel_aws->first();
         if ($sel_aws != '') {
-            if ($sel_aws->rain_rate >= 0 && $sel_aws->rain_rate < 0.5) {
+            if ($sel_aws->rain_rate >= 0) {
                 $icon = 'cloud-sun';
                 $title = 'Berawan';
-            } else if ($sel_aws->rain_rate >= 0.5 && $sel_aws->rain_rate < 20) {
-                $icon = 'cloud-rain';
-                $title = 'Hujan ringan';
-            } else if ($sel_aws->rain_rate >= 20 && $sel_aws->rain_rate < 50) {
-                $icon = 'cloud-rain';
-                $title = 'Hujan Sedang';
-            } else if ($sel_aws->rain_rate >= 50 && $sel_aws->rain_rate < 100) {
-                $icon = 'cloud-showers-heavy';
-                $title = 'Hujan Lebat';
-            } else if ($sel_aws->rain_rate >= 100 && $sel_aws->rain_rate < 150) {
-                $icon = 'cloud-showers-water';
-                $title = 'Hujan Sangat Lebat';
             } else {
                 $icon = 'cloud-showers-water';
-                $title = 'Hujan Ekstrem';
+                $title = 'Hujan';
             }
             $sel_aws->date_format = Carbon::parse($sel_aws->date)->format('d M Y, H:i');
             $sel_aws->titleIcon = $title;
@@ -1579,7 +1567,7 @@ class MasterController extends Controller
     {
         $id_loc = $request->get('id_loc');
 
-        // dd($id_loc);
+
         $dateToday = Carbon::now()->format('Y-m-d');
 
         $tglData = $request->has('tgl') ? $request->input('tgl') : $defaultHari = $dateToday;
@@ -1748,6 +1736,47 @@ class MasterController extends Controller
 
         $to = date($dateTo);
 
+        $listLocActive = DB::table('weather_station_list')
+            ->where('weather_station_list.flags', '=', 1)
+            ->get();
+
+        $last_update_each_device = [];
+        foreach ($listLocActive as $key => $value) {
+            $query =  DB::table('weather_station')
+                ->where('weather_station.idws', '=', $value->id)
+                ->orderByDesc('id')
+                ->first();
+
+            $last_update_each_device[$key]['temp_out'] = $query->temp_out;
+            $last_update_each_device[$key]['hum_out'] = $query->hum_out;
+            $last_update_each_device[$key]['uv'] = $query->uv;
+            $last_update_each_device[$key]['rain_rate'] = $query->rain_rate;
+            $last_update_each_device[$key]['windspeedkmh'] = $query->windspeedkmh;
+            $last_update_each_device[$key]['location'] = $value->loc;
+        }
+
+
+        foreach ($last_update_each_device as $key => $value) {
+        }
+
+        $lastDataDate = DB::table('weather_station_list')
+            ->join('weather_station', 'weather_station_list.id', '=', 'weather_station.idws')
+            ->where('weather_station.idws', '=', $id_loc)
+            ->orderBy('weather_station.date', 'desc')
+            ->first()->date;
+
+        $latestWeatherData = DB::table('weather_station_list')
+            ->join('weather_station', 'weather_station_list.id', '=', 'weather_station.idws')
+            ->where('weather_station.idws', '=', $id_loc)
+            ->where('weather_station.date', '>=', Carbon::parse($lastDataDate)->subHours(12))
+            ->orderBy('weather_station.date', 'desc')
+            ->get();
+
+        $groupedWeatherData = $latestWeatherData->groupBy(function ($item) {
+            // Extract the hour from the date
+            return Carbon::parse($item->date)->format('H:00');
+        });
+
         $sel_aws = DB::table('weather_station_list')
             ->join('weather_station', 'weather_station_list.id', '=', 'weather_station.idws')
             ->select('weather_station.*', 'weather_station_list.rain_cal as rain_cal', 'weather_station_list.loc as loc')
@@ -1756,8 +1785,6 @@ class MasterController extends Controller
             ->where('weather_station.idws', '=', $id_loc)
             // ->take(1)
             ->first();
-
-        // dd($sel_aws);
 
 
 
@@ -1789,7 +1816,7 @@ class MasterController extends Controller
                 $icon = 'fa-cloud-showers-water';
                 $title = 'Hujan Ekstrem';
             }
-            $sel_aws->date_format = Carbon::parse($sel_aws->date)->format('d M Y, H:i');
+            $sel_aws->date_format = Carbon::parse($sel_aws->date)->format('d M, H:i');
             $sel_aws->titleIcon = $title;
             $sel_aws->icon = $icon;
             $directionsEnglish = array('N', 'NNE', 'NE', 'ENE', 'E', 'ESE', 'SE', 'SSE', 'S', 'SSW', 'SW', 'WSW', 'W', 'WNW', 'NW', 'NNW', 'N');
@@ -1818,16 +1845,15 @@ class MasterController extends Controller
         $queryDay = $queryDay->groupBy('jam_ke');
         $queryDay = json_decode($queryDay, true);
 
+        $groupedWeatherData = json_decode($groupedWeatherData, true);
 
-        // dd($queryDay);
         $dataDay = [];
-        foreach ($queryDay as $key => $value) {
+        foreach ($groupedWeatherData as $key => $value) {
+
             $avg = 0;
             $temp = 0;
             $rain = 0;
             foreach ($value as $key2 => $value2) {
-                // dd($value2);
-
                 $avg = count($value);
 
                 $temp += $value2['temp_out'];
@@ -1838,17 +1864,24 @@ class MasterController extends Controller
             $dataDay[$key]['rain'] = round($rain / $avg, 2);
         }
 
+
         foreach ($dataDay as $key => $value) {
-            # code...
             $keydata[] = $key;
             $valdata[] = $value['temp'];
             $valdatarain[] = $value['rain'];
         }
 
-        // dd($jsonData);
+        $keydata = array_reverse($keydata);
+        $valdata = array_reverse($valdata);
+        $valdatarain = array_reverse($valdatarain);
+
 
         $arrData = array();
         $arrData['dataAktual'] = $sel_aws;
+
+
+
+        $arrData['last_update_each_loc'] = $last_update_each_device;
         $arrData['dataPagiMalam'] = $arrPagiMalam;
         $arrData['dataPred'] = $arrPred;
         $arrData['keydata'] = $keydata;

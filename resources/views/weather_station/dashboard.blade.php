@@ -15,7 +15,7 @@
     }
 
     .pixelated {
-        image-rendering: pixelated;
+        p image-rendering: pixelated;
         -ms-interpolation-mode: nearest-neighbor;
     }
 </style>
@@ -41,12 +41,12 @@
                         <div class="card" style="height:550px;border-radius: 20px;">
                             <div class="card-body">
 
-                                <div style="width: 100%;"><span id="tanggal_update">Jan 2, 08:02</span> -
+                                <div style="width: 100%;"><span id="last_updates">-</span> -
                                     Weather Report</div>
                                 <div class="row align-items-center" style="height:230px;">
-                                    <div class="col-6 text-center">
-                                        <img src="{{ asset('img/sunny.png') }}" alt="Sunny Day Image"
-                                            style="height: 140px" class="img-fluid">
+                                    <div class="col-6 text-center" id="imageContainer">
+                                        {{-- <img src="{{ asset('img/sunny.png') }}" alt="Sunny Day Image"
+                                            style="height: 140px" class="img-fluid"> --}}
                                     </div>
                                     <div class="col-6">
                                         <table class="table" style="">
@@ -57,15 +57,17 @@
                                                         Berawan
                                                     </div>
                                                     <div class="col-12"
-                                                        style="font-size:55px;font-weight: bold;margin-top:-5px;margin-bottom:-15px">
-                                                        20°C
+                                                        style="font-size:45px;font-weight: bold;margin-top:-5px;margin-bottom:-15px"
+                                                        id="tempReal">
+                                                        -
                                                     </div>
                                                 </td>
                                             </tr>
                                             <tr class="text-center" style="font-size: 22px">
                                                 <td style="height: 20px;border-right:1px solid #E5E4E2;border-top:1px solid white;width: 93px; max-width: 93px; min-width: 93px;"
-                                                    class="align-middle">68°F</td>
-                                                <td class="align-middle" style="border-top:1px solid white">16°R</td>
+                                                    class="align-middle" id="celToFah">-</td>
+                                                <td class="align-middle" style="border-top:1px solid white"
+                                                    id="celToRea">-</td>
                                             </tr>
                                         </table>
                                     </div>
@@ -83,7 +85,7 @@
                                                         style="height: 65px" class="img-fluid">
                                                 </div>
                                                 <div style="width: 100px;">
-                                                    <div class="text-left" style="font-weight: 500">Sedang (4)</div>
+                                                    <div class="text-left" style="font-weight: 500" id="uvReal">-</div>
                                                     <div class="text-left" style="color: #B6BBC4;font-size:13px">
                                                         Indeks UV</div>
                                                 </div>
@@ -93,7 +95,7 @@
 
 
                                         </td>
-                                        <td style="width: 50px; max-width: 50px; min-width: 50px; height: 70px;border:1px solid white;border-right:1px solid #E5E4E2"
+                                        <td style="width: 50px; max-width: 50px; min-width: 50px; height: 70px;border:1px solid white;border-right:1px solid white"
                                             class="align-middle">
                                             <div class="d-flex justify-content-center align-items-center">
                                                 <div style="width: 100px;" class="text-center">
@@ -101,7 +103,7 @@
                                                         style="height: 50px" class="img-fluid">
                                                 </div>
                                                 <div style="width: 100px;">
-                                                    <div class="text-left" id="humReal">77%</div>
+                                                    <div class="text-left" id="humReal">-</div>
                                                     <div class="text-left" id style="color: #B6BBC4;font-size:13px">
                                                         Kelembaban</div>
                                                 </div>
@@ -117,13 +119,13 @@
                                                         style="height: 55px" class="img-fluid">
                                                 </div>
                                                 <div style="width: 100px;">
-                                                    <div class="text-left">0 mm</div>
+                                                    <div class="text-left" id="chReal">-</div>
                                                     <div class="text-left" style="color: #B6BBC4;font-size:13px">Curah
                                                         Hujan</div>
                                                 </div>
                                             </div>
                                         </td>
-                                        <td style="width: 50px; max-width: 50px; min-width: 50px; height: 70px;border:1px solid white;border-right:1px solid #E5E4E2"
+                                        <td style="width: 50px; max-width: 50px; min-width: 50px; height: 70px;border:1px solid white;border-right:1px solid white"
                                             class="align-middle">
                                             <div class="d-flex justify-content-center align-items-center">
                                                 <div style="width: 100px;" class="text-center">
@@ -131,7 +133,7 @@
                                                         style="height: 50px" class="img-fluid">
                                                 </div>
                                                 <div style="width: 100px;">
-                                                    <div class="text-left">196 km/jam</div>
+                                                    <div class="text-left" id="wsReal">-</div>
                                                     <div class="text-left" style="color: #B6BBC4;font-size:13px">
                                                         Kec. Angin</div>
                                                 </div>
@@ -146,7 +148,7 @@
                                                         style="height: 50px" class="img-fluid">
                                                 </div>
                                                 <div style="width: 130px;">
-                                                    <div class="text-left">Barat Daya Selatan</div>
+                                                    <div class="text-left" id="wdReal">-</div>
                                                     <div class="text-left" style="color: #B6BBC4;font-size:13px">
                                                         Arah Angin</div>
                                                 </div>
@@ -171,7 +173,10 @@
                             </button>
                         </div>
                         <br>
-                        @php
+
+                        <div id="stationListContainer"></div>
+
+                        {{-- @php
                         $inc = 0;
                         @endphp
                         @foreach($listStation as $loc)
@@ -180,14 +185,14 @@
                             <button type="button"
                                 class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
                                 {{ $loc->loc }}
-                                <span class="ml-auto">20%</span>
+                                <span class="ml-auto" id="loc_temp_list">-</span>
                             </button>
 
                         </div>
                         @php
                         $inc++;
 
-                        if ($inc ==3) { break; } @endphp @endforeach
+                        if ($inc ==3) { break; } @endphp @endforeach --}}
                     </div>
                 </div>
                 <div class="col-lg-9  col-sm-12  order-lg-2 order-sm-1 order-1">
@@ -201,7 +206,7 @@
                         </div>
                         <div class="float-lg-left">
                             <h2>Dashboard AWS</h2>
-                            <p>Informasi terkait kebutuhan data-data cuaca saat ini</p>
+                            <p style="color: #6C757D">Informasi terkait kebutuhan data-data cuaca saat ini</p>
                         </div>
                     </div>
 
@@ -210,7 +215,7 @@
                         <div class="col-lg-12 order-3">
                             <div class="card" style="height:350px;border-radius: 20px;">
                                 <div class="card-body">
-                                    <div id="tempGraphAktualForecast"></div>
+                                    <div id="tempAktual"></div>
                                 </div>
                             </div>
                         </div>
@@ -219,7 +224,7 @@
                         <div class="col-lg-12 order-3">
                             <div class="card" style="height:350px;border-radius: 20px;">
                                 <div class="card-body">
-                                    <div id="chAktualForecast "></div>
+                                    <div id="chAktual"></div>
                                 </div>
                             </div>
                         </div>
@@ -313,7 +318,7 @@
                         </div>
                         <div class="col-2">
                             <div style="font-size: 13px;margin-bottom:-10px">
-                                <span id="locTitle" style="font-style: italic;font-weight: bold">Last Update :
+                                <span id="last_updates" style="font-style: italic;font-weight: bold">Last Update :
                                 </span>
 
                             </div>
@@ -808,36 +813,40 @@
     tempForecastOneDay = JSON.parse(JSON.stringify(tempForecastOneDay));
 
 
+    var today = new Date();
+    var options = { day: 'numeric', month: 'short', year: 'numeric' };
+var todayFormatted = today.toLocaleDateString('en-US', options);
+
     var options = {
 
         series: [{
-            name: 'Aktual Temperatur (°C)',
-            data: tempHistoryHour
-        }, {
-            name: 'Forecast Temperatur (°C)',
-            data: tempAll
+            name:'',
+            data: ''
         }],
         chart: {
             background: '#ffffff',
             height: 300,
             type: 'area'
         },
+        dataLabels: {
+        enabled: false // disable data labels
+    },
+    markers: {
+        size: 0 // hide data points
+    },
+         fill: {
+        type: 'gradient',
+        gradient: {
+            shadeIntensity: 0.9, // intensity of the gradient
+            opacityFrom: 0.1,
+            opacityTo: 0.9,
+            stops: [0, 100]
+        }
+    },
 
 
         colors: [
-            '#48abfc',
-            '#00FF00',
-            '#00FF00',
-            '#00FF00',
-            '#3063EC',
-            '#3063EC',
-            '#3063EC',
-            '#3063EC',
-            '#FF8D1A',
-            '#FF8D1A',
-            '#FF8D1A',
-            '#FF8D1A',
-            '#00ffff'
+            '#61cdfc',
         ],
 
         stroke: {
@@ -845,14 +854,32 @@
         },
         xaxis: {
             type: 'string',
-            categories: categoriesAll
-        }
+            categories: categoriesAll,
+
+        },
+        annotations: {
+          xaxis: [{
+            x: '00:00',
+            strokeDashArray: 0,
+            borderColor: '#f44336',
+            label: {
+              borderColor: '#f44336',
+              
+              style: {
+                color: '#fff',
+                background: '#f44336',
+                fontSize: '14px' 
+              },
+              text:todayFormatted,
+            }
+          }]
+        },
     };
 
-    var chartTemp = new ApexCharts(document.querySelector("#tempGraphAktualForecast"), options);
+    var chartTemp = new ApexCharts(document.querySelector("#tempAktual"), options);
     chartTemp.render();
 
-    var chartCh = new ApexCharts(document.querySelector("#chAktualForecast"), options);
+    var chartCh = new ApexCharts(document.querySelector("#chAktual"), options);
     chartCh.render();
 
 
@@ -885,36 +912,67 @@
 
 
                 arrResult = JSON.parse(result)
-
-                // console.log(arrResult['historyForecast']);
-
                 
-
-
+                var list_loc_update = arrResult['last_update_each_loc']
+            
                 var arrAktual = arrResult['dataAktual']
 
-                // console.log(arrAktual);
+                var stationListContainer = document.getElementById('stationListContainer');
 
-                // var iconElement = document.getElementById('iconweather');
+                stationListContainer.innerHTML = '';
 
-                // // Replace the icon's class with the dynamically obtained class
-                // iconElement.className = 'fa-solid ' + arrAktual['icon'];
-                // var titleElement = document.getElementById('locTitle');
+                // Iterate through the station data and create list items
+                for (var i = 0; i < list_loc_update.length; i++) {
+                    var temp_out = list_loc_update[i].temp_out;
+                    var location = list_loc_update[i].location;
 
-                // // Update the text content of the span element
-                // titleElement.textContent = 'Last Update: ' + arrAktual['date_format'];
+                    // Create list item
+                    var listItem = document.createElement('button');
+                    listItem.className = 'list-group-item list-group-item-action d-flex justify-content-between align-items-center';
+                    listItem.innerHTML = location + '<span class="ml-auto" style="color:#fcc533;font-weight:bold">' + temp_out + ' °C</span>';
+
+                    // Append the list item to the container
+                    stationListContainer.appendChild(listItem);
+                }
+                var imageContainer = document.getElementById('imageContainer');
+                var imgElement = document.createElement('img');
+
+                if (arrAktual['titleIcon'] == 'Berawan'){
+                    imgElement.src = '{{ asset("img/sunny.png") }}';
+                }else{
+                    imgElement.src = '{{ asset("img/rain_icon.png") }}';
+                }
+                // Update this with the correct path
 
 
-                // var tempReal = document.getElementById('tempReal');
-                 //tempReal.textContent = arrAktual['titleIcon']
+                // Set other attributes/styles as needed
+                imgElement.alt = 'Sunny Day Image';
+                imgElement.style.height = '140px';
+                imgElement.classList.add('img-fluid');
+
+                // Append the image element to the container
+                imageContainer.appendChild(imgElement);
+                
+                var titleElement = document.getElementById('last_updates');
+                titleElement.textContent =  arrAktual['date_format'];
+
+                var celToFah = document.getElementById('celToFah');
+                hitungCelToFah = ((9 * arrAktual['temp_out'] / 5 ) + 32).toFixed(1)
+                 celToFah.textContent =  hitungCelToFah +  '°C'
+                 var celToRea = document.getElementById('celToRea');
+                 hitungCelToRea = ((4 * arrAktual['temp_out'] / 5 ) + 20).toFixed(1)
+                 celToRea.textContent =  hitungCelToRea +  '°C'
+
+                var tempReal = document.getElementById('tempReal');
+                 tempReal.textContent = arrAktual['temp_out'] + '°C'
                  var humReal = document.getElementById('humReal');
-                 humReal.textContent = arrAktual['hum_out']
-                // var chReal = document.getElementById('chReal');
-                // chReal.textContent = arrAktual['rain_rate']
-                // var wdReal = document.getElementById('wdReal');
-                // wdReal.textContent = arrAktual['windDirIndonesian']
-                // var wsReal = document.getElementById('wsReal');
-                // wsReal.textContent = arrAktual['winddir']
+                 humReal.textContent = arrAktual['hum_out'] + ' %'
+                var chReal = document.getElementById('chReal');
+                chReal.textContent = arrAktual['rain_rate'] + ' mm'
+                var wdReal = document.getElementById('wdReal');
+                wdReal.textContent = arrAktual['windDirIndonesian']
+                var wsReal = document.getElementById('wsReal');
+                wsReal.textContent = arrAktual['windspeedkmh'] + ' km/jam'
                 // var wgReal = document.getElementById('wgReal');
                 // wgReal.textContent = arrAktual['wind_gust']
 
@@ -931,10 +989,8 @@
                     uvTitle = 'Sangat Tinggi';
                 }
 
-                // var uvReal = document.getElementById('uvReal');
-                // uvReal.textContent = uvTitle + '(' + uvVal + ')'
-
-
+                var uvReal = document.getElementById('uvReal');
+                uvReal.textContent = uvTitle + ' (' + uvVal + ')'
 
                 var arrPred = arrResult['dataPred']
                 var arrPagiMalam = arrResult['dataPagiMalam']
@@ -967,7 +1023,7 @@
 
 
                 chartCh.updateSeries([{
-                    name: 'Temperatur (°C)',
+                    name: 'Curah Hujan (mm)',
                     data: arrResult['rain']
 
                 }])
@@ -994,81 +1050,4 @@
     }
 
 
-
-    var arrHour = <?php echo json_encode($arrHour); ?>;
-    var listHour = <?php echo json_encode($listHour); ?>;
-
-    var arrNewHour = Object.entries(arrHour)
-
-    humFirst = [0, 0]
-    tempFirst = [0, 0]
-    categoriesHourFirst = ['07:00', '08:00']
-
-
-    var chartKt = new ApexCharts(document.querySelector("#ktAktualForecast"), options);
-    chartKt.render();
-
-    function getDataRainRate(locIndex) {
-        var _token = $('input[name="_token"]').val();
-        $.ajax({
-            url: "{{ route('getHistoryRainRate') }}",
-            method: "POST",
-            data: {
-                id_loc: locIndex,
-                _token: _token
-            },
-            success: function(result) {
-                var dates = [];
-                var values1 = [];
-                var values2 = [];
-
-                var parseResult = JSON.parse(result)
-                var dataChart1 = Object.entries(parseResult['dataChart1'])
-                var dataChart2 = Object.entries(parseResult['dataChart2'])
-
-                dataChart1.forEach(element => {
-                    dates.push(element[0]);
-                    values1.push(element[1]);
-                });
-
-                dataChart2.forEach(element => {
-                    values2.push(element[1]);
-                });
-
-                var avgDaily = parseResult.avgDaily
-                var sumMonth = parseResult.sumMonth.toFixed(2)
-
-                // var ketRainRate = document.getElementById('ketRainRate');
-                // ketRainRate.innerHTML = '<a style="font-size: 20px;">Rata-rata per hari : </a><a style="font-weight: bold; color: blue; font-size: 20px;">' + avgDaily + '</a><br><a style="font-size: 20px;">Total curah hujan dalam 30 hari : </a><a style="font-weight: bold; color: blue; font-size: 20px;">' + sumMonth + '</a>';
-
-                // var options = {
-                //     series: [{
-                //         name: 'Curah Hujan',
-                //         data: values2
-                //     }, {
-                //         name: 's/d Hari ini',
-                //         data: values1
-                //     }],
-                //     chart: {
-                //         height: 350,
-                //         type: 'area'
-                //     },
-                //     dataLabels: {
-                //         enabled: false
-                //     },
-                //     colors: ['#1565c0', '#b71c1c'],
-                //     stroke: {
-                //         curve: 'smooth'
-                //     },
-                //     xaxis: {
-                //         type: 'string',
-                //         categories: dates
-                //     }
-                // }
-
-                // var chart = new ApexCharts(document.querySelector("#chAktual30"), options);
-                // chart.render();
-            }
-        })
-    }
 </script>
