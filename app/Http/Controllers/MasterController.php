@@ -883,7 +883,7 @@ class MasterController extends Controller
 
 
         $listStation = DB::table('weather_station_list')
-            // ->where('flags', 1)
+            ->where('flags', 1)
             ->get()->toArray();
 
 
@@ -1737,45 +1737,96 @@ class MasterController extends Controller
         $to = date($dateTo);
 
         $listLocActive = DB::table('weather_station_list')
-            ->where('weather_station_list.flags', '=', 1)
+            ->where('weather_station_list.id', '!=', $id_loc)
             ->get();
+
 
         $last_update_each_device = [];
         foreach ($listLocActive as $key => $value) {
-            $query =  DB::table('weather_station')
+            $query = DB::table('weather_station')
                 ->where('weather_station.idws', '=', $value->id)
                 ->orderByDesc('id')
                 ->first();
 
-            $last_update_each_device[$key]['temp_out'] = $query->temp_out;
-            $last_update_each_device[$key]['hum_out'] = $query->hum_out;
-            $last_update_each_device[$key]['uv'] = $query->uv;
-            $last_update_each_device[$key]['rain_rate'] = $query->rain_rate;
-            $last_update_each_device[$key]['windspeedkmh'] = $query->windspeedkmh;
-            $last_update_each_device[$key]['location'] = $value->loc;
+            // Check if the query result is not null
+            if ($query) {
+                $last_update_each_device[$key]['temp_out'] = $query->temp_out . ' °C' ?? '-';
+                $last_update_each_device[$key]['hum_out'] = $query->hum_out ?? '-';
+                $last_update_each_device[$key]['uv'] = $query->uv ?? '-';
+                $last_update_each_device[$key]['rain_rate'] = $query->rain_rate ?? '-';
+                $last_update_each_device[$key]['windspeedkmh'] = $query->windspeedkmh ?? '-';
+                $last_update_each_device[$key]['location'] = $value->loc;
+            } else {
+                // Handle the case when the query result is null
+                // You can set default values or take any other appropriate action
+                $last_update_each_device[$key] = [
+                    'temp_out' => '-',
+                    'hum_out' => '-',
+                    'uv' => '-',
+                    'rain_rate' => '-',
+                    'windspeedkmh' => '-',
+                    'location' => $value->loc,
+                ];
+            }
         }
 
-
-        foreach ($last_update_each_device as $key => $value) {
-        }
 
         $lastDataDate = DB::table('weather_station_list')
             ->join('weather_station', 'weather_station_list.id', '=', 'weather_station.idws')
             ->where('weather_station.idws', '=', $id_loc)
             ->orderBy('weather_station.date', 'desc')
-            ->first()->date;
+            ->first();
 
-        $latestWeatherData = DB::table('weather_station_list')
-            ->join('weather_station', 'weather_station_list.id', '=', 'weather_station.idws')
-            ->where('weather_station.idws', '=', $id_loc)
-            ->where('weather_station.date', '>=', Carbon::parse($lastDataDate)->subHours(12))
-            ->orderBy('weather_station.date', 'desc')
-            ->get();
+        if ($lastDataDate) {
+            $lastDataDate = $lastDataDate->date;
 
-        $groupedWeatherData = $latestWeatherData->groupBy(function ($item) {
-            // Extract the hour from the date
-            return Carbon::parse($item->date)->format('H:00');
-        });
+            $latestWeatherData = DB::table('weather_station_list')
+                ->join('weather_station', 'weather_station_list.id', '=', 'weather_station.idws')
+                ->where('weather_station.idws', '=', $id_loc)
+                ->where('weather_station.date', '>=', Carbon::parse($lastDataDate)->subHours(12))
+                ->orderBy('weather_station.date', 'desc')
+                ->get();
+
+            $groupedWeatherData = $latestWeatherData->groupBy(function ($item) {
+                // Extract the hour from the date
+                return Carbon::parse($item->date)->format('H:00');
+            });
+
+            $groupedWeatherData = json_decode($groupedWeatherData, true);
+
+            $dataDay = [];
+            foreach ($groupedWeatherData as $key => $value) {
+
+                $avg = 0;
+                $temp = 0;
+                $rain = 0;
+                foreach ($value as $key2 => $value2) {
+                    $avg = count($value);
+
+                    $temp += $value2['temp_out'];
+                    $rain += $value2['rain_rate'];
+                }
+
+                $dataDay[$key]['temp'] = round($temp / $avg, 2);
+                $dataDay[$key]['rain'] = round($rain / $avg, 2);
+            }
+
+            foreach ($dataDay as $key => $value) {
+                $keydata[] = $key;
+                $valdata[] = $value['temp'];
+                $valdatarain[] = $value['rain'];
+            }
+
+            $keydata = array_reverse($keydata);
+            $valdata = array_reverse($valdata);
+            $valdatarain = array_reverse($valdatarain);
+        }
+
+
+
+
+
+
 
         $sel_aws = DB::table('weather_station_list')
             ->join('weather_station', 'weather_station_list.id', '=', 'weather_station.idws')
@@ -1797,24 +1848,12 @@ class MasterController extends Controller
 
         // $sel_aws = $sel_aws->first();
         if ($sel_aws != '') {
-            if ($sel_aws->rain_rate >= 0 && $sel_aws->rain_rate < 0.5) {
+            if ($sel_aws->rain_rate == 0) {
                 $icon = 'fa-cloud-sun';
                 $title = 'Berawan';
-            } else if ($sel_aws->rain_rate >= 0.5 && $sel_aws->rain_rate < 20) {
-                $icon = 'fa-cloud-rain';
-                $title = 'Hujan ringan';
-            } else if ($sel_aws->rain_rate >= 20 && $sel_aws->rain_rate < 50) {
-                $icon = 'fa-cloud-rain';
-                $title = 'Hujan Sedang';
-            } else if ($sel_aws->rain_rate >= 50 && $sel_aws->rain_rate < 100) {
-                $icon = 'fa-cloud-showers-heavy';
-                $title = 'Hujan Lebat';
-            } else if ($sel_aws->rain_rate >= 100 && $sel_aws->rain_rate < 150) {
-                $icon = 'fa-cloud-showers-water';
-                $title = 'Hujan Sangat Lebat';
             } else {
                 $icon = 'fa-cloud-showers-water';
-                $title = 'Hujan Ekstrem';
+                $title = 'Hujan';
             }
             $sel_aws->date_format = Carbon::parse($sel_aws->date)->format('d M, H:i');
             $sel_aws->titleIcon = $title;
@@ -1845,35 +1884,9 @@ class MasterController extends Controller
         $queryDay = $queryDay->groupBy('jam_ke');
         $queryDay = json_decode($queryDay, true);
 
-        $groupedWeatherData = json_decode($groupedWeatherData, true);
-
-        $dataDay = [];
-        foreach ($groupedWeatherData as $key => $value) {
-
-            $avg = 0;
-            $temp = 0;
-            $rain = 0;
-            foreach ($value as $key2 => $value2) {
-                $avg = count($value);
-
-                $temp += $value2['temp_out'];
-                $rain += $value2['rain_rate'];
-            }
-
-            $dataDay[$key]['temp'] = round($temp / $avg, 2);
-            $dataDay[$key]['rain'] = round($rain / $avg, 2);
-        }
 
 
-        foreach ($dataDay as $key => $value) {
-            $keydata[] = $key;
-            $valdata[] = $value['temp'];
-            $valdatarain[] = $value['rain'];
-        }
 
-        $keydata = array_reverse($keydata);
-        $valdata = array_reverse($valdata);
-        $valdatarain = array_reverse($valdatarain);
 
 
         $arrData = array();
@@ -1888,7 +1901,6 @@ class MasterController extends Controller
         $arrData['valdata'] = $valdata;
         $arrData['rain'] = $valdatarain;
 
-        // dd($arrData);
 
 
         echo json_encode($arrData);

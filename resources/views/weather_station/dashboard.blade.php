@@ -18,6 +18,410 @@
         p image-rendering: pixelated;
         -ms-interpolation-mode: nearest-neighbor;
     }
+
+
+    @media (min-width: 1200px) and (max-width: 1300px) {
+        #titleCuaca {
+            font-size: 16px;
+        }
+
+        #tempReal {
+            font-size: 25px;
+        }
+
+        #celToFah {
+            font-size: 14px;
+        }
+
+        #celToRea {
+            font-size: 14px;
+        }
+
+        #imageId {
+
+            height: 180px;
+        }
+
+        #divUv {
+            width: 100px;
+            font-size: 11px;
+        }
+
+        #tdUV {
+            width: 25px;
+        }
+
+        #tdUV img {
+            width: 45px;
+        }
+
+
+        #divKelembaban {
+            width: 100px;
+            font-size: 11px;
+        }
+
+
+        #tdKelembaban {
+            width: 25px;
+        }
+
+        #tdKelembaban img {
+            width: 45px;
+        }
+
+
+        #divHujan {
+            width: 100px;
+            font-size: 11px;
+        }
+
+
+        #tdHujan {
+            width: 25px;
+        }
+
+        #tdHujan img {
+            width: 45px;
+            height: 40px;
+        }
+
+        #divKecAngin {
+            width: 100px;
+            font-size: 11px;
+        }
+
+
+        #tdKecAngin {
+            width: 25px;
+        }
+
+        #tdKecAngin img {
+            width: 40px;
+            height: 30px;
+        }
+
+        #divArahAngin {
+            width: 100px;
+            font-size: 11px;
+        }
+
+
+        #tdArahAngin {
+            width: 25px;
+        }
+
+        #tdArahAngin img {
+            width: 40px;
+            height: 30px;
+        }
+
+        #cardMain {
+            height: 450px;
+        }
+    }
+
+    @media (min-width: 1300px) and (max-width: 1650px) {
+        #titleCuaca {
+            font-size: 18px;
+        }
+
+        #tempReal {
+            font-size: 30px;
+        }
+
+        #celToFah {
+            font-size: 18px;
+        }
+
+        #celToRea {
+            font-size: 18px;
+        }
+
+        #imageId {
+
+            height: 180px;
+        }
+
+        #divUv {
+            width: 100px;
+            font-size: 11px;
+        }
+
+        #tdUV {
+            width: 25px;
+        }
+
+        #tdUV img {
+            width: 45px;
+        }
+
+
+        #divKelembaban {
+            width: 100px;
+            font-size: 11px;
+        }
+
+
+        #tdKelembaban {
+            width: 25px;
+        }
+
+        #tdKelembaban img {
+            width: 45px;
+        }
+
+
+        #divHujan {
+            width: 100px;
+            font-size: 11px;
+        }
+
+        #tdHujan {
+            width: 25px;
+        }
+
+        #tdHujan img {
+            width: 45px;
+            height: 40px;
+        }
+
+        #divKecAngin {
+            width: 100px;
+            font-size: 11px;
+        }
+
+
+        #tdKecAngin {
+            width: 25px;
+        }
+
+        #tdKecAngin img {
+            width: 40px;
+            height: 30px;
+        }
+
+        #divArahAngin {
+            width: 100px;
+            font-size: 11px;
+        }
+
+
+        #tdArahAngin {
+            width: 25px;
+        }
+
+        #tdArahAngin img {
+            width: 40px;
+            height: 30px;
+        }
+
+        #cardMain {
+            height: 450px;
+        }
+    }
+
+    @media (min-width: 1650px) and (max-width: 1800px) {
+        #titleCuaca {
+            font-size: 22px;
+        }
+
+        #tempReal {
+            font-size: 40px;
+        }
+
+        #celToFah {
+            font-size: 21px;
+        }
+
+        #celToRea {
+            font-size: 21px;
+        }
+
+        #imageId {
+
+            height: 180px;
+        }
+
+        #divUv {
+            width: 100px;
+            font-size: 11px;
+        }
+
+        #tdUV {
+            width: 25px;
+        }
+
+        #tdUV img {
+            width: 45px;
+        }
+
+
+        #divKelembaban {
+            width: 100px;
+            font-size: 11px;
+        }
+
+
+        #tdKelembaban {
+            width: 25px;
+        }
+
+        #tdKelembaban img {
+            width: 45px;
+        }
+
+
+        #divHujan {
+            width: 100px;
+            font-size: 11px;
+        }
+
+
+        #tdHujan {
+            width: 25px;
+        }
+
+        #tdHujan img {
+            width: 45px;
+            height: 40px;
+        }
+
+        #divKecAngin {
+            width: 100px;
+            font-size: 11px;
+        }
+
+
+        #tdKecAngin {
+            width: 25px;
+        }
+
+        #tdKecAngin img {
+            width: 40px;
+            height: 30px;
+        }
+
+        #divArahAngin {
+            width: 100px;
+            font-size: 11px;
+        }
+
+        #tdArahAngin {
+            width: 25px;
+        }
+
+        #tdArahAngin img {
+            width: 40px;
+            height: 30px;
+        }
+
+        #cardMain {
+            height: 450px;
+        }
+    }
+
+    @media (min-width: 1801px) {
+        #titleCuaca {
+            font-size: 24px;
+        }
+
+        #tempReal {
+            font-size: 45px;
+        }
+
+        #celToFah {
+            font-size: 25px;
+        }
+
+        #celToRea {
+            font-size: 25px;
+        }
+
+        #imageId {
+            height: 250px;
+        }
+
+        #divUv {
+            width: 100px;
+            font-size: 16px;
+        }
+
+        #tdUV {
+            width: 25px;
+        }
+
+        #tdUV img {
+            width: 50px;
+            height: 55px;
+        }
+
+
+        #divKelembaban {
+            width: 100px;
+            font-size: 16px;
+        }
+
+
+        #tdKelembaban {
+            width: 25px;
+        }
+
+        #tdKelembaban img {
+            width: 40px;
+            height: 40px;
+        }
+
+
+        #divHujan {
+            width: 100px;
+            font-size: 16px;
+        }
+
+
+        #tdHujan {
+            width: 25px;
+        }
+
+        #tdHujan img {
+            width: 45px;
+            height: 50px;
+        }
+
+        #divKecAngin {
+            width: 100px;
+            font-size: 16px;
+        }
+
+
+        #tdKecAngin {
+            width: 25px;
+        }
+
+        #tdKecAngin img {
+            width: 40px;
+            height: 40px;
+        }
+
+        #divArahAngin {
+            width: 100px;
+            font-size: 16px;
+        }
+
+
+        #tdArahAngin {
+            width: 25px;
+        }
+
+        #tdArahAngin img {
+            width: 50px;
+            height: 50px;
+        }
+
+        #cardMain {
+            height: 550px;
+        }
+    }
 </style>
 
 <div class="content-wrapper" style="background: white">
@@ -36,38 +440,37 @@
     <section class="content">
         <div class="container-fluid">
             <div class="row">
-                <div class="col-lg-3 order-lg-1 order-sm-2 order-2">
+                <div class="col-xl-3 order-xl-1 order-sm-2 order-2">
                     <div class="col-12">
-                        <div class="card" style="height:550px;border-radius: 20px;">
+                        <div class="card" id="cardMain" style="border-radius: 20px;">
                             <div class="card-body">
 
                                 <div style="width: 100%;"><span id="last_updates">-</span> -
                                     Weather Report</div>
-                                <div class="row align-items-center" style="height:230px;">
+                                <div class="row align-items-center" id="imageId">
                                     <div class="col-6 text-center" id="imageContainer">
-                                        {{-- <img src="{{ asset('img/sunny.png') }}" alt="Sunny Day Image"
-                                            style="height: 140px" class="img-fluid"> --}}
                                     </div>
                                     <div class="col-6">
                                         <table class="table" style="">
                                             <tr>
                                                 <td style="height: 80px;border-top:1px solid white" colspan="2">
-                                                    <div class="col-12"
-                                                        style="font-size:15px;font-weight:600;border-bottom:1px solid white;">
-                                                        Berawan
+                                                    <div class="col-12" id="titleCuaca"
+                                                        style="font-weight:600;border-bottom:1px solid white;">
+                                                        -
                                                     </div>
                                                     <div class="col-12"
-                                                        style="font-size:45px;font-weight: bold;margin-top:-5px;margin-bottom:-15px"
+                                                        style="font-weight: bold;margin-top:-5px;margin-bottom:-15px"
                                                         id="tempReal">
                                                         -
                                                     </div>
                                                 </td>
                                             </tr>
-                                            <tr class="text-center" style="font-size: 22px">
-                                                <td style="height: 20px;border-right:1px solid #E5E4E2;border-top:1px solid white;width: 93px; max-width: 93px; min-width: 93px;"
+                                            <tr class="text-center">
+                                                <td style="height: 20px;border-right:1px solid #E5E4E2;border-top:1px solid white;color:#fc9d18"
                                                     class="align-middle" id="celToFah">-</td>
-                                                <td class="align-middle" style="border-top:1px solid white"
-                                                    id="celToRea">-</td>
+                                                <td class="align-middle"
+                                                    style="border-top:1px solid white;color:#79d5fc" id="celToRea">-
+                                                </td>
                                             </tr>
                                         </table>
                                     </div>
@@ -75,18 +478,19 @@
 
                                 <table class="table">
                                     <tr>
-                                        <td style="width: 50px; max-width: 50px; min-width: 50px; height: 70px;border:1px solid white;border-right:1px solid #E5E4E2"
+                                        <td id="tdUV"
+                                            style=" height: 70px;border:1px solid white;border-right:1px solid #E5E4E2"
                                             class="align-middle">
 
 
                                             <div class="d-flex justify-content-center align-items-center">
-                                                <div style="width: 100px;" class="text-center">
-                                                    <img src="{{ asset('img/sun.png') }}" alt="Sunny Day Image"
-                                                        style="height: 65px" class="img-fluid">
+                                                <div class="text-center">
+                                                    <img src="{{ asset('img/sun.png') }}" alt="Sunny Day Image" style=""
+                                                        class="img-fluid">
                                                 </div>
-                                                <div style="width: 100px;">
+                                                <div id="divUv">
                                                     <div class="text-left" style="font-weight: 500" id="uvReal">-</div>
-                                                    <div class="text-left" style="color: #B6BBC4;font-size:13px">
+                                                    <div class="text-left" style="color: #B6BBC4;">
                                                         Indeks UV</div>
                                                 </div>
                                             </div>
@@ -95,59 +499,62 @@
 
 
                                         </td>
-                                        <td style="width: 50px; max-width: 50px; min-width: 50px; height: 70px;border:1px solid white;border-right:1px solid white"
+                                        <td id="tdKelembaban"
+                                            style=" height: 70px;border:1px solid white;border-right:1px solid white"
                                             class="align-middle">
                                             <div class="d-flex justify-content-center align-items-center">
-                                                <div style="width: 100px;" class="text-center">
+                                                <div class="text-center">
                                                     <img src="{{ asset('img/humidity.png') }}" alt="Sunny Day Image"
-                                                        style="height: 50px" class="img-fluid">
+                                                        style="" class="img-fluid">
                                                 </div>
-                                                <div style="width: 100px;">
+                                                <div id="divKelembaban">
                                                     <div class="text-left" id="humReal">-</div>
-                                                    <div class="text-left" id style="color: #B6BBC4;font-size:13px">
+                                                    <div class="text-left" style="color: #B6BBC4;">
                                                         Kelembaban</div>
                                                 </div>
                                             </div>
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td style="width: 50px; max-width: 50px; min-width: 50px; height: 70px; border:1px solid white;border-right:1px solid #E5E4E2"
+                                        <td id="tdHujan"
+                                            style=" height: 70px; border:1px solid white;border-right:1px solid #E5E4E2"
                                             class="align-middle">
                                             <div class="d-flex justify-content-center align-items-center">
-                                                <div style="width: 100px;" class="text-center">
+                                                <div class="text-center">
                                                     <img src="{{ asset('img/rain.png') }}" alt="Sunny Day Image"
-                                                        style="height: 55px" class="img-fluid">
+                                                        class="img-fluid">
                                                 </div>
-                                                <div style="width: 100px;">
+                                                <div id="divHujan">
                                                     <div class="text-left" id="chReal">-</div>
-                                                    <div class="text-left" style="color: #B6BBC4;font-size:13px">Curah
+                                                    <div class="text-left" style="color: #B6BBC4;">Curah
                                                         Hujan</div>
                                                 </div>
                                             </div>
                                         </td>
-                                        <td style="width: 50px; max-width: 50px; min-width: 50px; height: 70px;border:1px solid white;border-right:1px solid white"
+                                        <td id="tdKecAngin"
+                                            style=" height: 70px;border:1px solid white;border-right:1px solid white"
                                             class="align-middle">
                                             <div class="d-flex justify-content-center align-items-center">
-                                                <div style="width: 100px;" class="text-center">
+                                                <div class="text-center">
                                                     <img src="{{ asset('img/wind_speed.png') }}" alt="Sunny Day Image"
-                                                        style="height: 50px" class="img-fluid">
+                                                        class="img-fluid">
                                                 </div>
-                                                <div style="width: 100px;">
+                                                <div id="divKecAngin">
                                                     <div class="text-left" id="wsReal">-</div>
-                                                    <div class="text-left" style="color: #B6BBC4;font-size:13px">
+                                                    <div class="text-left" style="color: #B6BBC4;">
                                                         Kec. Angin</div>
                                                 </div>
                                             </div>
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td style="height: 70px;" colspan="2">
+                                        <td id="tdArahAngin" style="height: 70px;" colspan="2">
                                             <div class="d-flex justify-content-center align-items-center">
-                                                <div style="width: 130px;" class="text-center">
+                                                <div class="text-center">
                                                     <img src="{{ asset('img/winddir.png') }}" alt="Sunny Day Image"
-                                                        style="height: 50px" class="img-fluid">
+                                                        class="img-fluid">
                                                 </div>
-                                                <div style="width: 130px;">
+                                                <div id="divArahAngin">
                                                     <div class="text-left" id="wdReal">-</div>
                                                     <div class="text-left" style="color: #B6BBC4;font-size:13px">
                                                         Arah Angin</div>
@@ -163,7 +570,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-12">
+                    {{-- <div class="col-12">
                         <div class="list-group">
                             <button type="button"
                                 class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
@@ -176,35 +583,19 @@
 
                         <div id="stationListContainer"></div>
 
-                        {{-- @php
-                        $inc = 0;
-                        @endphp
-                        @foreach($listStation as $loc)
-                        <div class="list-group mb-1">
 
-                            <button type="button"
-                                class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
-                                {{ $loc->loc }}
-                                <span class="ml-auto" id="loc_temp_list">-</span>
-                            </button>
-
-                        </div>
-                        @php
-                        $inc++;
-
-                        if ($inc ==3) { break; } @endphp @endforeach --}}
-                    </div>
+                    </div> --}}
                 </div>
-                <div class="col-lg-9  col-sm-12  order-lg-2 order-sm-1 order-1">
+                <div class="col-xl-9  col-sm-12  order-xl-2 order-sm-1 order-1">
                     <div>
-                        <div class="float-lg-right">
+                        <div class="float-xl-right">
                             <select name="lokasi" id="locList" class="form-control">
                                 @foreach($listStation as $loc)
                                 <option value="{{ $loc->id }}">{{ $loc->loc }}</option>
                                 @endforeach
                             </select>
                         </div>
-                        <div class="float-lg-left">
+                        <div class="float-xl-left">
                             <h2>Dashboard AWS</h2>
                             <p style="color: #6C757D">Informasi terkait kebutuhan data-data cuaca saat ini</p>
                         </div>
@@ -212,7 +603,7 @@
 
                     <div class="clearfix"></div>
                     <div class="row">
-                        <div class="col-lg-12 order-3">
+                        <div class="col-xl-12 order-3">
                             <div class="card" style="height:350px;border-radius: 20px;">
                                 <div class="card-body">
                                     <div id="tempAktual"></div>
@@ -221,7 +612,7 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-lg-12 order-3">
+                        <div class="col-xl-12 order-3">
                             <div class="card" style="height:350px;border-radius: 20px;">
                                 <div class="card-body">
                                     <div id="chAktual"></div>
@@ -917,64 +1308,58 @@ var todayFormatted = today.toLocaleDateString('en-US', options);
             
                 var arrAktual = arrResult['dataAktual']
 
-                var stationListContainer = document.getElementById('stationListContainer');
+                // var stationListContainer = document.getElementById('stationListContainer');
 
-                stationListContainer.innerHTML = '';
+                // stationListContainer.innerHTML = '';
 
-                // Iterate through the station data and create list items
-                for (var i = 0; i < list_loc_update.length; i++) {
-                    var temp_out = list_loc_update[i].temp_out;
-                    var location = list_loc_update[i].location;
+                // // Iterate through the station data and create list items
+                // for (var i = 0; i < list_loc_update.length; i++) {
+                //     var temp_out = list_loc_update[i].temp_out;
+                //     var location = list_loc_update[i].location;
 
-                    // Create list item
-                    var listItem = document.createElement('button');
-                    listItem.className = 'list-group-item list-group-item-action d-flex justify-content-between align-items-center';
-                    listItem.innerHTML = location + '<span class="ml-auto" style="color:#fcc533;font-weight:bold">' + temp_out + ' °C</span>';
+                //     // Create list item
+                //     var listItem = document.createElement('button');
+                //     listItem.className = 'list-group-item list-group-item-action d-flex justify-content-between align-items-center';
+                //     listItem.innerHTML = location + '<span class="ml-auto" style="color:#fcc533;font-weight:bold">' + temp_out + '</span>';
 
-                    // Append the list item to the container
-                    stationListContainer.appendChild(listItem);
-                }
+                //     // Append the list item to the container
+                //     stationListContainer.appendChild(listItem);
+                // }
                 var imageContainer = document.getElementById('imageContainer');
-                var imgElement = document.createElement('img');
+                var existingImgElement = document.getElementById('weatherImage');
 
-                if (arrAktual['titleIcon'] == 'Berawan'){
-                    imgElement.src = '{{ asset("img/sunny.png") }}';
-                }else{
-                    imgElement.src = '{{ asset("img/rain_icon.png") }}';
+                var imageSource;
+
+                if (arrAktual['titleIcon'] == 'Berawan') {
+                    imageSource = '{{ asset("img/sunny.png") }}';
+                } else if (arrAktual['titleIcon'] == 'Hujan') {
+                    imageSource = '{{ asset("img/rain_icon.png") }}';
+                } else {
+                    imageSource = '{{ asset("img/no_data.png") }}';
                 }
-                // Update this with the correct path
 
+                // Check if the image element already exists
+                if (existingImgElement) {
+                    // If it exists, update its source
+                    existingImgElement.src = imageSource;
+                } else {
+                    // If it doesn't exist, create a new image element
+                    var imgElement = document.createElement('img');
+                    imgElement.id = 'weatherImage';
+                    imgElement.src = imageSource;
+                    imgElement.alt = 'no image';
+                    imgElement.classList.add('img-fluid');
+                    imageContainer.appendChild(imgElement);
+                }
 
-                // Set other attributes/styles as needed
-                imgElement.alt = 'Sunny Day Image';
-                imgElement.style.height = '140px';
-                imgElement.classList.add('img-fluid');
-
-                // Append the image element to the container
-                imageContainer.appendChild(imgElement);
                 
-                var titleElement = document.getElementById('last_updates');
-                titleElement.textContent =  arrAktual['date_format'];
-
-                var celToFah = document.getElementById('celToFah');
                 hitungCelToFah = ((9 * arrAktual['temp_out'] / 5 ) + 32).toFixed(1)
-                 celToFah.textContent =  hitungCelToFah +  '°C'
-                 var celToRea = document.getElementById('celToRea');
-                 hitungCelToRea = ((4 * arrAktual['temp_out'] / 5 ) + 20).toFixed(1)
-                 celToRea.textContent =  hitungCelToRea +  '°C'
-
-                var tempReal = document.getElementById('tempReal');
-                 tempReal.textContent = arrAktual['temp_out'] + '°C'
-                 var humReal = document.getElementById('humReal');
-                 humReal.textContent = arrAktual['hum_out'] + ' %'
-                var chReal = document.getElementById('chReal');
-                chReal.textContent = arrAktual['rain_rate'] + ' mm'
-                var wdReal = document.getElementById('wdReal');
-                wdReal.textContent = arrAktual['windDirIndonesian']
-                var wsReal = document.getElementById('wsReal');
-                wsReal.textContent = arrAktual['windspeedkmh'] + ' km/jam'
-                // var wgReal = document.getElementById('wgReal');
-                // wgReal.textContent = arrAktual['wind_gust']
+                hitungCelToRea = ((4 * arrAktual['temp_out'] / 5 ) + 20).toFixed(1)
+                
+                createOrUpdateElement(document.body, 'titleCuaca', arrAktual['titleIcon']);
+                createOrUpdateElement(document.body, 'last_updates', arrAktual['date_format']);
+                createOrUpdateElement(document.body, 'celToFah', (hitungCelToFah + '°C'));
+                createOrUpdateElement(document.body, 'celToRea', (hitungCelToRea + '°C'));
 
                 uvVal = arrAktual['uv'];
 
@@ -989,30 +1374,21 @@ var todayFormatted = today.toLocaleDateString('en-US', options);
                     uvTitle = 'Sangat Tinggi';
                 }
 
-                var uvReal = document.getElementById('uvReal');
-                uvReal.textContent = uvTitle + ' (' + uvVal + ')'
-
-                var arrPred = arrResult['dataPred']
-                var arrPagiMalam = arrResult['dataPagiMalam']
-
-
-                let node = document.createTextNode(arrAktual['temp_out']);
-
-
-                var Prediksi = Object.entries(arrResult['dataPred'])
-
-
+                createOrUpdateElement(document.body, 'tempReal', arrAktual['temp_out'] + '°C');
+                createOrUpdateElement(document.body, 'humReal', arrAktual['hum_out'] + ' %');
+                createOrUpdateElement(document.body, 'chReal', arrAktual['rain_rate'] + ' mm');
+                createOrUpdateElement(document.body, 'wdReal', arrAktual['windDirIndonesian']);
+                createOrUpdateElement(document.body, 'wsReal', arrAktual['windspeedkmh'] ? arrAktual['windspeedkmh'] + ' km/jam' : '0 km/jam');
+                createOrUpdateElement(document.body, 'uvReal', uvTitle + ' (' + uvVal +  ')');
                 chartTemp.updateOptions({
                     xaxis: {
                         categories: arrResult['keydata']
                     }
                 });
 
-
                 chartTemp.updateSeries([{
                     name: 'Temperatur (°C)',
                     data: arrResult['valdata']
-
                 }])
 
                 chartCh.updateOptions({
@@ -1020,7 +1396,6 @@ var todayFormatted = today.toLocaleDateString('en-US', options);
                         categories: arrResult['keydata']
                     }
                 });
-
 
                 chartCh.updateSeries([{
                     name: 'Curah Hujan (mm)',
@@ -1043,11 +1418,57 @@ var todayFormatted = today.toLocaleDateString('en-US', options);
                         title: 'Error!',
                         text: 'Data Tidak Ditemukan'
                     });
+
+
+            createOrUpdateElement(document.body, 'tempReal', '-');
+            createOrUpdateElement(document.body, 'humReal', '-');
+            createOrUpdateElement(document.body, 'chReal', '-');
+            createOrUpdateElement(document.body, 'wdReal', '-');
+            createOrUpdateElement(document.body, 'wsReal', '-');
+
+            chartTemp.updateOptions({
+            xaxis: {
+                categories: []
+            }
+        });
+
+        chartTemp.updateSeries([{
+            name: 'Temperatur (°C)',
+            data: []
+        }]);
+
+        chartCh.updateOptions({
+            xaxis: {
+                categories: []
+            }
+        });
+
+        chartCh.updateSeries([{
+            name: 'Curah Hujan (mm)',
+            data: []
+        }]);
                 }
             }
 
         })
     }
 
+
+    function createOrUpdateElement(container, elementId, content) {
+    var element = document.getElementById(elementId);
+
+    if (element) {
+        // If the element exists, update its content
+        element.textContent = content;
+    } else {
+        // If the element doesn't exist, create a new one
+        var newElement = document.createElement('div');
+        newElement.id = elementId;
+        newElement.textContent = content;
+
+        // Append the new element to the container (adjust the container accordingly)
+        container.appendChild(newElement);
+    }
+}
 
 </script>
