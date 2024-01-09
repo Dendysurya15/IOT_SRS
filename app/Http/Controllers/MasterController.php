@@ -1593,128 +1593,6 @@ class MasterController extends Controller
         $to = $to->format('Y-m-d H:i:s');
 
 
-        $queryPredDetail =  DB::table('weather_station_list')
-            ->join('db_aws_bke', 'weather_station_list.id', '=', 'db_aws_bke.idws')
-            ->select('db_aws_bke.*', 'weather_station_list.rain_cal as rain_cal', 'weather_station_list.loc as loc', DB::raw("DATE_FORMAT(db_aws_bke.datetime,'%d-%m-%Y') as hari"))
-            ->whereBetween('db_aws_bke.datetime', [$from, $to])
-            ->where('idws', $id_loc)
-            ->get()
-            ->groupBy('hari');
-
-        // dd($queryPredDetail);
-
-        $arrPagiMalam = array();
-        $arrPred = array();
-
-
-        foreach ($queryPredDetail as $key => $value) {
-            $jamConvert = Carbon::parse($key)->format('D d');
-
-            $inc = 1;
-            $sum_rain = 0;
-            $sum_hoursofrain = 0;
-            foreach ($value as $key2 => $data) {
-                $jam = Carbon::parse($data->datetime)->format('H:i:s');
-
-
-                $sum_rain += $data->accu_rf_forecast;
-                $sum_hoursofrain += $data->accu_hours_of_rain;
-
-                if ($data->accu_rf_forecast >= 0 && $data->accu_rf_forecast < 0.5) {
-                    $icon = 'cloud-sun';
-                    $title = 'Cerah Berawan';
-                } else if ($data->accu_rf_forecast >= 0.5 && $data->accu_rf_forecast < 20) {
-                    $icon = 'cloud-rain';
-                    $title = 'Hujan Ringan';
-                } else if ($data->accu_rf_forecast >= 20 && $data->accu_rf_forecast < 50) {
-                    $icon = 'cloud-rain';
-                    $title = 'Hujan Sedang';
-                } else if ($data->accu_rf_forecast >= 50 && $data->accu_rf_forecast < 100) {
-                    $icon = 'cloud-showers-heavy';
-                    $title = 'Hujan Lebat';
-                } else if ($data->accu_rf_forecast >= 100 && $data->accu_rf_forecast < 150) {
-                    $icon = 'cloud-showers-water';
-                    $title = 'Hujan Sangat Lebat';
-                } else {
-                    $icon = 'cloud-showers-water';
-                    $title = 'Hujan Ekstrem';
-                }
-
-                if ($jam == '07:00:00') {
-                    $directions = array('N', 'NNE', 'NE', 'ENE', 'E', 'ESE', 'SE', 'SSE', 'S', 'SSW', 'SW', 'WSW', 'W', 'WNW', 'NW', 'NNW', 'N');
-
-
-
-                    if ($data->accu_windir_forecast != '' && $data->accu_windir_forecast != 0) {
-
-                        $dir = $directions[round(floatval($data->accu_windir_forecast) / 22.5)];
-                    } else {
-                        $dir = $data->accu_windir_forecast;
-                    }
-                    $arrPagiMalam[$jamConvert]['Pagi']['temp'] = $data->accu_temp_forecast ?: 0;
-                    $arrPagiMalam[$jamConvert]['Pagi']['ws'] = $data->accu_ws_forecast;
-                    $arrPagiMalam[$jamConvert]['Pagi']['winddir'] = $dir;
-                    $arrPagiMalam[$jamConvert]['Pagi']['rain'] = round($data->accu_rf_forecast, 2);
-                    $arrPagiMalam[$jamConvert]['Pagi']['hoursOfRain'] = $data->accu_hours_of_rain ?: 0;
-                    $arrPagiMalam[$jamConvert]['Pagi']['rain_probability'] = $data->accu_rain_probability ?: 0;
-                    $arrPagiMalam[$jamConvert]['Pagi']['icon'] = $icon;
-                    $arrPagiMalam[$jamConvert]['Pagi']['title'] = $title;
-                    $arrPagiMalam[$jamConvert]['Pagi']['waktu'] = 'Pagi';
-                    $arrPagiMalam[$jamConvert]['Pagi']['jam'] = '00:00 - 12:00';
-                    $arrPred[$jamConvert]['max_temp'] = $data->accu_temp_forecast;
-                } else if ($jam == '19:00:00') {
-                    $directions = array('N', 'NNE', 'NE', 'ENE', 'E', 'ESE', 'SE', 'SSE', 'S', 'SSW', 'SW', 'WSW', 'W', 'WNW', 'NW', 'NNW', 'N');
-                    if ($data->accu_windir_forecast != '' && $data->accu_windir_forecast != 0) {
-                        $dir = $data->accu_windir_forecast;
-                    } else {
-                        $dir = $directions[round(floatval($data->accu_windir_forecast) / 22.5)];
-                        $dir = 22;
-                    }
-                    $arrPagiMalam[$jamConvert]['Malam']['temp'] =  $data->accu_temp_forecast ?: 0;
-                    $arrPagiMalam[$jamConvert]['Malam']['ws'] = $data->accu_ws_forecast;
-                    $arrPagiMalam[$jamConvert]['Malam']['winddir'] = $dir;
-                    $arrPagiMalam[$jamConvert]['Malam']['rain'] = round($data->accu_rf_forecast, 2);
-                    $arrPagiMalam[$jamConvert]['Malam']['hoursOfRain'] = $data->accu_hours_of_rain ?: 0;
-                    $arrPagiMalam[$jamConvert]['Malam']['rain_probability'] = $data->accu_rain_probability ?: 0;
-                    $arrPagiMalam[$jamConvert]['Malam']['icon'] = $icon;
-                    $arrPagiMalam[$jamConvert]['Malam']['title'] = $title;
-                    $arrPagiMalam[$jamConvert]['Malam']['waktu'] = 'Malam';
-                    $arrPagiMalam[$jamConvert]['Malam']['jam'] = '12:00 - 23:59';
-                    $arrPred[$jamConvert]['min_temp'] = $data->accu_temp_forecast;
-                }
-            }
-
-
-            $sum_rain = round($sum_rain, 2);
-
-            if ($sum_rain >= 0 && $sum_rain < 0.5) {
-                $icon = 'cloud-sun';
-                $title = 'Cerah Berawan';
-            } else if ($sum_rain >= 0.5 && $sum_rain < 20) {
-                $icon = 'cloud-rain';
-                $title = 'Hujan Ringan';
-            } else if ($sum_rain >= 20 && $sum_rain < 50) {
-                $icon = 'cloud-rain';
-                $title = 'Hujan Sedang';
-            } else if ($sum_rain >= 50 && $sum_rain < 100) {
-                $icon = 'cloud-showers-heavy';
-                $title = 'Hujan Lebat';
-            } else if ($sum_rain >= 100 && $sum_rain < 150) {
-                $icon = 'cloud-showers-water';
-                $title = 'Hujan Sangat Lebat';
-            } else {
-                $icon = 'cloud-showers-water';
-                $title = 'Hujan Ekstrem';
-            }
-            $arrPred[$jamConvert]['rain_hours'] = $sum_hoursofrain;
-            $arrPred[$jamConvert]['rain'] = round($sum_rain, 2);
-            $arrPred[$jamConvert]['icon'] = $icon;
-            $arrPred[$jamConvert]['title'] = $title;
-            $arrPred[$jamConvert]['tanggal'] = $jamConvert;
-            $inc++;
-        }
-
-
         $convert = new DateTime();
 
 
@@ -1770,6 +1648,93 @@ class MasterController extends Controller
             }
         }
 
+        $now = Carbon::now();
+        $sixHoursAgo = $now->copy()->subHours(6);
+
+        $lastRainDate = DB::table('weather_station_list')
+            ->join('weather_station', 'weather_station_list.id', '=', 'weather_station.idws')
+            ->where('weather_station.idws', '=', $id_loc)
+            ->where('weather_station.rain_rate', '>', 0)
+            ->orderBy('weather_station.date', 'desc')
+            ->first();
+
+
+        $avgLatestRain = 0;
+        $lastIntensityRain = 0;
+        $latestHourRainIntensity = [];
+        $latestRainIntensity = [];
+
+        $awalHujan = '';
+        $akhirHujan = '';
+        if ($lastRainDate) {
+            $lastIntensityRain = $lastRainDate->rain_rate;
+            $lastRainDate = $lastRainDate->date;
+            $lastRainDateFormat = Carbon::parse($lastRainDate)->format('l - d M, H:i');
+            $last12HourFromLastData = Carbon::parse($lastRainDate)->subHours(12);
+            $latestRain = DB::table('weather_station_list')
+                ->join('weather_station', 'weather_station_list.id', '=', 'weather_station.idws')
+                ->where('weather_station.idws', '=', $id_loc)
+                ->where('weather_station.date', '<=', $lastRainDate)
+                ->where('weather_station.rain_rate', '>', 0)
+                ->where('weather_station.date', '>=', $last12HourFromLastData)
+                ->orderBy('weather_station.date', 'desc')
+                ->get();
+
+            $groupLatestRain = $latestRain->groupBy(function ($item) {
+                // Extract the hour from the date
+                return Carbon::parse($item->date)->format('H:00');
+            });
+
+            $groupLatestRain = json_decode($groupLatestRain, true);
+            $dataDay = [];
+
+            $inc = 0;
+            $previousHour = null;
+            foreach ($groupLatestRain as $key => $value) {
+
+                $rain = 0;
+
+                $akhirHujanPerJam = $value[0]['date'];
+                $jumlahArr = count($value);
+                $awalHujanPerJam = $value[$jumlahArr - 1]['date'];
+                foreach ($value as $key2 => $value2) {
+                    $rain += $value2['rain_rate'];
+                }
+
+                // if ($rain == 0) {
+                //     break;
+                // }
+                $currentHour = Carbon::createFromFormat('H:i', $key);
+
+                if ($previousHour !== null && !$currentHour->addHour()->eq($previousHour)) {
+                    break;
+                }
+
+                $previousHour = $currentHour;
+
+                $dataDay[$key]['rain'] = $rain;
+                $dataDay[$key]['jamAwalHujan'] = $awalHujanPerJam;
+                $dataDay[$key]['jamAkhirHujan'] = $akhirHujanPerJam;
+
+                $inc++;
+            }
+
+            $awalHujan = array_values($dataDay)[count($dataDay) - 1]['jamAwalHujan'];
+            $akhirHujan = array_values($dataDay)[0]['jamAkhirHujan'];
+
+
+
+            foreach ($dataDay as $key => $value) {
+                $latestHourRainIntensity[] = $key;
+                $latestRainIntensity[] = round($value['rain'], 2);
+                $avgLatestRain = round(($value['rain'] / $inc), 2);
+            }
+            $latestHourRainIntensity = array_reverse($latestHourRainIntensity);
+            $latestRainIntensity = array_reverse($latestRainIntensity);
+        }
+
+
+
 
         $lastDataDate = DB::table('weather_station_list')
             ->join('weather_station', 'weather_station_list.id', '=', 'weather_station.idws')
@@ -1808,13 +1773,13 @@ class MasterController extends Controller
                 }
 
                 $dataDay[$key]['temp'] = round($temp / $avg, 2);
-                $dataDay[$key]['rain'] = round($rain / $avg, 2);
+                $dataDay[$key]['rain'] = $rain;
             }
 
             foreach ($dataDay as $key => $value) {
                 $keydata[] = $key;
                 $valdata[] = $value['temp'];
-                $valdatarain[] = $value['rain'];
+                $valdatarain[] = round($value['rain'], 2);
             }
 
             $keydata = array_reverse($keydata);
@@ -1884,23 +1849,22 @@ class MasterController extends Controller
         $queryDay = $queryDay->groupBy('jam_ke');
         $queryDay = json_decode($queryDay, true);
 
-
-
-
-
-
         $arrData = array();
         $arrData['dataAktual'] = $sel_aws;
 
-
-
         $arrData['last_update_each_loc'] = $last_update_each_device;
-        $arrData['dataPagiMalam'] = $arrPagiMalam;
-        $arrData['dataPred'] = $arrPred;
         $arrData['keydata'] = $keydata;
         $arrData['valdata'] = $valdata;
         $arrData['rain'] = $valdatarain;
+        $arrData['latestRainIntensity'] = $latestRainIntensity;
+        $arrData['latestHourRainIntensity'] = $latestHourRainIntensity;
+        $arrData['lastIntensityRain'] =  round($lastIntensityRain, 2);
+        $arrData['avgLatestRain'] = $avgLatestRain;
+        $arrData['lastRainDateFormat'] = $lastRainDateFormat;
+        $arrData['awalHujan'] = Carbon::parse($awalHujan)->format('H:i');
+        $arrData['akhirHujan'] = Carbon::parse($akhirHujan)->format('H:i');
 
+        // dd($arrData);co
 
 
         echo json_encode($arrData);

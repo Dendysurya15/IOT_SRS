@@ -19,6 +19,81 @@
         -ms-interpolation-mode: nearest-neighbor;
     }
 
+    /* .col-1 a {
+        transition: transform 0.3s ease, filter 0.3s ease;
+    } */
+
+    .col-1 a:hover {
+        cursor: pointer;
+        /* transform: scale(1.2); */
+        /* Adjust the scaling factor as needed */
+        /* filter: brightness(1.5); */
+        /* Adjust the brightness to make it thicker */
+    }
+
+    #cardMain,
+    #cardSecond {
+        transition: transform 0.3s ease, opacity 0.3s ease;
+    }
+
+    #cardMain {
+        opacity: 1;
+        transform: translateX(0);
+    }
+
+    #cardSecond {
+        display: none;
+        opacity: 0;
+        transform: translateX(0);
+    }
+
+
+    #buttonRight {
+        background: #ececec;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        position: absolute;
+        top: 50%;
+        /* Center the button vertically */
+        left: 50%;
+        /* Center the button horizontally */
+        transform: translate(-50%, -50%);
+        /* Adjust for centering effect */
+    }
+
+    #buttonLeft {
+        background: #ececec;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        position: absolute;
+        top: 50%;
+        /* Center the button vertically */
+        left: 50%;
+        /* Center the button horizontally */
+        transform: translate(-50%, -50%);
+        /* Adjust for centering effect */
+    }
+
+    .fixed-size-img {
+        width: 20px;
+        /* Adjust the width as needed */
+        height: 20px;
+        /* Adjust the height as needed */
+    }
+
+    #buttonRight:hover {
+        background-color: #e1e1e1;
+
+    }
+
+    #buttonLeft:hover {
+        background-color: #e1e1e1;
+
+    }
+
+
 
     @media (min-width: 1200px) and (max-width: 1300px) {
         #titleCuaca {
@@ -118,6 +193,35 @@
 
         #cardMain {
             height: 450px;
+        }
+
+        #cardSecond {
+            height: 450px;
+        }
+
+        #informationTitle {
+            font-size: 12px;
+        }
+
+        #cuacaTitle {
+            font-size: 13px;
+        }
+
+        #lastIntensityRain {
+            font-size: 19px;
+        }
+
+        #AverageRainRateTitle {
+            font-size: 11px;
+        }
+
+        #lastRainDateFormat {
+            font-size: 11px;
+        }
+
+        #avgLatestRain {
+            font-size: 15px;
+            margin-bottom: -5px;
         }
     }
 
@@ -219,6 +323,36 @@
         #cardMain {
             height: 450px;
         }
+
+        #cardSecond {
+            height: 450px;
+        }
+
+        #informationTitle {
+            font-size: 12px;
+        }
+
+        #cuacaTitle {
+            font-size: 13px;
+        }
+
+        #lastIntensityRain {
+            font-size: 21px;
+        }
+
+        #AverageRainRateTitle {
+            font-size: 11px;
+        }
+
+        #lastRainDateFormat {
+            font-size: 11px;
+        }
+
+        #avgLatestRain {
+            font-size: 15px;
+            margin-bottom: -5px;
+        }
+
     }
 
     @media (min-width: 1650px) and (max-width: 1800px) {
@@ -318,6 +452,35 @@
 
         #cardMain {
             height: 450px;
+        }
+
+        #cardSecond {
+            height: 450px;
+        }
+
+        #informationTitle {
+            font-size: 12px;
+        }
+
+        #cuacaTitle {
+            font-size: 13px;
+        }
+
+        #lastIntensityRain {
+            font-size: 25px;
+        }
+
+        #AverageRainRateTitle {
+            font-size: 11px;
+        }
+
+        #lastRainDateFormat {
+            font-size: 12px;
+        }
+
+        #avgLatestRain {
+            font-size: 16px;
+            margin-bottom: -5px;
         }
     }
 
@@ -421,6 +584,15 @@
         #cardMain {
             height: 550px;
         }
+
+        #cardSecond {
+            height: 550px;
+        }
+
+        #lastIntensityRain {
+            font-size: 25px;
+        }
+
     }
 </style>
 
@@ -442,134 +614,210 @@
             <div class="row">
                 <div class="col-xl-3 order-xl-1 order-sm-2 order-2">
                     <div class="col-12">
-                        <div class="card" id="cardMain" style="border-radius: 20px;">
-                            <div class="card-body">
 
-                                <div style="width: 100%;"><span id="last_updates">-</span> -
-                                    Weather Report</div>
-                                <div class="row align-items-center" id="imageId">
-                                    <div class="col-6 text-center" id="imageContainer">
-                                    </div>
-                                    <div class="col-6">
-                                        <table class="table" style="">
+                        <div class="card" id="cardMain" style="border-radius: 20px;">
+                            <div class="row">
+                                <div class="col-11">
+                                    <div class="card-body">
+                                        <div style="width: 100%;"><span id="last_updates">-</span> -
+                                            Weather Report</div>
+                                        <div class="row align-items-center" id="imageId">
+                                            <div class="col-6 text-center" id="imageContainer">
+                                            </div>
+                                            <div class="col-6">
+                                                <table class="table" style="">
+                                                    <tr>
+                                                        <td style="height: 80px;border-top:1px solid white" colspan="2">
+                                                            <div class="col-12" id="titleCuaca"
+                                                                style="font-weight:600;border-bottom:1px solid white;">
+                                                                -
+                                                            </div>
+                                                            <div class="col-12"
+                                                                style="font-weight: bold;margin-top:-5px;margin-bottom:-15px"
+                                                                id="tempReal">
+                                                                -
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                    <tr class="text-center">
+                                                        <td style="height: 20px;border-right:1px solid #E5E4E2;border-top:1px solid white;color:#fc9d18"
+                                                            class="align-middle" id="celToFah">-</td>
+                                                        <td class="align-middle"
+                                                            style="border-top:1px solid white;color:#79d5fc"
+                                                            id="celToRea">-
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </div>
+                                        </div>
+
+                                        <table class="table">
                                             <tr>
-                                                <td style="height: 80px;border-top:1px solid white" colspan="2">
-                                                    <div class="col-12" id="titleCuaca"
-                                                        style="font-weight:600;border-bottom:1px solid white;">
-                                                        -
+                                                <td id="tdUV"
+                                                    style=" height: 70px;border:1px solid white;border-right:1px solid #E5E4E2"
+                                                    class="align-middle">
+
+
+                                                    <div class="d-flex justify-content-center align-items-center">
+                                                        <div class="text-center">
+                                                            <img src="{{ asset('img/sun.png') }}" alt="Sunny Day Image"
+                                                                style="" class="img-fluid">
+                                                        </div>
+                                                        <div id="divUv">
+                                                            <div class="text-left" style="font-weight: 500" id="uvReal">
+                                                                -</div>
+                                                            <div class="text-left" style="color: #B6BBC4;">
+                                                                Indeks UV</div>
+                                                        </div>
                                                     </div>
-                                                    <div class="col-12"
-                                                        style="font-weight: bold;margin-top:-5px;margin-bottom:-15px"
-                                                        id="tempReal">
-                                                        -
+
+
+
+
+                                                </td>
+                                                <td id="tdKelembaban"
+                                                    style=" height: 70px;border:1px solid white;border-right:1px solid white"
+                                                    class="align-middle">
+                                                    <div class="d-flex justify-content-center align-items-center">
+                                                        <div class="text-center">
+                                                            <img src="{{ asset('img/humidity.png') }}"
+                                                                alt="Sunny Day Image" style="" class="img-fluid">
+                                                        </div>
+                                                        <div id="divKelembaban">
+                                                            <div class="text-left" id="humReal">-</div>
+                                                            <div class="text-left" style="color: #B6BBC4;">
+                                                                Kelembaban</div>
+                                                        </div>
                                                     </div>
                                                 </td>
                                             </tr>
-                                            <tr class="text-center">
-                                                <td style="height: 20px;border-right:1px solid #E5E4E2;border-top:1px solid white;color:#fc9d18"
-                                                    class="align-middle" id="celToFah">-</td>
-                                                <td class="align-middle"
-                                                    style="border-top:1px solid white;color:#79d5fc" id="celToRea">-
+                                            <tr>
+                                                <td id="tdHujan"
+                                                    style=" height: 70px; border:1px solid white;border-right:1px solid #E5E4E2"
+                                                    class="align-middle">
+                                                    <div class="d-flex justify-content-center align-items-center">
+                                                        <div class="text-center">
+                                                            <img src="{{ asset('img/rain.png') }}" alt="Sunny Day Image"
+                                                                class="img-fluid">
+                                                        </div>
+                                                        <div id="divHujan">
+                                                            <div class="text-left" id="chReal">-</div>
+                                                            <div class="text-left" style="color: #B6BBC4;">Curah
+                                                                Hujan</div>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td id="tdKecAngin"
+                                                    style=" height: 70px;border:1px solid white;border-right:1px solid white"
+                                                    class="align-middle">
+                                                    <div class="d-flex justify-content-center align-items-center">
+                                                        <div class="text-center">
+                                                            <img src="{{ asset('img/wind_speed.png') }}"
+                                                                alt="Sunny Day Image" class="img-fluid">
+                                                        </div>
+                                                        <div id="divKecAngin">
+                                                            <div class="text-left" id="wsReal">-</div>
+                                                            <div class="text-left" style="color: #B6BBC4;">
+                                                                Kec. Angin</div>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td id="tdArahAngin" style="height: 70px;" colspan="2">
+                                                    <div class="d-flex justify-content-center align-items-center">
+                                                        <div class="text-center">
+                                                            <img src="{{ asset('img/winddir.png') }}"
+                                                                alt="Sunny Day Image" class="img-fluid">
+                                                        </div>
+                                                        <div id="divArahAngin">
+                                                            <div class="text-left" id="wdReal">-</div>
+                                                            <div class="text-left"
+                                                                style="color: #B6BBC4;font-size:13px">
+                                                                Arah Angin</div>
+                                                        </div>
+                                                    </div>
                                                 </td>
                                             </tr>
                                         </table>
                                     </div>
                                 </div>
-
-                                <table class="table">
-                                    <tr>
-                                        <td id="tdUV"
-                                            style=" height: 70px;border:1px solid white;border-right:1px solid #E5E4E2"
-                                            class="align-middle">
-
-
-                                            <div class="d-flex justify-content-center align-items-center">
-                                                <div class="text-center">
-                                                    <img src="{{ asset('img/sun.png') }}" alt="Sunny Day Image" style=""
-                                                        class="img-fluid">
-                                                </div>
-                                                <div id="divUv">
-                                                    <div class="text-left" style="font-weight: 500" id="uvReal">-</div>
-                                                    <div class="text-left" style="color: #B6BBC4;">
-                                                        Indeks UV</div>
-                                                </div>
-                                            </div>
-
-
-
-
-                                        </td>
-                                        <td id="tdKelembaban"
-                                            style=" height: 70px;border:1px solid white;border-right:1px solid white"
-                                            class="align-middle">
-                                            <div class="d-flex justify-content-center align-items-center">
-                                                <div class="text-center">
-                                                    <img src="{{ asset('img/humidity.png') }}" alt="Sunny Day Image"
-                                                        style="" class="img-fluid">
-                                                </div>
-                                                <div id="divKelembaban">
-                                                    <div class="text-left" id="humReal">-</div>
-                                                    <div class="text-left" style="color: #B6BBC4;">
-                                                        Kelembaban</div>
-                                                </div>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td id="tdHujan"
-                                            style=" height: 70px; border:1px solid white;border-right:1px solid #E5E4E2"
-                                            class="align-middle">
-                                            <div class="d-flex justify-content-center align-items-center">
-                                                <div class="text-center">
-                                                    <img src="{{ asset('img/rain.png') }}" alt="Sunny Day Image"
-                                                        class="img-fluid">
-                                                </div>
-                                                <div id="divHujan">
-                                                    <div class="text-left" id="chReal">-</div>
-                                                    <div class="text-left" style="color: #B6BBC4;">Curah
-                                                        Hujan</div>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td id="tdKecAngin"
-                                            style=" height: 70px;border:1px solid white;border-right:1px solid white"
-                                            class="align-middle">
-                                            <div class="d-flex justify-content-center align-items-center">
-                                                <div class="text-center">
-                                                    <img src="{{ asset('img/wind_speed.png') }}" alt="Sunny Day Image"
-                                                        class="img-fluid">
-                                                </div>
-                                                <div id="divKecAngin">
-                                                    <div class="text-left" id="wsReal">-</div>
-                                                    <div class="text-left" style="color: #B6BBC4;">
-                                                        Kec. Angin</div>
-                                                </div>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td id="tdArahAngin" style="height: 70px;" colspan="2">
-                                            <div class="d-flex justify-content-center align-items-center">
-                                                <div class="text-center">
-                                                    <img src="{{ asset('img/winddir.png') }}" alt="Sunny Day Image"
-                                                        class="img-fluid">
-                                                </div>
-                                                <div id="divArahAngin">
-                                                    <div class="text-left" id="wdReal">-</div>
-                                                    <div class="text-left" style="color: #B6BBC4;font-size:13px">
-                                                        Arah Angin</div>
-                                                </div>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                </table>
-
-
-
+                                <div class="col-1 d-flex justify-content-center align-items-center"
+                                    style="height: 550px; position: relative;">
+                                    <a onclick="showCard('cardSecond')" id="buttonRight"
+                                        class="d-flex justify-content-center align-items-center">
+                                        <img src="{{ asset('img/right-arrow.png') }}" alt="" class="fixed-size-img">
+                                    </a>
+                                </div>
 
                             </div>
+
+                        </div>
+
+
+                        <div id="cardSecond" class="card" style="border-radius: 20px;">
+                            <div class="row">
+                                <div class="col-1 d-flex justify-content-center align-items-center"
+                                    style="height:550px; position: relative;">
+
+                                    <a onclick="showCard('cardMain')" id="buttonLeft"
+                                        class="d-flex justify-content-center align-items-center">
+                                        <img src="{{ asset('img/left-arrow.png') }}" alt="" class="fixed-size-img">
+                                    </a>
+
+
+                                </div>
+                                <div class="col-11" style="">
+                                    <div class="card-body ">
+                                        <div style="width: 100%;" id="informationTitle">Information Last Rain -
+                                            Weather Report</div>
+                                        <div class="row align-items-center mb-2">
+                                            <div class="col-4 text-center" id="iconLatestRain">
+                                                <img src="{{ asset('img/rain-heavy.png') }}" alt="Sunny Day Image"
+                                                    class="img-fluid">
+                                            </div>
+                                            <div class="col-7">
+                                                <table class="table">
+                                                    <tr>
+                                                        <td style="height: 80px;border-top:1px solid white" colspan="2">
+                                                            <div class="col-12" id="cuacaTitle"
+                                                                style="font-weight:600;margin-bottom:-5px;border-bottom:1px solid white;">
+                                                                Hujan
+                                                            </div>
+                                                            <div class="col-12" id="lastIntensityRain"
+                                                                style="font-weight: bold;margin-bottom:-5px;color:#fc9d18">
+                                                                -
+                                                            </div>
+                                                            <div class="col-12"
+                                                                style="font-weight: bold;margin-bottom:-15px"
+                                                                id="lastRainDateFormat">
+                                                                -
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+
+                                                </table>
+                                            </div>
+                                        </div>
+                                        <div style="width: 100%;color:#818589" id="AverageRainRateTitle">Average Rain
+                                            Rate</div>
+                                        <div style="width: 100%;font-weight:500" id="avgLatestRain">-
+                                        </div>
+                                        <div id="chLatestRain"></div>
+                                        <div style="width: 100%;font-size:15px;">Rain Duration</div>
+                                        <div style="width: 100%;font-size:13px;color:#818589" id="rain_duration">-</div>
+                                    </div>
+                                </div>
+                            </div>
+
+
                         </div>
                     </div>
+
+
+
+
+
                     {{-- <div class="col-12">
                         <div class="list-group">
                             <button type="button"
@@ -602,18 +850,18 @@
                     </div>
 
                     <div class="clearfix"></div>
-                    <div class="row">
+                    <div id="tempAktualContainer" class="row">
                         <div class="col-xl-12 order-3">
-                            <div class="card" style="height:350px;border-radius: 20px;">
+                            <div id="tempAktualCard" class="card" style="height:350px;border-radius: 20px;">
                                 <div class="card-body">
                                     <div id="tempAktual"></div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="row">
+                    <div id="chAktualContainer" class="row">
                         <div class="col-xl-12 order-3">
-                            <div class="card" style="height:350px;border-radius: 20px;">
+                            <div id="chAktualCard" class="card" style="height:350px;border-radius: 20px;">
                                 <div class="card-body">
                                     <div id="chAktual"></div>
                                 </div>
@@ -1140,7 +1388,7 @@
         
 
         getDataLoc(defaultStation)
-        getDataRainRate(defaultStation)
+        
     });
 
     $('#locList').change(function() {
@@ -1214,13 +1462,17 @@ var todayFormatted = today.toLocaleDateString('en-US', options);
             name:'',
             data: ''
         }],
+        
         chart: {
             background: '#ffffff',
             height: 300,
-            type: 'area'
+            type: 'area',
+            toolbar: {
+      show: false
+    }
         },
         dataLabels: {
-        enabled: false // disable data labels
+        enabled: true // disable data labels
     },
     markers: {
         size: 0 // hide data points
@@ -1273,6 +1525,11 @@ var todayFormatted = today.toLocaleDateString('en-US', options);
     var chartCh = new ApexCharts(document.querySelector("#chAktual"), options);
     chartCh.render();
 
+    var chartLatestRain = new ApexCharts(document.querySelector("#chLatestRain"), options);
+    chartLatestRain.render();
+    var screenWidth = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
+
+    
 
     function getDataLoc(locIndex) {
 
@@ -1325,6 +1582,7 @@ var todayFormatted = today.toLocaleDateString('en-US', options);
                 //     // Append the list item to the container
                 //     stationListContainer.appendChild(listItem);
                 // }
+                
                 var imageContainer = document.getElementById('imageContainer');
                 var existingImgElement = document.getElementById('weatherImage');
 
@@ -1358,8 +1616,8 @@ var todayFormatted = today.toLocaleDateString('en-US', options);
                 
                 createOrUpdateElement(document.body, 'titleCuaca', arrAktual['titleIcon']);
                 createOrUpdateElement(document.body, 'last_updates', arrAktual['date_format']);
-                createOrUpdateElement(document.body, 'celToFah', (hitungCelToFah + '°C'));
-                createOrUpdateElement(document.body, 'celToRea', (hitungCelToRea + '°C'));
+                createOrUpdateElement(document.body, 'celToFah', (hitungCelToFah + '°F'));
+                createOrUpdateElement(document.body, 'celToRea', (hitungCelToRea + '°R'));
 
                 uvVal = arrAktual['uv'];
 
@@ -1374,12 +1632,17 @@ var todayFormatted = today.toLocaleDateString('en-US', options);
                     uvTitle = 'Sangat Tinggi';
                 }
 
+                
                 createOrUpdateElement(document.body, 'tempReal', arrAktual['temp_out'] + '°C');
                 createOrUpdateElement(document.body, 'humReal', arrAktual['hum_out'] + ' %');
                 createOrUpdateElement(document.body, 'chReal', arrAktual['rain_rate'] + ' mm');
                 createOrUpdateElement(document.body, 'wdReal', arrAktual['windDirIndonesian']);
                 createOrUpdateElement(document.body, 'wsReal', arrAktual['windspeedkmh'] ? arrAktual['windspeedkmh'] + ' km/jam' : '0 km/jam');
                 createOrUpdateElement(document.body, 'uvReal', uvTitle + ' (' + uvVal +  ')');
+                createOrUpdateElement(document.body, 'lastIntensityRain', arrResult['lastIntensityRain'] + ' mm');
+                createOrUpdateElement(document.body, 'lastRainDateFormat', arrResult['lastRainDateFormat'] ) ;
+                createOrUpdateElement(document.body, 'avgLatestRain', arrResult['avgLatestRain'] + ' mm');
+                createOrUpdateElement(document.body, 'rain_duration', arrResult['awalHujan'] + ' hingga ' + arrResult['akhirHujan']);
                 chartTemp.updateOptions({
                     xaxis: {
                         categories: arrResult['keydata']
@@ -1400,6 +1663,34 @@ var todayFormatted = today.toLocaleDateString('en-US', options);
                 chartCh.updateSeries([{
                     name: 'Curah Hujan (mm)',
                     data: arrResult['rain']
+
+                }])
+
+                var newChartLatestRain;
+
+                if (screenWidth >= 1300 && screenWidth < 1650) {
+                    newChartLatestRain = 190;
+                }
+                 else if (screenWidth >= 1650 && screenWidth < 1800) {
+                    // If screen width is between 600 and 1200 pixels
+                    newChartLatestRain = 190;
+                } else {
+                    // If screen width is 1200 pixels or more
+                    newChartLatestRain = 230;
+                }
+
+                chartLatestRain.updateOptions({
+                    xaxis: {
+                        categories: arrResult['latestHourRainIntensity']
+                    },
+                    chart: {
+        height: newChartLatestRain // Set the new height value
+    },
+                });
+
+                chartLatestRain.updateSeries([{
+                    name: 'Curah Hujan (mm)',
+                    data: arrResult['latestRainIntensity']
 
                 }])
 
@@ -1447,6 +1738,17 @@ var todayFormatted = today.toLocaleDateString('en-US', options);
             name: 'Curah Hujan (mm)',
             data: []
         }]);
+
+        chartLatestRain.updateOptions({
+            xaxis: {
+                categories: []
+            }
+        });
+
+        chartLatestRain.updateSeries([{
+            name: 'Curah Hujan (mm)',
+            data: []
+        }]);
                 }
             }
 
@@ -1470,5 +1772,50 @@ var todayFormatted = today.toLocaleDateString('en-US', options);
         container.appendChild(newElement);
     }
 }
+
+
+ function showCard(buttonCard) {
+    var cardMain = document.getElementById('cardMain');
+var cardSecond = document.getElementById('cardSecond');
+
+var delayInMilliseconds = 300; // 300 milliseconds
+
+var cardMain = document.getElementById('cardMain');
+var cardSecond = document.getElementById('cardSecond');
+
+var delayInMilliseconds = 300; // 300 milliseconds
+
+if (buttonCard == 'cardSecond') {
+    cardMain.style.transition = 'transform 0.3s ease, opacity 0.3s ease';
+    cardMain.style.transform = 'translateX(-100%)';
+    cardMain.style.opacity = '0';
+
+    setTimeout(function() {
+        cardMain.style.display = 'none';
+
+        cardSecond.style.display = 'block';
+        cardSecond.style.transform = 'translateX(0)';
+        cardSecond.style.opacity = '1';
+    }, delayInMilliseconds);
+} else if (buttonCard == 'cardMain') {
+    cardSecond.style.transition = 'transform 0.3s ease, opacity 0.3s ease';
+    cardSecond.style.transform = 'translateX(100%)'; // Move to the right
+    cardSecond.style.opacity = '0';
+
+    setTimeout(function() {
+        cardSecond.style.display = 'none';
+
+        cardMain.style.display = 'block';
+        cardMain.style.transform = 'translateX(0)';
+        cardMain.style.opacity = '1';
+    }, delayInMilliseconds);
+}
+
+
+   
+        // Toggle visibility of navigation buttons based on the selected card
+        document.getElementById('leftButton').style.display = (buttonCard === 'cardMain') ? 'none' : 'inline-block';
+        document.getElementById('rightButton').style.display = (buttonCard === 'cardSecond') ? 'none' : 'inline-block';
+    }
 
 </script>
