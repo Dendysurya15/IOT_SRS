@@ -873,9 +873,9 @@
             </div>
             {{-- forecast --}}
 
-            <h4>Forecast Perkiraan Cuaca dalam 5 hari</h4>
+            {{-- <h4>Forecast Perkiraan Cuaca dalam 5 hari</h4> --}}
 
-            <div id="forecastContainer" class="row"></div>
+            <div id="forecastContainer"></div>
             {{-- <div>
                 <div class="row">
                     <div class="col-md">
@@ -1772,18 +1772,22 @@ var todayFormatted = today.toLocaleDateString('en-US', options);
 
 
                 arrResult = JSON.parse(result)
-                
                 var list_loc_update = arrResult['last_update_each_loc']
-            
                 var arrAktual = arrResult['dataAktual']
-
-
                 var arrPagiMalam = arrResult['arrForecastPagiMalam'];
+                var namaStation = arrResult['namaStation'];
 
+                var rowContainer = document.getElementById('forecastContainer');
+                var forecastTitle = document.createElement('h4');
+                forecastTitle.textContent = 'Forecast Perkiraan Cuaca dalam 5 hari di ' + namaStation;
+                rowContainer.appendChild(forecastTitle);
 
+                var cardRow = document.createElement('div');
+                cardRow.className = 'row';
+                rowContainer.appendChild(cardRow);
                 Object.entries(arrPagiMalam).forEach(function([key, item]) {
                     var card = document.createElement('div');
-                    card.className = 'col-md';
+                    card.className = 'col-xl col-lg-4 col-md-4 col-sm-6';
                     
                     var cardInner = `
                         <div class="card card-light selectCard">
@@ -1798,7 +1802,7 @@ var todayFormatted = today.toLocaleDateString('en-US', options);
                                                 <i class="fa-solid fa-water fa-fw" style="color: #183153"></i>
                                                 ${item.rain !== 0 ? item.rain : '-'}
                                                 <span id="rain_${key}"></span>
-                                                ml
+                                                mm
                                             </div>
                                             <div class="mb-2">
                                                 <i class="fa-solid fa-temperature-three-quarters fa-fw" style="color: #183153"></i>
@@ -1824,7 +1828,7 @@ var todayFormatted = today.toLocaleDateString('en-US', options);
                     `;
 
                     card.innerHTML = cardInner;
-                    forecastContainer.appendChild(card);
+                    cardRow.appendChild(card);
                     
                 });
 
@@ -1911,13 +1915,13 @@ var todayFormatted = today.toLocaleDateString('en-US', options);
                 
                 createOrUpdateElement(document.body, 'tempReal', arrAktual['temp_out'] + '°C');
                 createOrUpdateElement(document.body, 'humReal', arrAktual['hum_out'] + ' %');
-                createOrUpdateElement(document.body, 'chReal', arrAktual['rain_rate'] + ' ml');
+                createOrUpdateElement(document.body, 'chReal', arrAktual['rain_rate'] + ' mm');
                 createOrUpdateElement(document.body, 'wdReal', arrAktual['windDirIndonesian']);
                 createOrUpdateElement(document.body, 'wsReal', arrAktual['windspeedkmh'] ? arrAktual['windspeedkmh'] + ' km/jam' : '0 km/jam');
                 createOrUpdateElement(document.body, 'uvReal', uvTitle + ' (' + uvVal +  ')');
-                createOrUpdateElement(document.body, 'lastIntensityRain', arrResult['lastIntensityRain'] + ' ml');
+                createOrUpdateElement(document.body, 'lastIntensityRain', arrResult['lastIntensityRain'] + ' mm');
                 createOrUpdateElement(document.body, 'lastRainDateFormat', arrResult['lastRainDateFormat'] ) ;
-                createOrUpdateElement(document.body, 'avgLatestRain', arrResult['avgLatestRain'] + ' ml');
+                createOrUpdateElement(document.body, 'avgLatestRain', arrResult['avgLatestRain'] + ' mm');
                 createOrUpdateElement(document.body, 'rain_duration', arrResult['awalHujan'] + ' hingga ' + arrResult['akhirHujan']);
                 chartTemp.updateOptions({
                     xaxis: {
@@ -1937,7 +1941,7 @@ var todayFormatted = today.toLocaleDateString('en-US', options);
                 });
 
                 chartCh.updateSeries([{
-                    name: 'Curah Hujan (ml)',
+                    name: 'Curah Hujan (mm)',
                     data: arrResult['rain']
 
                 }])
@@ -1965,7 +1969,7 @@ var todayFormatted = today.toLocaleDateString('en-US', options);
                 });
 
                 chartLatestRain.updateSeries([{
-                    name: 'Curah Hujan (ml)',
+                    name: 'Curah Hujan (mm)',
                     data: arrResult['latestRainIntensity']
 
                 }])
@@ -2011,7 +2015,7 @@ var todayFormatted = today.toLocaleDateString('en-US', options);
         });
 
         chartCh.updateSeries([{
-            name: 'Curah Hujan (ml)',
+            name: 'Curah Hujan (mm)',
             data: []
         }]);
 
@@ -2022,7 +2026,7 @@ var todayFormatted = today.toLocaleDateString('en-US', options);
         });
 
         chartLatestRain.updateSeries([{
-            name: 'Curah Hujan (ml)',
+            name: 'Curah Hujan (mm)',
             data: []
         }]);
                 }

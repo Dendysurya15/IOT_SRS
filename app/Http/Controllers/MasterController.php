@@ -1916,8 +1916,15 @@ class MasterController extends Controller
         $queryDay = $queryDay->groupBy('jam_ke');
         $queryDay = json_decode($queryDay, true);
 
+
+        $namaStation = DB::table('weather_station_list')
+            ->select('*')
+            ->where('weather_station_list.id', '=', $id_loc)
+            ->first()->loc;
+
         $arrData = array();
         $arrData['dataAktual'] = $sel_aws;
+        $arrData['namaStation'] = $namaStation;
         $arrData['arrForecastPagiMalam'] = $arrPred;
         $arrData['last_update_each_loc'] = $last_update_each_device;
         $arrData['keydata'] = $keydata;
