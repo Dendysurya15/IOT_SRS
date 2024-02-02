@@ -871,13 +871,11 @@ class MasterController extends Controller
             ->get()
             ->groupBy('hari');
 
-
-
         $queryPredDetail =  DB::table('weather_station_list')
             ->join('db_aws_bke', 'weather_station_list.id', '=', 'db_aws_bke.idws')
             ->select('db_aws_bke.*', 'weather_station_list.rain_cal as rain_cal', 'weather_station_list.loc as loc', DB::raw("DATE_FORMAT(db_aws_bke.datetime,'%d-%m-%Y') as hari"))
             ->whereBetween('db_aws_bke.datetime', [$from, $to])
-            ->where('idws', 1)
+            ->where('idws', 10)
             ->get()
             ->groupBy('hari');
 
@@ -1161,7 +1159,6 @@ class MasterController extends Controller
 
 
 
-
         $arrPagiMalam = array();
         $arrPred = array();
         foreach ($queryPredDetail as $key => $value) {
@@ -1242,23 +1239,11 @@ class MasterController extends Controller
 
             $sum_rain = round($sum_rain, 2);
 
-            if ($sum_rain >= 0 && $sum_rain < 0.5) {
-                $icon = 'cloud-sun';
+            if ($sum_rain > 0) {
+                $icon = 'rain.png';
                 $title = 'Cerah Berawan';
-            } else if ($sum_rain >= 0.5 && $sum_rain < 20) {
-                $icon = 'cloud-rain';
-                $title = 'Hujan Ringan';
-            } else if ($sum_rain >= 20 && $sum_rain < 50) {
-                $icon = 'cloud-rain';
-                $title = 'Hujan Sedang';
-            } else if ($sum_rain >= 50 && $sum_rain < 100) {
-                $icon = 'cloud-showers-heavy';
-                $title = 'Hujan Lebat';
-            } else if ($sum_rain >= 100 && $sum_rain < 150) {
-                $icon = 'cloud-showers-water';
-                $title = 'Hujan Sangat Lebat';
             } else {
-                $icon = 'cloud-showers-water';
+                $icon = 'icons8-sun-behind-small-cloud-96.png';
                 $title = 'Hujan Ekstrem';
             }
             $arrPred[$jamConvert]['rain_hours'] = $sum_hoursofrain;
@@ -1267,7 +1252,6 @@ class MasterController extends Controller
             $arrPred[$jamConvert]['title'] = $title;
             $inc++;
         }
-
         // dd($arrHistoryData);
         // dd($arrForecast12hour);
 
@@ -1592,28 +1576,6 @@ class MasterController extends Controller
         $to = new DateTime($dateParse);
         $to = $to->format('Y-m-d H:i:s');
 
-
-        $convert = new DateTime();
-
-
-        $from = $convert->format('Y-m-d H:i:s');
-        // 
-        $from2 = Carbon::parse($from)->subMinutes()->subDays(7);
-
-        // dd($from2);
-
-        $from2 = $from2->format('Y-m-d H:i:s');
-        // dd($to);
-        $dateTo = Carbon::parse();
-
-        // $dateFrom->add(new DateInterval('PT0H'));
-        // dd($dateTo);
-        $dateRaw = $dateTo->format('Y-m-d');
-        $dateTo = $dateTo->format('Y-m-d') . ' 23:59:59';
-
-
-        $to = date($dateTo);
-
         $listLocActive = DB::table('weather_station_list')
             ->where('weather_station_list.id', '!=', $id_loc)
             ->get();
@@ -1851,7 +1813,6 @@ class MasterController extends Controller
 
         $arrData = array();
         $arrData['dataAktual'] = $sel_aws;
-
         $arrData['last_update_each_loc'] = $last_update_each_device;
         $arrData['keydata'] = $keydata;
         $arrData['valdata'] = $valdata;

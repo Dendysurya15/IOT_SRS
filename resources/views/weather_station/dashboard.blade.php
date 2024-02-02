@@ -671,9 +671,6 @@
                                                         </div>
                                                     </div>
 
-
-
-
                                                 </td>
                                                 <td id="tdKelembaban"
                                                     style=" height: 70px;border:1px solid white;border-right:1px solid white"
@@ -818,7 +815,7 @@
 
 
 
-                    {{-- <div class="col-12">
+                    <div class="col-12">
                         <div class="list-group">
                             <button type="button"
                                 class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
@@ -832,7 +829,7 @@
                         <div id="stationListContainer"></div>
 
 
-                    </div> --}}
+                    </div>
                 </div>
                 <div class="col-xl-9  col-sm-12  order-xl-2 order-sm-1 order-1">
                     <div>
@@ -870,7 +867,357 @@
                     </div>
                 </div>
 
+
+
+
             </div>
+            {{-- forecast --}}
+
+            <h4>Forecast Perkiraan Cuaca dalam 5 hari</h4>
+
+            <div class="row">
+                @foreach ($forecasting as $key => $item)
+
+                <div class="col-md">
+                    <div class="card card-light selectCard">
+                        <div class="card-header">
+                            <div class="card-title" id="{{$key}}">{{$key}}</div>
+                        </div>
+                        <div class="card-body">
+                            <div class="row no-gutters align-items-center">
+                                <div class="col mr-2">
+                                    <div class="h5 mb-0 font-weight-bold text-gray-800" id="hum">
+                                        <div class="mb-2">
+                                            <i class="fa-solid fa-water fa-fw" style="color: #183153"></i>
+                                            {{
+                                            $item['rain'] != 0 ? $item['rain'] : '-'
+                                            }}
+                                            <span id="rain_{{$key}}"></span>
+                                            ml
+                                        </div>
+                                        <div class="mb-2">
+                                            <i class="fa-solid fa-temperature-three-quarters fa-fw"
+                                                style="color: #183153"></i>
+                                            <span id="max_temp_{{$key}}"></span>
+                                            {{
+                                            $item['max_temp'] != 0 ? $item['max_temp'] : '-'
+                                            }}
+                                            /
+                                            <span id="min_temp_{{$key}}"></span>
+                                            {{
+                                            $item['min_temp'] != 0 ? $item['min_temp'] : '-'
+                                            }}
+                                            ºC
+                                        </div>
+                                        <i class="fa-solid fa-cloud-showers-heavy fa-fw" style="color: #183153"></i>
+                                        {{
+                                        $item['rain_hours'] != 0 ? $item['rain_hours'] : '-'
+                                        }}
+                                        <span id="rain_hours_{{$key}}"></span>
+                                        Jam
+                                    </div>
+                                </div>
+                                <div class="col-auto">
+
+                                    {{-- <img src="{{ asset('img/sun.png') }}" alt="Sunny Day Image" style=""
+                                        class="img-fluid"> --}}
+                                    <img src="{{ asset('img/'.$item['icon']) }}" style="width: 70px;"
+                                        alt="Sunny Day Image">
+                                    {{-- @php
+
+                                    $iconPred = 'fa-solid fa-'.$item['icon']. ' fa-2x';
+                                    @endphp --}}
+                                    {{-- <span id="icon_{{$key}}"></span> --}}
+                                    {{-- <i class="{{$iconPred}}" style="color: #183153"></i> --}}
+                                    {{-- @if ($key == 0)
+                                    <br>
+                                    <i id="s_hum_in1" class="fa-solid fa-droplet"></i>
+                                    {{
+                                    $item['hum_real'] != 0 ? $item['hum_real'] : '-'
+                                    }} %
+                                    @endif --}}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                @endforeach
+            </div>
+            {{-- <div>
+                <div class="row">
+                    <div class="col-md">
+                        <div class="">
+                            <div class="card-header">
+                                <div class="card-title">
+                                    <span id="div_hari_1"> {{$arr5days['hari_ke_1']}}</span>
+                                </div>
+                            </div>
+                            <div
+                                style="background:white;border-radius:5px;height:340px;box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;">
+
+
+                                <div style="height: 170px;">
+                                    <div id="textbox">
+                                        <p class="alignleft" style="float:left;margin-top:15px;margin-left:25px">
+                                            <span style="font-size:13px">
+                                                <span id="div_waktu_"></span> (
+                                                <span id="div_jam_"></span> )</span> <br>
+                                            <span class="font-italic" style="color:#6C757D"><span
+                                                    id="div_title_"></span></span>
+                                        </p>
+                                        <p class="alignright" style="float:right;margin-top:25px;margin-right:15px;">
+                                            <span id="div_icon_"></span>
+                                        </p>
+                                    </div>
+                                    <div style="clear: both;"></div>
+                                    <div style="padding:9px;background:#F7F7F7;border-radius:5px">
+                                        <div class="row m-2" style="">
+                                            <div class="col-6" style="">
+                                                <i class="fa-solid fa-water fa-sm fa-fw m-1" style="color:#183153;"></i>
+                                                <span style="font-size:11px"> <span id="div_rain_"></span> mm</span>
+                                            </div>
+                                            <div class="col-6" style="">
+                                                <i class="fa-solid fa-temperature-low fa-sm fa-fw m-1"
+                                                    style="color:#183153;"></i>
+                                                <span style="font-size:11px"> <span id="div_temp_"></span> C</span>
+                                            </div>
+                                        </div>
+                                        <div class="row m-2" style="">
+                                            <div class="col-6" style="">
+                                                <i class="fa-solid fa-cloud-sun-rain fa-sm fa-fw m-1"
+                                                    style="color:#183153;"></i>
+                                                <span style="font-size:11px"> <span id="div_rp_"></span>
+                                                    % </span>
+                                            </div>
+                                            <div class="col-6" style="">
+                                                <i class="fa-solid fa-wind fa-sm fa-fw m-1" style="color:#183153;"></i>
+                                                <span style="font-size:11px"> <span id="div_ws_"></span>m/s</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md">
+                        <div class="">
+                            <div class="card-header">
+                                <div class="card-title">
+                                    <span id="div_hari_2">{{$arr5days['hari_ke_2']}}</span>
+                                </div>
+                            </div>
+                            <div
+                                style="background:white;border-radius:5px;height:340px;box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;">
+
+
+                                <div style="height: 170px;">
+                                    <div id="textbox">
+                                        <p class="alignleft" style="float:left;margin-top:15px;margin-left:25px">
+                                            <span style="font-size:13px">
+                                                <span id="div_waktu_"></span> (
+                                                <span id="div_jam_"></span> )</span> <br>
+                                            <span class="font-italic" style="color:#6C757D"><span
+                                                    id="div_title_"></span></span>
+                                        </p>
+                                        <p class="alignright" style="float:right;margin-top:25px;margin-right:15px;">
+                                            <span id="div_icon_"></span>
+                                        </p>
+                                    </div>
+                                    <div style="clear: both;"></div>
+                                    <div style="padding:9px;background:#F7F7F7;border-radius:5px">
+                                        <div class="row m-2" style="">
+                                            <div class="col-6" style="">
+                                                <i class="fa-solid fa-water fa-sm fa-fw m-1" style="color:#183153;"></i>
+                                                <span style="font-size:11px"> <span id="div_rain_"></span> mm</span>
+                                            </div>
+                                            <div class="col-6" style="">
+                                                <i class="fa-solid fa-temperature-low fa-sm fa-fw m-1"
+                                                    style="color:#183153;"></i>
+                                                <span style="font-size:11px"> <span id="div_temp_"></span> C</span>
+                                            </div>
+                                        </div>
+                                        <div class="row m-2" style="">
+                                            <div class="col-6" style="">
+                                                <i class="fa-solid fa-cloud-sun-rain fa-sm fa-fw m-1"
+                                                    style="color:#183153;"></i>
+                                                <span style="font-size:11px"> <span id="div_rp_"></span>
+                                                    % </span>
+                                            </div>
+                                            <div class="col-6" style="">
+                                                <i class="fa-solid fa-wind fa-sm fa-fw m-1" style="color:#183153;"></i>
+                                                <span style="font-size:11px"> <span id="div_ws_"></span>m/s</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md">
+                        <div class="">
+                            <div class="card-header">
+                                <div class="card-title">
+                                    <span id="div_hari_3">{{$arr5days['hari_ke_3']}}</span>
+                                </div>
+                            </div>
+                            <div
+                                style="background:white;border-radius:5px;height:340px;box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;">
+
+
+                                <div style="height: 170px;">
+                                    <div id="textbox">
+                                        <p class="alignleft" style="float:left;margin-top:15px;margin-left:25px">
+                                            <span style="font-size:13px">
+                                                <span id="div_waktu_"></span> (
+                                                <span id="div_jam_"></span> )</span> <br>
+                                            <span class="font-italic" style="color:#6C757D"><span
+                                                    id="div_title_"></span></span>
+                                        </p>
+                                        <p class="alignright" style="float:right;margin-top:25px;margin-right:15px;">
+                                            <span id="div_icon_"></span>
+                                        </p>
+                                    </div>
+                                    <div style="clear: both;"></div>
+                                    <div style="padding:9px;background:#F7F7F7;border-radius:5px">
+                                        <div class="row m-2" style="">
+                                            <div class="col-6" style="">
+                                                <i class="fa-solid fa-water fa-sm fa-fw m-1" style="color:#183153;"></i>
+                                                <span style="font-size:11px"> <span id="div_rain_"></span> mm</span>
+                                            </div>
+                                            <div class="col-6" style="">
+                                                <i class="fa-solid fa-temperature-low fa-sm fa-fw m-1"
+                                                    style="color:#183153;"></i>
+                                                <span style="font-size:11px"> <span id="div_temp_"></span> C</span>
+                                            </div>
+                                        </div>
+                                        <div class="row m-2" style="">
+                                            <div class="col-6" style="">
+                                                <i class="fa-solid fa-cloud-sun-rain fa-sm fa-fw m-1"
+                                                    style="color:#183153;"></i>
+                                                <span style="font-size:11px"> <span id="div_rp_"></span>
+                                                    % </span>
+                                            </div>
+                                            <div class="col-6" style="">
+                                                <i class="fa-solid fa-wind fa-sm fa-fw m-1" style="color:#183153;"></i>
+                                                <span style="font-size:11px"> <span id="div_ws_"></span>m/s</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md">
+                        <div class="">
+                            <div class="card-header">
+                                <div class="card-title">
+                                    <span id="div_hari_4">{{$arr5days['hari_ke_4']}}</span>
+                                </div>
+                            </div>
+                            <div
+                                style="background:white;border-radius:5px;height:340px;box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;">
+
+
+                                <div style="height: 170px;">
+                                    <div id="textbox">
+                                        <p class="alignleft" style="float:left;margin-top:15px;margin-left:25px">
+                                            <span style="font-size:13px">
+                                                <span id="div_waktu_"></span> (
+                                                <span id="div_jam_"></span> )</span> <br>
+                                            <span class="font-italic" style="color:#6C757D"><span
+                                                    id="div_title_"></span></span>
+                                        </p>
+                                        <p class="alignright" style="float:right;margin-top:25px;margin-right:15px;">
+                                            <span id="div_icon_"></span>
+                                        </p>
+                                    </div>
+                                    <div style="clear: both;"></div>
+                                    <div style="padding:9px;background:#F7F7F7;border-radius:5px">
+                                        <div class="row m-2" style="">
+                                            <div class="col-6" style="">
+                                                <i class="fa-solid fa-water fa-sm fa-fw m-1" style="color:#183153;"></i>
+                                                <span style="font-size:11px"> <span id="div_rain_"></span> mm</span>
+                                            </div>
+                                            <div class="col-6" style="">
+                                                <i class="fa-solid fa-temperature-low fa-sm fa-fw m-1"
+                                                    style="color:#183153;"></i>
+                                                <span style="font-size:11px"> <span id="div_temp_"></span> C</span>
+                                            </div>
+                                        </div>
+                                        <div class="row m-2" style="">
+                                            <div class="col-6" style="">
+                                                <i class="fa-solid fa-cloud-sun-rain fa-sm fa-fw m-1"
+                                                    style="color:#183153;"></i>
+                                                <span style="font-size:11px"> <span id="div_rp_"></span>
+                                                    % </span>
+                                            </div>
+                                            <div class="col-6" style="">
+                                                <i class="fa-solid fa-wind fa-sm fa-fw m-1" style="color:#183153;"></i>
+                                                <span style="font-size:11px"> <span id="div_ws_"></span>m/s</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md">
+                        <div class="">
+                            <div class="card-header">
+                                <div class="card-title">
+                                    <span id="div_hari_5">{{$arr5days['hari_ke_5']}}</span>
+                                </div>
+                            </div>
+                            <div
+                                style="background:white;border-radius:5px;height:340px;box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;">
+                                <div style="height: 170px;">
+                                    <div id="textbox">
+                                        <p class="alignleft" style="float:left;margin-top:15px;margin-left:25px">
+                                            <span style="font-size:13px">
+                                                <span id="div_waktu_"></span> (
+                                                <span id="div_jam_"></span> )</span> <br>
+                                            <span class="font-italic" style="color:#6C757D"><span
+                                                    id="div_title_"></span></span>
+                                        </p>
+                                        <p class="alignright" style="float:right;margin-top:25px;margin-right:15px;">
+                                            <span id="div_icon_"></span>
+                                        </p>
+                                    </div>
+                                    <div style="clear: both;"></div>
+                                    <div style="padding:9px;background:#F7F7F7;border-radius:5px">
+                                        <div class="row m-2" style="">
+                                            <div class="col-6" style="">
+                                                <i class="fa-solid fa-water fa-sm fa-fw m-1" style="color:#183153;"></i>
+                                                <span style="font-size:11px"> <span id="div_rain_"></span> mm</span>
+                                            </div>
+                                            <div class="col-6" style="">
+                                                <i class="fa-solid fa-temperature-low fa-sm fa-fw m-1"
+                                                    style="color:#183153;"></i>
+                                                <span style="font-size:11px"> <span id="div_temp_"></span> C</span>
+                                            </div>
+                                        </div>
+                                        <div class="row m-2" style="">
+                                            <div class="col-6" style="">
+                                                <i class="fa-solid fa-cloud-sun-rain fa-sm fa-fw m-1"
+                                                    style="color:#183153;"></i>
+                                                <span style="font-size:11px"> <span id="div_rp_"></span>
+                                                    % </span>
+                                            </div>
+                                            <div class="col-6" style="">
+                                                <i class="fa-solid fa-wind fa-sm fa-fw m-1" style="color:#183153;"></i>
+                                                <span style="font-size:11px"> <span id="div_ws_"></span>m/s</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div> --}}
+
+
 
 
 
@@ -1105,81 +1452,13 @@
     </div>
     @endforeach
 </div> -->
-<!-- <p>
-    <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+{{-- <p>
+    <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseExample"
+        aria-expanded="false" aria-controls="collapseExample">
         Detail perkiraan cuaca
     </button>
-</p> -->
-<div class="collapse" id="collapseExample">
-    <div class="row">
-        @foreach ($arrPagiMalam as $key => $item)
-        <div class="col-md">
-            <div class="">
-                <div class="card-header">
-                    <div class="card-title">
-                        <span id="div_hari_{{$key}}"></span>
-                    </div>
-                </div>
-                <div
-                    style="background:white;border-radius:5px;height:340px;box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;">
-                    @foreach ($item as $data)
+</p> --}}
 
-                    <div style="height: 170px;">
-                        <div id="textbox">
-                            <p class="alignleft" style="float:left;margin-top:15px;margin-left:25px">
-                                <span style="font-size:13px">
-                                    <span id="div_waktu_{{$data['waktu']}}_{{$key}}"></span> (
-                                    <span id="div_jam_{{$data['waktu']}}_{{$key}}"></span> )</span> <br>
-                                <span class="font-italic" style="color:#6C757D"><span
-                                        id="div_title_{{$data['waktu']}}_{{$key}}"></span></span>
-                            </p>
-                            <p class="alignright" style="float:right;margin-top:25px;margin-right:15px;">
-                                <span id="div_icon_{{$data['waktu']}}_{{$key}}"></span>
-                            </p>
-                        </div>
-                        <div style="clear: both;"></div>
-                        <div style="padding:9px;background:#F7F7F7;border-radius:5px">
-                            <div class="row m-2" style="">
-                                <div class="col-6" style="">
-                                    <i class="fa-solid fa-water fa-sm fa-fw m-1" style="color:#183153;"></i>
-                                    <span style="font-size:11px"> <span
-                                            id="div_rain_{{$data['waktu']}}_{{$key}}"></span> mm</span>
-                                </div>
-                                <div class="col-6" style="">
-                                    <i class="fa-solid fa-temperature-low fa-sm fa-fw m-1" style="color:#183153;"></i>
-
-                                    <span style="font-size:11px"> <span
-                                            id="div_temp_{{$data['waktu']}}_{{$key}}"></span> C</span>
-                                </div>
-                            </div>
-                            <div class="row m-2" style="">
-                                <div class="col-6" style="">
-                                    <i class="fa-solid fa-cloud-sun-rain fa-sm fa-fw m-1" style="color:#183153;"></i>
-
-                                    <span style="font-size:11px"> <span id="div_rp_{{$data['waktu']}}_{{$key}}"></span>
-                                        % </span>
-                                </div>
-                                <div class="col-6" style="">
-                                    <i class="fa-solid fa-wind fa-sm fa-fw m-1" style="color:#183153;"></i>
-
-                                    <span style="font-size:11px"> <span
-                                            id="div_ws_{{$data['waktu']}}_{{$key}}"></span>m/s</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    @endforeach
-
-
-
-                </div>
-            </div>
-
-        </div>
-        @endforeach
-    </div>
-</div>
 
 <!--<div class="card">-->
 <!--    <div class="card-header card-light">-->
@@ -1565,6 +1844,17 @@ var todayFormatted = today.toLocaleDateString('en-US', options);
             
                 var arrAktual = arrResult['dataAktual']
 
+                // arrForecastPagiMalam.forEach(function (forecast, key) {
+                //     // Update your HTML elements using forecast data
+
+                //     console.log(forecast)
+                //     console.log(key)
+                //     // document.getElementById('div_waktu_' + forecast.waktu + '_' + key).innerText = forecast.waktu;
+                //     // document.getElementById('div_jam_' + forecast.waktu + '_' + key).innerText = forecast.jam;
+                //     // document.getElementById('div_title_' + forecast.waktu + '_' + key).innerText = forecast.title;
+                    
+                // });
+
                 // var stationListContainer = document.getElementById('stationListContainer');
 
                 // stationListContainer.innerHTML = '';
@@ -1589,9 +1879,9 @@ var todayFormatted = today.toLocaleDateString('en-US', options);
                 var imageSource;
 
                 if (arrAktual['titleIcon'] == 'Berawan') {
-                    imageSource = '{{ asset("img/sunny.png") }}';
+                    imageSource = '{{ asset("img/icons8-sun-behind-small-cloud-96.png") }}';
                 } else if (arrAktual['titleIcon'] == 'Hujan') {
-                    imageSource = '{{ asset("img/rain_icon.png") }}';
+                    imageSource = '{{ asset("img/icons8-cloud-with-rain-96.png") }}';
                 } else {
                     imageSource = '{{ asset("img/no_data.png") }}';
                 }
@@ -1606,6 +1896,8 @@ var todayFormatted = today.toLocaleDateString('en-US', options);
                     imgElement.id = 'weatherImage';
                     imgElement.src = imageSource;
                     imgElement.alt = 'no image';
+                    imgElement.height = 140; // Set the desired height value
+                    imgElement.width = 140; 
                     imgElement.classList.add('img-fluid');
                     imageContainer.appendChild(imgElement);
                 }
@@ -1635,13 +1927,13 @@ var todayFormatted = today.toLocaleDateString('en-US', options);
                 
                 createOrUpdateElement(document.body, 'tempReal', arrAktual['temp_out'] + '°C');
                 createOrUpdateElement(document.body, 'humReal', arrAktual['hum_out'] + ' %');
-                createOrUpdateElement(document.body, 'chReal', arrAktual['rain_rate'] + ' mm');
+                createOrUpdateElement(document.body, 'chReal', arrAktual['rain_rate'] + ' ml');
                 createOrUpdateElement(document.body, 'wdReal', arrAktual['windDirIndonesian']);
                 createOrUpdateElement(document.body, 'wsReal', arrAktual['windspeedkmh'] ? arrAktual['windspeedkmh'] + ' km/jam' : '0 km/jam');
                 createOrUpdateElement(document.body, 'uvReal', uvTitle + ' (' + uvVal +  ')');
-                createOrUpdateElement(document.body, 'lastIntensityRain', arrResult['lastIntensityRain'] + ' mm');
+                createOrUpdateElement(document.body, 'lastIntensityRain', arrResult['lastIntensityRain'] + ' ml');
                 createOrUpdateElement(document.body, 'lastRainDateFormat', arrResult['lastRainDateFormat'] ) ;
-                createOrUpdateElement(document.body, 'avgLatestRain', arrResult['avgLatestRain'] + ' mm');
+                createOrUpdateElement(document.body, 'avgLatestRain', arrResult['avgLatestRain'] + ' ml');
                 createOrUpdateElement(document.body, 'rain_duration', arrResult['awalHujan'] + ' hingga ' + arrResult['akhirHujan']);
                 chartTemp.updateOptions({
                     xaxis: {
@@ -1661,7 +1953,7 @@ var todayFormatted = today.toLocaleDateString('en-US', options);
                 });
 
                 chartCh.updateSeries([{
-                    name: 'Curah Hujan (mm)',
+                    name: 'Curah Hujan (ml)',
                     data: arrResult['rain']
 
                 }])
@@ -1689,7 +1981,7 @@ var todayFormatted = today.toLocaleDateString('en-US', options);
                 });
 
                 chartLatestRain.updateSeries([{
-                    name: 'Curah Hujan (mm)',
+                    name: 'Curah Hujan (ml)',
                     data: arrResult['latestRainIntensity']
 
                 }])
@@ -1735,7 +2027,7 @@ var todayFormatted = today.toLocaleDateString('en-US', options);
         });
 
         chartCh.updateSeries([{
-            name: 'Curah Hujan (mm)',
+            name: 'Curah Hujan (ml)',
             data: []
         }]);
 
@@ -1746,7 +2038,7 @@ var todayFormatted = today.toLocaleDateString('en-US', options);
         });
 
         chartLatestRain.updateSeries([{
-            name: 'Curah Hujan (mm)',
+            name: 'Curah Hujan (ml)',
             data: []
         }]);
                 }
