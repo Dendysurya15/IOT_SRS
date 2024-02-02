@@ -93,7 +93,59 @@
 
     }
 
+    #titleCuaca {
+        font-size: 23px;
+    }
 
+    #tempReal {
+        font-size: 50px;
+    }
+
+    #celToFah {
+        font-size: 35px;
+    }
+
+    #celToRea {
+        font-size: 35px;
+    }
+
+    #tdHujan img {
+        width: 70px;
+
+    }
+
+    #tdUV img {
+        width: 70px;
+    }
+
+    #tdArahAngin img {
+        width: 70px;
+    }
+
+    #informationTitle {
+        font-size: 17px;
+    }
+
+    #cuacaTitle {
+        font-size: 23px;
+    }
+
+    #lastIntensityRain {
+        font-size: 45px;
+    }
+
+    #AverageRainRateTitle {
+        font-size: 11px;
+    }
+
+    #lastRainDateFormat {
+        font-size: 20px;
+    }
+
+    #avgLatestRain {
+        font-size: 15px;
+        margin-bottom: -5px;
+    }
 
     @media (min-width: 1200px) and (max-width: 1300px) {
         #titleCuaca {
