@@ -875,74 +875,7 @@
 
             <h4>Forecast Perkiraan Cuaca dalam 5 hari</h4>
 
-            <div class="row">
-                @foreach ($forecasting as $key => $item)
-
-                <div class="col-md">
-                    <div class="card card-light selectCard">
-                        <div class="card-header">
-                            <div class="card-title" id="{{$key}}">{{$key}}</div>
-                        </div>
-                        <div class="card-body">
-                            <div class="row no-gutters align-items-center">
-                                <div class="col mr-2">
-                                    <div class="h5 mb-0 font-weight-bold text-gray-800" id="hum">
-                                        <div class="mb-2">
-                                            <i class="fa-solid fa-water fa-fw" style="color: #183153"></i>
-                                            {{
-                                            $item['rain'] != 0 ? $item['rain'] : '-'
-                                            }}
-                                            <span id="rain_{{$key}}"></span>
-                                            ml
-                                        </div>
-                                        <div class="mb-2">
-                                            <i class="fa-solid fa-temperature-three-quarters fa-fw"
-                                                style="color: #183153"></i>
-                                            <span id="max_temp_{{$key}}"></span>
-                                            {{
-                                            $item['max_temp'] != 0 ? $item['max_temp'] : '-'
-                                            }}
-                                            /
-                                            <span id="min_temp_{{$key}}"></span>
-                                            {{
-                                            $item['min_temp'] != 0 ? $item['min_temp'] : '-'
-                                            }}
-                                            ºC
-                                        </div>
-                                        <i class="fa-solid fa-cloud-showers-heavy fa-fw" style="color: #183153"></i>
-                                        {{
-                                        $item['rain_hours'] != 0 ? $item['rain_hours'] : '-'
-                                        }}
-                                        <span id="rain_hours_{{$key}}"></span>
-                                        Jam
-                                    </div>
-                                </div>
-                                <div class="col-auto">
-
-                                    {{-- <img src="{{ asset('img/sun.png') }}" alt="Sunny Day Image" style=""
-                                        class="img-fluid"> --}}
-                                    <img src="{{ asset('img/'.$item['icon']) }}" style="width: 70px;"
-                                        alt="Sunny Day Image">
-                                    {{-- @php
-
-                                    $iconPred = 'fa-solid fa-'.$item['icon']. ' fa-2x';
-                                    @endphp --}}
-                                    {{-- <span id="icon_{{$key}}"></span> --}}
-                                    {{-- <i class="{{$iconPred}}" style="color: #183153"></i> --}}
-                                    {{-- @if ($key == 0)
-                                    <br>
-                                    <i id="s_hum_in1" class="fa-solid fa-droplet"></i>
-                                    {{
-                                    $item['hum_real'] != 0 ? $item['hum_real'] : '-'
-                                    }} %
-                                    @endif --}}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                @endforeach
-            </div>
+            <div id="forecastContainer" class="row"></div>
             {{-- <div>
                 <div class="row">
                     <div class="col-md">
@@ -1843,6 +1776,57 @@ var todayFormatted = today.toLocaleDateString('en-US', options);
                 var list_loc_update = arrResult['last_update_each_loc']
             
                 var arrAktual = arrResult['dataAktual']
+
+
+                var arrPagiMalam = arrResult['arrForecastPagiMalam'];
+
+
+                Object.entries(arrPagiMalam).forEach(function([key, item]) {
+                    var card = document.createElement('div');
+                    card.className = 'col-md';
+                    
+                    var cardInner = `
+                        <div class="card card-light selectCard">
+                            <div class="card-header">
+                                <div class="card-title" id="${key}">${key}</div>
+                            </div>
+                            <div class="card-body">
+                                <div class="row no-gutters align-items-center">
+                                    <div class="col mr-2">
+                                        <div class="h5 mb-0 font-weight-bold text-gray-800" id="hum">
+                                            <div class="mb-2">
+                                                <i class="fa-solid fa-water fa-fw" style="color: #183153"></i>
+                                                ${item.rain !== 0 ? item.rain : '-'}
+                                                <span id="rain_${key}"></span>
+                                                ml
+                                            </div>
+                                            <div class="mb-2">
+                                                <i class="fa-solid fa-temperature-three-quarters fa-fw" style="color: #183153"></i>
+                                                <span id="max_temp_${key}"></span>
+                                                ${item.max_temp !== 0 ? item.max_temp : '-'}
+                                                /
+                                                <span id="min_temp_${key}"></span>
+                                                ${item.min_temp !== 0 ? item.min_temp : '-'}
+                                                ºC
+                                            </div>
+                                            <i class="fa-solid fa-cloud-showers-heavy fa-fw" style="color: #183153"></i>
+                                            ${item.rain_hours !== 0 ? item.rain_hours : '-'}
+                                            <span id="rain_hours_${key}"></span>
+                                            Jam
+                                        </div>
+                                    </div>
+                                    <div class="col-auto">
+                                        <img src="${item.icon !== '' ? 'img/' + item.icon : 'img/placeholder.png'}" style="width: 70px;" alt="Weather Icon">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+
+                    card.innerHTML = cardInner;
+                    forecastContainer.appendChild(card);
+                    
+                });
 
                 // arrForecastPagiMalam.forEach(function (forecast, key) {
                 //     // Update your HTML elements using forecast data

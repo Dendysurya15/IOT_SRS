@@ -1580,6 +1580,111 @@ class MasterController extends Controller
             ->where('weather_station_list.id', '!=', $id_loc)
             ->get();
 
+        $queryPredDetail =  DB::table('weather_station_list')
+            ->join('db_aws_bke', 'weather_station_list.id', '=', 'db_aws_bke.idws')
+            ->select('db_aws_bke.*', 'weather_station_list.rain_cal as rain_cal', 'weather_station_list.loc as loc', DB::raw("DATE_FORMAT(db_aws_bke.datetime,'%d-%m-%Y') as hari"))
+            ->whereBetween('db_aws_bke.datetime', [$from, $to])
+            ->where('idws', $id_loc)
+            ->get()
+            ->groupBy('hari');
+
+        $arrPagiMalam = array();
+        $arrPred = array();
+        foreach ($queryPredDetail as $key => $value) {
+            $jamConvert = Carbon::parse($key)->format('D d');
+
+            $inc = 1;
+            $sum_rain = 0;
+            $sum_hoursofrain = 0;
+            foreach ($value as $key2 => $data) {
+                $jam = Carbon::parse($data->datetime)->format('H:i:s');
+
+
+                $sum_rain += $data->accu_rf_forecast;
+                $sum_hoursofrain += $data->accu_hours_of_rain;
+
+                if ($data->accu_rf_forecast >= 0 && $data->accu_rf_forecast < 0.5) {
+                    $icon = 'cloud-sun';
+                    $title = 'Cerah Berawan';
+                } else if ($data->accu_rf_forecast >= 0.5 && $data->accu_rf_forecast < 20) {
+                    $icon = 'cloud-rain';
+                    $title = 'Hujan Ringan';
+                } else if ($data->accu_rf_forecast >= 20 && $data->accu_rf_forecast < 50) {
+                    $icon = 'cloud-rain';
+                    $title = 'Hujan Sedang';
+                } else if ($data->accu_rf_forecast >= 50 && $data->accu_rf_forecast < 100) {
+                    $icon = 'cloud-showers-heavy';
+                    $title = 'Hujan Lebat';
+                } else if ($data->accu_rf_forecast >= 100 && $data->accu_rf_forecast < 150) {
+                    $icon = 'cloud-showers-water';
+                    $title = 'Hujan Sangat Lebat';
+                } else {
+                    $icon = 'cloud-showers-water';
+                    $title = 'Hujan Ekstrem';
+                }
+
+                if ($jam == '07:00:00') {
+                    $directions = array('N', 'NNE', 'NE', 'ENE', 'E', 'ESE', 'SE', 'SSE', 'S', 'SSW', 'SW', 'WSW', 'W', 'WNW', 'NW', 'NNW', 'N');
+                    // $dir = $directions[round($data->accu_windir_forecast / 22.5)];
+                    if ($data->accu_windir_forecast != '' || $data->accu_windir_forecast != 0) {
+                        $dir = $data->accu_windir_forecast;
+                    } else {
+                        $dir = $directions[round($data->accu_windir_forecast / 22.5)];
+                    }
+                    $arrPagiMalam[$jamConvert]['Pagi']['temp'] = $data->accu_temp_forecast ?: 0;
+                    $arrPagiMalam[$jamConvert]['Pagi']['ws'] = $data->accu_ws_forecast;
+                    $arrPagiMalam[$jamConvert]['Pagi']['winddir'] = $dir;
+                    $arrPagiMalam[$jamConvert]['Pagi']['rain'] = round($data->accu_rf_forecast, 2);
+                    $arrPagiMalam[$jamConvert]['Pagi']['hoursOfRain'] = $data->accu_hours_of_rain ?: 0;
+                    $arrPagiMalam[$jamConvert]['Pagi']['rain_probability'] = $data->accu_rain_probability ?: 0;
+                    $arrPagiMalam[$jamConvert]['Pagi']['icon'] = $icon;
+                    $arrPagiMalam[$jamConvert]['Pagi']['title'] = $title;
+                    $arrPagiMalam[$jamConvert]['Pagi']['waktu'] = 'Pagi';
+                    $arrPagiMalam[$jamConvert]['Pagi']['jam'] = '00:00 - 12:00';
+                    $arrPred[$jamConvert]['max_temp'] = $data->accu_temp_forecast;
+                } else if ($jam == '19:00:00') {
+                    $directions = array('N', 'NNE', 'NE', 'ENE', 'E', 'ESE', 'SE', 'SSE', 'S', 'SSW', 'SW', 'WSW', 'W', 'WNW', 'NW', 'NNW', 'N');
+                    // $dir = $directions[round($data->accu_windir_forecast / 22.5)];
+                    if ($data->accu_windir_forecast != '' || $data->accu_windir_forecast != 0) {
+                        $dir = $data->accu_windir_forecast;
+                    } else {
+                        $dir = $directions[round($data->accu_windir_forecast / 22.5)];
+                    }
+                    $arrPagiMalam[$jamConvert]['Malam']['temp'] =  $data->accu_temp_forecast ?: 0;
+                    $arrPagiMalam[$jamConvert]['Malam']['ws'] = $data->accu_ws_forecast;
+                    $arrPagiMalam[$jamConvert]['Malam']['winddir'] = $dir;
+                    $arrPagiMalam[$jamConvert]['Malam']['rain'] = round($data->accu_rf_forecast, 2);
+                    $arrPagiMalam[$jamConvert]['Malam']['hoursOfRain'] = $data->accu_hours_of_rain ?: 0;
+                    $arrPagiMalam[$jamConvert]['Malam']['rain_probability'] = $data->accu_rain_probability ?: 0;
+                    $arrPagiMalam[$jamConvert]['Malam']['icon'] = $icon;
+                    $arrPagiMalam[$jamConvert]['Malam']['title'] = $title;
+                    $arrPagiMalam[$jamConvert]['Malam']['waktu'] = 'Malam';
+                    $arrPagiMalam[$jamConvert]['Malam']['jam'] = '12:00 - 23:59';
+                    $arrPred[$jamConvert]['min_temp'] = $data->accu_temp_forecast;
+                }
+            }
+
+
+
+
+
+            $sum_rain = round($sum_rain, 2);
+
+
+            if ($sum_rain > 0) {
+                $icon = 'rain.png';
+                $title = 'Cerah Berawan';
+            } else {
+                $icon = 'icons8-sun-behind-small-cloud-96.png';
+                $title = 'Hujan Ekstrem';
+            }
+            $arrPred[$jamConvert]['rain_hours'] = $sum_hoursofrain;
+            $arrPred[$jamConvert]['rain'] = round($sum_rain, 2);
+            $arrPred[$jamConvert]['icon'] = $icon;
+            $arrPred[$jamConvert]['title'] = $title;
+            $inc++;
+        }
+
 
         $last_update_each_device = [];
         foreach ($listLocActive as $key => $value) {
@@ -1813,6 +1918,7 @@ class MasterController extends Controller
 
         $arrData = array();
         $arrData['dataAktual'] = $sel_aws;
+        $arrData['arrForecastPagiMalam'] = $arrPred;
         $arrData['last_update_each_loc'] = $last_update_each_device;
         $arrData['keydata'] = $keydata;
         $arrData['valdata'] = $valdata;
