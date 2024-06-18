@@ -65,6 +65,8 @@ Route::middleware('checksession')->group(function () {
 
     Route::get('/dashboard', [HomeController::class, 'index'])->name('dashboard');
     Route::post('gettabelaws', [MasterController::class, 'gettabelaws'])->name('gettabelaws');
+    Route::get('/get-afdlist', [MasterController::class, 'getafdlist']);
+    Route::get('/get-datacurahhujan', [MasterController::class, 'datacurahhujan']);
 });
 
 Route::get('/', [LoginController::class, 'index'])->name('login');

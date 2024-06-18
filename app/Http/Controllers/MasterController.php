@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Carbon\Carbon;
 use Carbon\CarbonPeriod;
 use DateTime;
+use Facade\Ignition\Tabs\Tab;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
@@ -1967,10 +1968,56 @@ class MasterController extends Controller
             ->where('flags', '1')
             ->pluck('loc');
 
+        $estate = DB::connection('mysql3')->table('estate')
+            ->select('*')
+            ->where('emp', '!=', 1)
+            ->get();
+
+        $estate = json_decode($estate, true);
+        // dd($estate);
+
         $arrJam = ['00:00', '01:00', '02:00', '03:00', '04:00', '05:00', '06:00', '07:00', '08:00', '09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00'];
-        return view('weather_station/grafik', ['listStation' => $listLoc, 'arrJam' => $arrJam]);
+        return view('weather_station/grafik', ['listStation' => $listLoc, 'arrJam' => $arrJam, 'estate' => $estate]);
     }
 
+    public function getafdlist(Request $request)
+    {
+        $estateId = DB::connection('mysql3')->table('afdeling')
+            ->select('*')
+            ->where('estate', $request->input('estate_id'))
+            ->get();
+
+        return response()->json($estateId);
+    }
+    public function datacurahhujan(Request $request)
+    {
+        $estate = $request->input('estate');
+        $afd = $request->input('afd');
+        $date = $request->input('date');
+
+        $startDate = Carbon::parse($date)->subDays(30)->startOfDay();
+        $endDate = Carbon::parse($date)->endOfDay();
+
+        // Query the database
+        $query = DB::table('curah_hujan_bot')
+            ->select('*')
+            ->where('est_id', $estate)
+            ->where('afd_id', $afd)
+            ->whereBetween('date', [$startDate, $endDate])
+            ->get();
+        $query = json_decode($query, true);
+        $category = [];
+        $curahhujan_val = [];
+        foreach ($query as $key => $value) {
+            $category[] = Carbon::parse($value['Date'])->format('d-M');
+            $curahhujan_val[] = $value['CH'];
+        }
+        $arrData = array();
+        $arrData['category'] = $category;
+        $arrData['curahhujan_val'] = $curahhujan_val;
+        echo json_encode($arrData);
+        exit;
+    }
 
     public static function get_data_24hour(Request $request)
     {

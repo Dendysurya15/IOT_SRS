@@ -109,7 +109,49 @@
         </div>
       </div> --}}
     </div>
+    <div class="container-fluid">
+      <div class="card p-4">
+        <div class="row">
+          <div class="col-8">
+            <div class="d-flex justify-content-between align-items-center">
+              <h4 class="mb-0">Filter Grafik</h4>
 
+            </div>
+            <p style="color: grey">Pilih filter data yang akan ditampilkan dalam 30 hari terakhir, adapun default parameter yaitu <i>Curah
+                Hujan</i></p>
+            <div class="row">
+              <div class="col-2">
+                <select name="" id="estate" class="form-control" onchange="getAfdeling()">
+                  @foreach($estate as $key => $items)
+                  <option value="{{ $items['id'] }}">{{ $items['nama'] }}</option>
+                  @endforeach
+                </select>
+              </div>
+              <div class="col-2">
+                <select name="" id="afdeling" class="form-control">
+                </select>
+              </div>
+              <div class="col-2">
+                {{csrf_field()}}
+                <input type="date" class="form-control" name="tgl" id="tanggalaws" onchange="getdata()">
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-12">
+            <div class="card mb-3">
+              <div class="card-header bg-success">
+                <h4 class="card-title"><i class="fas fa-clock"></i> Grafik <span id="paramsSelected"></span> Selama 30 Hari Terakhir
+                </h4>
+              </div>
+              <div class="card-body">
+
+                <div id="chart_curah"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
 
   </section>
   <!-- /.content -->
@@ -133,18 +175,18 @@
 <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
 <script type="text/javascript">
   function handleAjaxRequest(selectedValue, paramsValue, currentDate) {
-    console.log(selectedValue, paramsValue, currentDate)
-$.ajax({
 
-    
-    url: '{{ route("get_data_24hour") }}',
-    type: 'GET',
-    data: {
+    $.ajax({
+
+
+      url: '{{ route("get_data_24hour") }}',
+      type: 'GET',
+      data: {
         loc: selectedValue,
-        params : paramsValue,
+        params: paramsValue,
         tgl: currentDate
-    },
-    success: function(data) {
+      },
+      success: function(data) {
 
         arrResult = JSON.parse(data)
 
@@ -153,85 +195,215 @@ $.ajax({
         var paramsSelect = arrResult['params']
 
 
-        
+
         var iconElement = document.getElementById('paramsSelected');
         iconElement.textContent = paramsSelect;
-        
+
         chart24hour.updateOptions({
-                    xaxis: {
-                        categories: arrJam
-                    }
-                });
+          xaxis: {
+            categories: arrJam
+          }
+        });
 
 
         chart24hour.updateSeries([{
-            name: paramsSelect,
-            data: arrData
+          name: paramsSelect,
+          data: arrData
 
         }])
-     
-    },
-    error: function(xhr, status, error) {
+
+      },
+      error: function(xhr, status, error) {
         console.error(error);
+      }
+    });
+  }
+
+  var options = {
+
+    series: [{
+      name: '',
+      data: ''
+    }],
+    chart: {
+      background: '#ffffff',
+      height: 350,
+      type: 'area'
+    },
+
+
+    colors: [
+      '#6897bb',
+    ],
+
+    stroke: {
+      curve: 'smooth'
+    },
+    xaxis: {
+      type: 'string',
+      categories: ''
     }
-});
-}
+  };
+
+  var chart24hour = new ApexCharts(document.querySelector("#id_chart_24_hour"), options);
+  chart24hour.render();
+
+  var options2 = {
+    series: [{
+      name: '',
+      data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    }],
+    chart: {
+      background: '#ffffff',
+      height: 350,
+      type: 'bar'
+    },
+    plotOptions: {
+      bar: {
+        distributed: true
+      }
+    },
+    colors: [
+      '#00FF00',
+      '#00FF00',
+      '#00FF00',
+      '#00FF00',
+      '#3063EC',
+      '#3063EC',
+      '#3063EC',
+      '#3063EC',
+      '#FF8D1A',
+      '#FF8D1A',
+      '#FF8D1A',
+      '#FF8D1A',
+      '#9208FD'
+    ],
+    stroke: {
+      curve: 'smooth'
+    },
+    xaxis: {
+      labels: {
+        rotate: -50,
+        rotateAlways: true,
+      },
+      type: '',
+      categories: ['test']
+    }
+  };
+  var chart30days = new ApexCharts(document.querySelector("#chart_curah"), options2);
+  chart30days.render();
 
 
+  function getAfdeling() {
+    var estateId = $('#estate').val();
 
-var options = {
+    // AJAX request to get afdeling options
+    $.ajax({
+      url: '/get-afdlist',
+      type: 'GET',
+      data: {
+        estate_id: estateId
+      },
+      success: function(response) {
+        var afdelingSelect = $('#afdeling');
+        afdelingSelect.empty();
 
-series: [{
-    name:'',
-    data: ''
-}],
-chart: {
-    background: '#ffffff',
-    height: 350,
-    type: 'area'
-},
+        response.forEach(function(item) {
+          var option = $('<option></option>').val(item.id).text(item.nama);
+          afdelingSelect.append(option);
+        });
 
+        // Fetch data based on the first afdeling option if available
+        if (response.length > 0) {
+          afdelingSelect.val(response[0].id);
+          getdata(); // Call getdata after afdeling options are populated
+        }
+      },
+      error: function(xhr) {
+        console.error(xhr.responseText);
+      }
+    });
+  }
 
-colors: [
-    '#6897bb',
-],
+  function getdata() {
+    var estate = $('#estate').val();
+    var afd = $('#afdeling').val();
+    var date = $('#tanggalaws').val();
+    // console.log(afd);
+    // Only make the AJAX request if afdeling is not null
+    if (afd) {
+      // AJAX request to get data
+      $.ajax({
+        url: '/get-datacurahhujan',
+        type: 'GET',
+        data: {
+          estate: estate,
+          afd: afd,
+          date: date
+        },
+        success: function(result) {
+          var parseResult = JSON.parse(result)
+          var category = parseResult['category']
+          var curahhujan_val = parseResult['curahhujan_val']
 
-stroke: {
-    curve: 'smooth'
-},
-xaxis: {
-    type: 'string',
-    categories: ''
-}
-};
+          chart30days.updateSeries([{
+            name: 'Curah Hujan',
+            data: curahhujan_val
+          }]);
 
-var chart24hour = new ApexCharts(document.querySelector("#id_chart_24_hour"), options);
-    chart24hour.render();
+          // If ktg is an array, you can use it for x-axis categories
+          chart30days.updateOptions({
+            xaxis: {
+              categories: category,
+              markers: {
+                size: 0,
+              }
+            },
+
+          });
+
+        },
+        error: function(xhr) {
+          console.error(xhr.responseText);
+        }
+      });
+    }
+  }
 
 
   $(document).ready(function() {
     var defaultSelectedLocValue = $('#lokasiDevice option:first').val();
     var defaultSelectedParamsValue = $('#params option:first').val();
     var currentDate = new Date().toISOString().split('T')[0];
-    
+
     $('#inputDate').val(currentDate);
     handleAjaxRequest(defaultSelectedLocValue, defaultSelectedParamsValue, currentDate);
 
     $('#lokasiDevice').on('change', function() {
-            var selectedValue = $(this).val();
-            handleAjaxRequest(selectedValue,defaultSelectedParamsValue, currentDate);
-        });
+      var selectedValue = $(this).val();
+      handleAjaxRequest(selectedValue, defaultSelectedParamsValue, currentDate);
+    });
 
-        $('#params').on('change', function() {
-            currentParams = $(this).val(); // Update currentDate when the date changes
+    $('#params').on('change', function() {
+      currentParams = $(this).val(); // Update currentDate when the date changes
 
-            handleAjaxRequest($('#lokasiDevice').val(), currentParams, currentDate);
-        });
+      handleAjaxRequest($('#lokasiDevice').val(), currentParams, currentDate);
+    });
 
-        $('#inputDate').on('change', function() {
-          currentDate = $(this).val(); 
+    $('#inputDate').on('change', function() {
+      currentDate = $(this).val();
 
-          handleAjaxRequest($('#lokasiDevice').val(), $('#params').val(), currentDate);
-        });
+      handleAjaxRequest($('#lokasiDevice').val(), $('#params').val(), currentDate);
+    });
+    var dateInput = $('#tanggalaws');
+    if (!dateInput.val()) {
+      var today = new Date().toISOString().split('T')[0];
+      dateInput.val(today);
+    }
+
+    // Fetch afdeling options on page load
+    getAfdeling();
+
+
   })
 </script>
