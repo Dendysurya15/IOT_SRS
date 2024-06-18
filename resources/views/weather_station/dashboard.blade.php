@@ -680,23 +680,17 @@
                                                 <table class="table" style="">
                                                     <tr>
                                                         <td style="height: 80px;border-top:1px solid white" colspan="2">
-                                                            <div class="col-12" id="titleCuaca"
-                                                                style="font-weight:600;border-bottom:1px solid white;">
+                                                            <div class="col-12" id="titleCuaca" style="font-weight:600;border-bottom:1px solid white;">
                                                                 -
                                                             </div>
-                                                            <div class="col-12"
-                                                                style="font-weight: bold;margin-top:-5px;margin-bottom:-15px"
-                                                                id="tempReal">
+                                                            <div class="col-12" style="font-weight: bold;margin-top:-5px;margin-bottom:-15px" id="tempReal">
                                                                 -
                                                             </div>
                                                         </td>
                                                     </tr>
                                                     <tr class="text-center">
-                                                        <td style="height: 20px;border-right:1px solid #E5E4E2;border-top:1px solid white;color:#fc9d18"
-                                                            class="align-middle" id="celToFah">-</td>
-                                                        <td class="align-middle"
-                                                            style="border-top:1px solid white;color:#79d5fc"
-                                                            id="celToRea">-
+                                                        <td style="height: 20px;border-right:1px solid #E5E4E2;border-top:1px solid white;color:#fc9d18" class="align-middle" id="celToFah">-</td>
+                                                        <td class="align-middle" style="border-top:1px solid white;color:#79d5fc" id="celToRea">-
                                                         </td>
                                                     </tr>
                                                 </table>
@@ -705,15 +699,12 @@
 
                                         <table class="table">
                                             <tr>
-                                                <td id="tdUV"
-                                                    style=" height: 70px;border:1px solid white;border-right:1px solid #E5E4E2"
-                                                    class="align-middle">
+                                                <td id="tdUV" style=" height: 70px;border:1px solid white;border-right:1px solid #E5E4E2" class="align-middle">
 
 
                                                     <div class="d-flex justify-content-center align-items-center">
                                                         <div class="text-center">
-                                                            <img src="{{ asset('img/sun.png') }}" alt="Sunny Day Image"
-                                                                style="" class="img-fluid">
+                                                            <img src="{{ asset('img/sun.png') }}" alt="Sunny Day Image" style="" class="img-fluid">
                                                         </div>
                                                         <div id="divUv">
                                                             <div class="text-left" style="font-weight: 500" id="uvReal">
@@ -724,13 +715,10 @@
                                                     </div>
 
                                                 </td>
-                                                <td id="tdKelembaban"
-                                                    style=" height: 70px;border:1px solid white;border-right:1px solid white"
-                                                    class="align-middle">
+                                                <td id="tdKelembaban" style=" height: 70px;border:1px solid white;border-right:1px solid white" class="align-middle">
                                                     <div class="d-flex justify-content-center align-items-center">
                                                         <div class="text-center">
-                                                            <img src="{{ asset('img/humidity.png') }}"
-                                                                alt="Sunny Day Image" style="" class="img-fluid">
+                                                            <img src="{{ asset('img/humidity.png') }}" alt="Sunny Day Image" style="" class="img-fluid">
                                                         </div>
                                                         <div id="divKelembaban">
                                                             <div class="text-left" id="humReal">-</div>
@@ -741,13 +729,10 @@
                                                 </td>
                                             </tr>
                                             <tr>
-                                                <td id="tdHujan"
-                                                    style=" height: 70px; border:1px solid white;border-right:1px solid #E5E4E2"
-                                                    class="align-middle">
+                                                <td id="tdHujan" style=" height: 70px; border:1px solid white;border-right:1px solid #E5E4E2" class="align-middle">
                                                     <div class="d-flex justify-content-center align-items-center">
                                                         <div class="text-center">
-                                                            <img src="{{ asset('img/rain.png') }}" alt="Sunny Day Image"
-                                                                class="img-fluid">
+                                                            <img src="{{ asset('img/rain.png') }}" alt="Sunny Day Image" class="img-fluid">
                                                         </div>
                                                         <div id="divHujan">
                                                             <div class="text-left" id="chReal">-</div>
@@ -756,13 +741,10 @@
                                                         </div>
                                                     </div>
                                                 </td>
-                                                <td id="tdKecAngin"
-                                                    style=" height: 70px;border:1px solid white;border-right:1px solid white"
-                                                    class="align-middle">
+                                                <td id="tdKecAngin" style=" height: 70px;border:1px solid white;border-right:1px solid white" class="align-middle">
                                                     <div class="d-flex justify-content-center align-items-center">
                                                         <div class="text-center">
-                                                            <img src="{{ asset('img/wind_speed.png') }}"
-                                                                alt="Sunny Day Image" class="img-fluid">
+                                                            <img src="{{ asset('img/wind_speed.png') }}" alt="Sunny Day Image" class="img-fluid">
                                                         </div>
                                                         <div id="divKecAngin">
                                                             <div class="text-left" id="wsReal">-</div>
@@ -776,13 +758,11 @@
                                                 <td id="tdArahAngin" style="height: 70px;" colspan="2">
                                                     <div class="d-flex justify-content-center align-items-center">
                                                         <div class="text-center">
-                                                            <img src="{{ asset('img/winddir.png') }}"
-                                                                alt="Sunny Day Image" class="img-fluid">
+                                                            <img src="{{ asset('img/winddir.png') }}" alt="Sunny Day Image" class="img-fluid">
                                                         </div>
                                                         <div id="divArahAngin">
                                                             <div class="text-left" id="wdReal">-</div>
-                                                            <div class="text-left"
-                                                                style="color: #B6BBC4;font-size:13px">
+                                                            <div class="text-left" style="color: #B6BBC4;font-size:13px">
                                                                 Arah Angin</div>
                                                         </div>
                                                     </div>
@@ -791,10 +771,8 @@
                                         </table>
                                     </div>
                                 </div>
-                                <div class="col-1 d-flex justify-content-center align-items-center"
-                                    style="height: 550px; position: relative;">
-                                    <a onclick="showCard('cardSecond')" id="buttonRight"
-                                        class="d-flex justify-content-center align-items-center">
+                                <div class="col-1 d-flex justify-content-center align-items-center" style="height: 550px; position: relative;">
+                                    <a onclick="showCard('cardSecond')" id="buttonRight" class="d-flex justify-content-center align-items-center">
                                         <img src="{{ asset('img/right-arrow.png') }}" alt="" class="fixed-size-img">
                                     </a>
                                 </div>
@@ -806,11 +784,9 @@
 
                         <div id="cardSecond" class="card" style="border-radius: 20px;">
                             <div class="row">
-                                <div class="col-1 d-flex justify-content-center align-items-center"
-                                    style="height:550px; position: relative;">
+                                <div class="col-1 d-flex justify-content-center align-items-center" style="height:550px; position: relative;">
 
-                                    <a onclick="showCard('cardMain')" id="buttonLeft"
-                                        class="d-flex justify-content-center align-items-center">
+                                    <a onclick="showCard('cardMain')" id="buttonLeft" class="d-flex justify-content-center align-items-center">
                                         <img src="{{ asset('img/left-arrow.png') }}" alt="" class="fixed-size-img">
                                     </a>
 
@@ -822,24 +798,19 @@
                                             Weather Report</div>
                                         <div class="row align-items-center mb-2">
                                             <div class="col-4 text-center" id="iconLatestRain">
-                                                <img src="{{ asset('img/rain-heavy.png') }}" alt="Sunny Day Image"
-                                                    class="img-fluid">
+                                                <img src="{{ asset('img/rain-heavy.png') }}" alt="Sunny Day Image" class="img-fluid">
                                             </div>
                                             <div class="col-7">
                                                 <table class="table">
                                                     <tr>
                                                         <td style="height: 80px;border-top:1px solid white" colspan="2">
-                                                            <div class="col-12" id="cuacaTitle"
-                                                                style="font-weight:600;margin-bottom:-5px;border-bottom:1px solid white;">
+                                                            <div class="col-12" id="cuacaTitle" style="font-weight:600;margin-bottom:-5px;border-bottom:1px solid white;">
                                                                 Hujan
                                                             </div>
-                                                            <div class="col-12" id="lastIntensityRain"
-                                                                style="font-weight: bold;margin-bottom:-5px;color:#fc9d18">
+                                                            <div class="col-12" id="lastIntensityRain" style="font-weight: bold;margin-bottom:-5px;color:#fc9d18">
                                                                 -
                                                             </div>
-                                                            <div class="col-12"
-                                                                style="font-weight: bold;margin-bottom:-15px"
-                                                                id="lastRainDateFormat">
+                                                            <div class="col-12" style="font-weight: bold;margin-bottom:-15px" id="lastRainDateFormat">
                                                                 -
                                                             </div>
                                                         </td>
@@ -869,11 +840,9 @@
 
                     <div class="col-12">
                         <div class="list-group">
-                            <button type="button"
-                                class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                            <button type="button" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
                                 Lokasi
-                                <span class="ml-auto"> <img src="{{ asset('img/location.png') }}" alt="Sunny Day Image"
-                                        style="height: 25px" class="img-fluid"></span>
+                                <span class="ml-auto"> <img src="{{ asset('img/location.png') }}" alt="Sunny Day Image" style="height: 25px" class="img-fluid"></span>
                             </button>
                         </div>
                         <br>
@@ -935,293 +904,273 @@
                             <div class="card-header">
                                 <div class="card-title">
                                     <span id="div_hari_1"> {{$arr5days['hari_ke_1']}}</span>
-                                </div>
-                            </div>
-                            <div
-                                style="background:white;border-radius:5px;height:340px;box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;">
+        </div>
+</div>
+<div style="background:white;border-radius:5px;height:340px;box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;">
 
 
-                                <div style="height: 170px;">
-                                    <div id="textbox">
-                                        <p class="alignleft" style="float:left;margin-top:15px;margin-left:25px">
-                                            <span style="font-size:13px">
-                                                <span id="div_waktu_"></span> (
-                                                <span id="div_jam_"></span> )</span> <br>
-                                            <span class="font-italic" style="color:#6C757D"><span
-                                                    id="div_title_"></span></span>
-                                        </p>
-                                        <p class="alignright" style="float:right;margin-top:25px;margin-right:15px;">
-                                            <span id="div_icon_"></span>
-                                        </p>
-                                    </div>
-                                    <div style="clear: both;"></div>
-                                    <div style="padding:9px;background:#F7F7F7;border-radius:5px">
-                                        <div class="row m-2" style="">
-                                            <div class="col-6" style="">
-                                                <i class="fa-solid fa-water fa-sm fa-fw m-1" style="color:#183153;"></i>
-                                                <span style="font-size:11px"> <span id="div_rain_"></span> mm</span>
-                                            </div>
-                                            <div class="col-6" style="">
-                                                <i class="fa-solid fa-temperature-low fa-sm fa-fw m-1"
-                                                    style="color:#183153;"></i>
-                                                <span style="font-size:11px"> <span id="div_temp_"></span> C</span>
-                                            </div>
-                                        </div>
-                                        <div class="row m-2" style="">
-                                            <div class="col-6" style="">
-                                                <i class="fa-solid fa-cloud-sun-rain fa-sm fa-fw m-1"
-                                                    style="color:#183153;"></i>
-                                                <span style="font-size:11px"> <span id="div_rp_"></span>
-                                                    % </span>
-                                            </div>
-                                            <div class="col-6" style="">
-                                                <i class="fa-solid fa-wind fa-sm fa-fw m-1" style="color:#183153;"></i>
-                                                <span style="font-size:11px"> <span id="div_ws_"></span>m/s</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+    <div style="height: 170px;">
+        <div id="textbox">
+            <p class="alignleft" style="float:left;margin-top:15px;margin-left:25px">
+                <span style="font-size:13px">
+                    <span id="div_waktu_"></span> (
+                    <span id="div_jam_"></span> )</span> <br>
+                <span class="font-italic" style="color:#6C757D"><span id="div_title_"></span></span>
+            </p>
+            <p class="alignright" style="float:right;margin-top:25px;margin-right:15px;">
+                <span id="div_icon_"></span>
+            </p>
+        </div>
+        <div style="clear: both;"></div>
+        <div style="padding:9px;background:#F7F7F7;border-radius:5px">
+            <div class="row m-2" style="">
+                <div class="col-6" style="">
+                    <i class="fa-solid fa-water fa-sm fa-fw m-1" style="color:#183153;"></i>
+                    <span style="font-size:11px"> <span id="div_rain_"></span> mm</span>
+                </div>
+                <div class="col-6" style="">
+                    <i class="fa-solid fa-temperature-low fa-sm fa-fw m-1" style="color:#183153;"></i>
+                    <span style="font-size:11px"> <span id="div_temp_"></span> C</span>
+                </div>
+            </div>
+            <div class="row m-2" style="">
+                <div class="col-6" style="">
+                    <i class="fa-solid fa-cloud-sun-rain fa-sm fa-fw m-1" style="color:#183153;"></i>
+                    <span style="font-size:11px"> <span id="div_rp_"></span>
+                        % </span>
+                </div>
+                <div class="col-6" style="">
+                    <i class="fa-solid fa-wind fa-sm fa-fw m-1" style="color:#183153;"></i>
+                    <span style="font-size:11px"> <span id="div_ws_"></span>m/s</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+</div>
+<div class="col-md">
+    <div class="">
+        <div class="card-header">
+            <div class="card-title">
+                <span id="div_hari_2">{{$arr5days['hari_ke_2']}}</span>
+            </div>
+        </div>
+        <div style="background:white;border-radius:5px;height:340px;box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;">
+
+
+            <div style="height: 170px;">
+                <div id="textbox">
+                    <p class="alignleft" style="float:left;margin-top:15px;margin-left:25px">
+                        <span style="font-size:13px">
+                            <span id="div_waktu_"></span> (
+                            <span id="div_jam_"></span> )</span> <br>
+                        <span class="font-italic" style="color:#6C757D"><span id="div_title_"></span></span>
+                    </p>
+                    <p class="alignright" style="float:right;margin-top:25px;margin-right:15px;">
+                        <span id="div_icon_"></span>
+                    </p>
+                </div>
+                <div style="clear: both;"></div>
+                <div style="padding:9px;background:#F7F7F7;border-radius:5px">
+                    <div class="row m-2" style="">
+                        <div class="col-6" style="">
+                            <i class="fa-solid fa-water fa-sm fa-fw m-1" style="color:#183153;"></i>
+                            <span style="font-size:11px"> <span id="div_rain_"></span> mm</span>
+                        </div>
+                        <div class="col-6" style="">
+                            <i class="fa-solid fa-temperature-low fa-sm fa-fw m-1" style="color:#183153;"></i>
+                            <span style="font-size:11px"> <span id="div_temp_"></span> C</span>
                         </div>
                     </div>
-                    <div class="col-md">
-                        <div class="">
-                            <div class="card-header">
-                                <div class="card-title">
-                                    <span id="div_hari_2">{{$arr5days['hari_ke_2']}}</span>
-                                </div>
-                            </div>
-                            <div
-                                style="background:white;border-radius:5px;height:340px;box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;">
-
-
-                                <div style="height: 170px;">
-                                    <div id="textbox">
-                                        <p class="alignleft" style="float:left;margin-top:15px;margin-left:25px">
-                                            <span style="font-size:13px">
-                                                <span id="div_waktu_"></span> (
-                                                <span id="div_jam_"></span> )</span> <br>
-                                            <span class="font-italic" style="color:#6C757D"><span
-                                                    id="div_title_"></span></span>
-                                        </p>
-                                        <p class="alignright" style="float:right;margin-top:25px;margin-right:15px;">
-                                            <span id="div_icon_"></span>
-                                        </p>
-                                    </div>
-                                    <div style="clear: both;"></div>
-                                    <div style="padding:9px;background:#F7F7F7;border-radius:5px">
-                                        <div class="row m-2" style="">
-                                            <div class="col-6" style="">
-                                                <i class="fa-solid fa-water fa-sm fa-fw m-1" style="color:#183153;"></i>
-                                                <span style="font-size:11px"> <span id="div_rain_"></span> mm</span>
-                                            </div>
-                                            <div class="col-6" style="">
-                                                <i class="fa-solid fa-temperature-low fa-sm fa-fw m-1"
-                                                    style="color:#183153;"></i>
-                                                <span style="font-size:11px"> <span id="div_temp_"></span> C</span>
-                                            </div>
-                                        </div>
-                                        <div class="row m-2" style="">
-                                            <div class="col-6" style="">
-                                                <i class="fa-solid fa-cloud-sun-rain fa-sm fa-fw m-1"
-                                                    style="color:#183153;"></i>
-                                                <span style="font-size:11px"> <span id="div_rp_"></span>
-                                                    % </span>
-                                            </div>
-                                            <div class="col-6" style="">
-                                                <i class="fa-solid fa-wind fa-sm fa-fw m-1" style="color:#183153;"></i>
-                                                <span style="font-size:11px"> <span id="div_ws_"></span>m/s</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                    <div class="row m-2" style="">
+                        <div class="col-6" style="">
+                            <i class="fa-solid fa-cloud-sun-rain fa-sm fa-fw m-1" style="color:#183153;"></i>
+                            <span style="font-size:11px"> <span id="div_rp_"></span>
+                                % </span>
                         </div>
-                    </div>
-                    <div class="col-md">
-                        <div class="">
-                            <div class="card-header">
-                                <div class="card-title">
-                                    <span id="div_hari_3">{{$arr5days['hari_ke_3']}}</span>
-                                </div>
-                            </div>
-                            <div
-                                style="background:white;border-radius:5px;height:340px;box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;">
-
-
-                                <div style="height: 170px;">
-                                    <div id="textbox">
-                                        <p class="alignleft" style="float:left;margin-top:15px;margin-left:25px">
-                                            <span style="font-size:13px">
-                                                <span id="div_waktu_"></span> (
-                                                <span id="div_jam_"></span> )</span> <br>
-                                            <span class="font-italic" style="color:#6C757D"><span
-                                                    id="div_title_"></span></span>
-                                        </p>
-                                        <p class="alignright" style="float:right;margin-top:25px;margin-right:15px;">
-                                            <span id="div_icon_"></span>
-                                        </p>
-                                    </div>
-                                    <div style="clear: both;"></div>
-                                    <div style="padding:9px;background:#F7F7F7;border-radius:5px">
-                                        <div class="row m-2" style="">
-                                            <div class="col-6" style="">
-                                                <i class="fa-solid fa-water fa-sm fa-fw m-1" style="color:#183153;"></i>
-                                                <span style="font-size:11px"> <span id="div_rain_"></span> mm</span>
-                                            </div>
-                                            <div class="col-6" style="">
-                                                <i class="fa-solid fa-temperature-low fa-sm fa-fw m-1"
-                                                    style="color:#183153;"></i>
-                                                <span style="font-size:11px"> <span id="div_temp_"></span> C</span>
-                                            </div>
-                                        </div>
-                                        <div class="row m-2" style="">
-                                            <div class="col-6" style="">
-                                                <i class="fa-solid fa-cloud-sun-rain fa-sm fa-fw m-1"
-                                                    style="color:#183153;"></i>
-                                                <span style="font-size:11px"> <span id="div_rp_"></span>
-                                                    % </span>
-                                            </div>
-                                            <div class="col-6" style="">
-                                                <i class="fa-solid fa-wind fa-sm fa-fw m-1" style="color:#183153;"></i>
-                                                <span style="font-size:11px"> <span id="div_ws_"></span>m/s</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md">
-                        <div class="">
-                            <div class="card-header">
-                                <div class="card-title">
-                                    <span id="div_hari_4">{{$arr5days['hari_ke_4']}}</span>
-                                </div>
-                            </div>
-                            <div
-                                style="background:white;border-radius:5px;height:340px;box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;">
-
-
-                                <div style="height: 170px;">
-                                    <div id="textbox">
-                                        <p class="alignleft" style="float:left;margin-top:15px;margin-left:25px">
-                                            <span style="font-size:13px">
-                                                <span id="div_waktu_"></span> (
-                                                <span id="div_jam_"></span> )</span> <br>
-                                            <span class="font-italic" style="color:#6C757D"><span
-                                                    id="div_title_"></span></span>
-                                        </p>
-                                        <p class="alignright" style="float:right;margin-top:25px;margin-right:15px;">
-                                            <span id="div_icon_"></span>
-                                        </p>
-                                    </div>
-                                    <div style="clear: both;"></div>
-                                    <div style="padding:9px;background:#F7F7F7;border-radius:5px">
-                                        <div class="row m-2" style="">
-                                            <div class="col-6" style="">
-                                                <i class="fa-solid fa-water fa-sm fa-fw m-1" style="color:#183153;"></i>
-                                                <span style="font-size:11px"> <span id="div_rain_"></span> mm</span>
-                                            </div>
-                                            <div class="col-6" style="">
-                                                <i class="fa-solid fa-temperature-low fa-sm fa-fw m-1"
-                                                    style="color:#183153;"></i>
-                                                <span style="font-size:11px"> <span id="div_temp_"></span> C</span>
-                                            </div>
-                                        </div>
-                                        <div class="row m-2" style="">
-                                            <div class="col-6" style="">
-                                                <i class="fa-solid fa-cloud-sun-rain fa-sm fa-fw m-1"
-                                                    style="color:#183153;"></i>
-                                                <span style="font-size:11px"> <span id="div_rp_"></span>
-                                                    % </span>
-                                            </div>
-                                            <div class="col-6" style="">
-                                                <i class="fa-solid fa-wind fa-sm fa-fw m-1" style="color:#183153;"></i>
-                                                <span style="font-size:11px"> <span id="div_ws_"></span>m/s</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md">
-                        <div class="">
-                            <div class="card-header">
-                                <div class="card-title">
-                                    <span id="div_hari_5">{{$arr5days['hari_ke_5']}}</span>
-                                </div>
-                            </div>
-                            <div
-                                style="background:white;border-radius:5px;height:340px;box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;">
-                                <div style="height: 170px;">
-                                    <div id="textbox">
-                                        <p class="alignleft" style="float:left;margin-top:15px;margin-left:25px">
-                                            <span style="font-size:13px">
-                                                <span id="div_waktu_"></span> (
-                                                <span id="div_jam_"></span> )</span> <br>
-                                            <span class="font-italic" style="color:#6C757D"><span
-                                                    id="div_title_"></span></span>
-                                        </p>
-                                        <p class="alignright" style="float:right;margin-top:25px;margin-right:15px;">
-                                            <span id="div_icon_"></span>
-                                        </p>
-                                    </div>
-                                    <div style="clear: both;"></div>
-                                    <div style="padding:9px;background:#F7F7F7;border-radius:5px">
-                                        <div class="row m-2" style="">
-                                            <div class="col-6" style="">
-                                                <i class="fa-solid fa-water fa-sm fa-fw m-1" style="color:#183153;"></i>
-                                                <span style="font-size:11px"> <span id="div_rain_"></span> mm</span>
-                                            </div>
-                                            <div class="col-6" style="">
-                                                <i class="fa-solid fa-temperature-low fa-sm fa-fw m-1"
-                                                    style="color:#183153;"></i>
-                                                <span style="font-size:11px"> <span id="div_temp_"></span> C</span>
-                                            </div>
-                                        </div>
-                                        <div class="row m-2" style="">
-                                            <div class="col-6" style="">
-                                                <i class="fa-solid fa-cloud-sun-rain fa-sm fa-fw m-1"
-                                                    style="color:#183153;"></i>
-                                                <span style="font-size:11px"> <span id="div_rp_"></span>
-                                                    % </span>
-                                            </div>
-                                            <div class="col-6" style="">
-                                                <i class="fa-solid fa-wind fa-sm fa-fw m-1" style="color:#183153;"></i>
-                                                <span style="font-size:11px"> <span id="div_ws_"></span>m/s</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                        <div class="col-6" style="">
+                            <i class="fa-solid fa-wind fa-sm fa-fw m-1" style="color:#183153;"></i>
+                            <span style="font-size:11px"> <span id="div_ws_"></span>m/s</span>
                         </div>
                     </div>
                 </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="col-md">
+    <div class="">
+        <div class="card-header">
+            <div class="card-title">
+                <span id="div_hari_3">{{$arr5days['hari_ke_3']}}</span>
+            </div>
+        </div>
+        <div style="background:white;border-radius:5px;height:340px;box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;">
 
-            </div> --}}
+
+            <div style="height: 170px;">
+                <div id="textbox">
+                    <p class="alignleft" style="float:left;margin-top:15px;margin-left:25px">
+                        <span style="font-size:13px">
+                            <span id="div_waktu_"></span> (
+                            <span id="div_jam_"></span> )</span> <br>
+                        <span class="font-italic" style="color:#6C757D"><span id="div_title_"></span></span>
+                    </p>
+                    <p class="alignright" style="float:right;margin-top:25px;margin-right:15px;">
+                        <span id="div_icon_"></span>
+                    </p>
+                </div>
+                <div style="clear: both;"></div>
+                <div style="padding:9px;background:#F7F7F7;border-radius:5px">
+                    <div class="row m-2" style="">
+                        <div class="col-6" style="">
+                            <i class="fa-solid fa-water fa-sm fa-fw m-1" style="color:#183153;"></i>
+                            <span style="font-size:11px"> <span id="div_rain_"></span> mm</span>
+                        </div>
+                        <div class="col-6" style="">
+                            <i class="fa-solid fa-temperature-low fa-sm fa-fw m-1" style="color:#183153;"></i>
+                            <span style="font-size:11px"> <span id="div_temp_"></span> C</span>
+                        </div>
+                    </div>
+                    <div class="row m-2" style="">
+                        <div class="col-6" style="">
+                            <i class="fa-solid fa-cloud-sun-rain fa-sm fa-fw m-1" style="color:#183153;"></i>
+                            <span style="font-size:11px"> <span id="div_rp_"></span>
+                                % </span>
+                        </div>
+                        <div class="col-6" style="">
+                            <i class="fa-solid fa-wind fa-sm fa-fw m-1" style="color:#183153;"></i>
+                            <span style="font-size:11px"> <span id="div_ws_"></span>m/s</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="col-md">
+    <div class="">
+        <div class="card-header">
+            <div class="card-title">
+                <span id="div_hari_4">{{$arr5days['hari_ke_4']}}</span>
+            </div>
+        </div>
+        <div style="background:white;border-radius:5px;height:340px;box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;">
+
+
+            <div style="height: 170px;">
+                <div id="textbox">
+                    <p class="alignleft" style="float:left;margin-top:15px;margin-left:25px">
+                        <span style="font-size:13px">
+                            <span id="div_waktu_"></span> (
+                            <span id="div_jam_"></span> )</span> <br>
+                        <span class="font-italic" style="color:#6C757D"><span id="div_title_"></span></span>
+                    </p>
+                    <p class="alignright" style="float:right;margin-top:25px;margin-right:15px;">
+                        <span id="div_icon_"></span>
+                    </p>
+                </div>
+                <div style="clear: both;"></div>
+                <div style="padding:9px;background:#F7F7F7;border-radius:5px">
+                    <div class="row m-2" style="">
+                        <div class="col-6" style="">
+                            <i class="fa-solid fa-water fa-sm fa-fw m-1" style="color:#183153;"></i>
+                            <span style="font-size:11px"> <span id="div_rain_"></span> mm</span>
+                        </div>
+                        <div class="col-6" style="">
+                            <i class="fa-solid fa-temperature-low fa-sm fa-fw m-1" style="color:#183153;"></i>
+                            <span style="font-size:11px"> <span id="div_temp_"></span> C</span>
+                        </div>
+                    </div>
+                    <div class="row m-2" style="">
+                        <div class="col-6" style="">
+                            <i class="fa-solid fa-cloud-sun-rain fa-sm fa-fw m-1" style="color:#183153;"></i>
+                            <span style="font-size:11px"> <span id="div_rp_"></span>
+                                % </span>
+                        </div>
+                        <div class="col-6" style="">
+                            <i class="fa-solid fa-wind fa-sm fa-fw m-1" style="color:#183153;"></i>
+                            <span style="font-size:11px"> <span id="div_ws_"></span>m/s</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="col-md">
+    <div class="">
+        <div class="card-header">
+            <div class="card-title">
+                <span id="div_hari_5">{{$arr5days['hari_ke_5']}}</span>
+            </div>
+        </div>
+        <div style="background:white;border-radius:5px;height:340px;box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;">
+            <div style="height: 170px;">
+                <div id="textbox">
+                    <p class="alignleft" style="float:left;margin-top:15px;margin-left:25px">
+                        <span style="font-size:13px">
+                            <span id="div_waktu_"></span> (
+                            <span id="div_jam_"></span> )</span> <br>
+                        <span class="font-italic" style="color:#6C757D"><span id="div_title_"></span></span>
+                    </p>
+                    <p class="alignright" style="float:right;margin-top:25px;margin-right:15px;">
+                        <span id="div_icon_"></span>
+                    </p>
+                </div>
+                <div style="clear: both;"></div>
+                <div style="padding:9px;background:#F7F7F7;border-radius:5px">
+                    <div class="row m-2" style="">
+                        <div class="col-6" style="">
+                            <i class="fa-solid fa-water fa-sm fa-fw m-1" style="color:#183153;"></i>
+                            <span style="font-size:11px"> <span id="div_rain_"></span> mm</span>
+                        </div>
+                        <div class="col-6" style="">
+                            <i class="fa-solid fa-temperature-low fa-sm fa-fw m-1" style="color:#183153;"></i>
+                            <span style="font-size:11px"> <span id="div_temp_"></span> C</span>
+                        </div>
+                    </div>
+                    <div class="row m-2" style="">
+                        <div class="col-6" style="">
+                            <i class="fa-solid fa-cloud-sun-rain fa-sm fa-fw m-1" style="color:#183153;"></i>
+                            <span style="font-size:11px"> <span id="div_rp_"></span>
+                                % </span>
+                        </div>
+                        <div class="col-6" style="">
+                            <i class="fa-solid fa-wind fa-sm fa-fw m-1" style="color:#183153;"></i>
+                            <span style="font-size:11px"> <span id="div_ws_"></span>m/s</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+
+</div> --}}
 
 
 
 
 
 
-            {{-- <div class="float-lg-right">
+{{-- <div class="float-lg-right">
                 <div class="row">
                     <div class="col-8" style="border: 1px solid red;width:300px">
                         <select name="lokasi" id="locList" class="form-control">
                             @foreach($listStation as $loc)
                             <option value="{{ $loc->id }}">{{ $loc->loc }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div class="col-4">
-                        aksdjfklajsdfkjaslk
-                    </div>
-                </div>
-            </div> --}}
-            {{-- <div class="row">
+@endforeach
+</select>
+</div>
+<div class="col-4">
+    aksdjfklajsdfkjaslk
+</div>
+</div>
+</div> --}}
+{{-- <div class="row">
                 <div class="col-lg-12" style="border: 1px solid red">
 
                     <div class="float-lg-right" style="border: 1px solid green">
@@ -1233,7 +1182,7 @@
 
                 </div>
             </div> --}}
-            {{-- <div class="float-lg-right float-md-left">
+{{-- <div class="float-lg-right float-md-left">
 
                 <div class="col-lg-3" style="border: 1px solid red">
                     <p>This content will float right on lg screens and above.</p>
@@ -1243,37 +1192,37 @@
 
 
 
-            {{-- <div class=" col-lg-2 d-flex flex-row-reverse" style="border: 1px solid red">
+{{-- <div class=" col-lg-2 d-flex flex-row-reverse" style="border: 1px solid red">
                 <select name="lokasi" id="locList" class="form-control">
                     @foreach($listStation as $loc)
                     <option value="{{ $loc->id }}">{{ $loc->loc }}</option>
-                    @endforeach
-                </select>
-            </div> --}}
+@endforeach
+</select>
+</div> --}}
 
 
-            {{-- <div class="row">
+{{-- <div class="row">
                 <div class="col-lg-6 mb-3">
                     <div class="row">
 
                         <form class="col-md-6" action="" method="post">
                             {{ csrf_field() }}
-                            <div class="row">
-                                <div class="col-md">
-                                    <select name="lokasi" id="locList" class="form-control">
-                                        @foreach($listStation as $loc)
-                                        <option value="{{ $loc->id }}">{{ $loc->loc }}</option>
-                                        @endforeach
+<div class="row">
+    <div class="col-md">
+        <select name="lokasi" id="locList" class="form-control">
+            @foreach($listStation as $loc)
+            <option value="{{ $loc->id }}">{{ $loc->loc }}</option>
+            @endforeach
 
-                                    </select>
+        </select>
 
 
-                        </form>
-                    </div>
+        </form>
+    </div>
 
-                </div>
-            </div> --}}
-        </div>
+</div>
+</div> --}}
+</div>
 </div>
 {{-- <div class="row" style="border: 1px solid red">
     <!--//Suhu Ruangan Aws 1-->
@@ -1510,14 +1459,14 @@
                     <div class="h5 mb-0 font-weight-bold text-gray-800" id="hum">{{
                         $data[0]['hum_real'] ?? 0
                         }} %
-                    </div>
-                </div>
-                <div class="col-auto">
-                    <i id="s_hum_in1" class="fas fa-thermometer-three-quarters fa-2x"></i>
-                </div>
-            </div>
-        </div>
-    </div>
+</div>
+</div>
+<div class="col-auto">
+    <i id="s_hum_in1" class="fas fa-thermometer-three-quarters fa-2x"></i>
+</div>
+</div>
+</div>
+</div>
 </div>
 <!--Kelembaban Ruangan-->
 
@@ -1625,9 +1574,7 @@
 </div>
 @include('layout.footer')
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.9.4/lottie.min.js"
-    integrity="sha512-ilxj730331yM7NbrJAICVJcRmPFErDqQhXJcn+PLbkXdE031JJbcK87Wt4VbAK+YY6/67L+N8p7KdzGoaRjsTg=="
-    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.9.4/lottie.min.js" integrity="sha512-ilxj730331yM7NbrJAICVJcRmPFErDqQhXJcn+PLbkXdE031JJbcK87Wt4VbAK+YY6/67L+N8p7KdzGoaRjsTg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <!-- jQuery -->
 
 <!-- Bootstrap 4 -->
@@ -1649,10 +1596,10 @@
         var defaultStation = $("#locList option:selected").val();
 
 
-        
+
 
         getDataLoc(defaultStation)
-        
+
     });
 
     $('#locList').change(function() {
@@ -1717,39 +1664,43 @@
 
 
     var today = new Date();
-    var options = { day: 'numeric', month: 'short', year: 'numeric' };
-var todayFormatted = today.toLocaleDateString('en-US', options);
+    var options = {
+        day: 'numeric',
+        month: 'short',
+        year: 'numeric'
+    };
+    var todayFormatted = today.toLocaleDateString('en-US', options);
 
     var options = {
 
         series: [{
-            name:'',
+            name: '',
             data: ''
         }],
-        
+
         chart: {
             background: '#ffffff',
             height: 300,
             type: 'area',
             toolbar: {
-      show: false
-    }
+                show: false
+            }
         },
         dataLabels: {
-        enabled: true // disable data labels
-    },
-    markers: {
-        size: 0 // hide data points
-    },
-         fill: {
-        type: 'gradient',
-        gradient: {
-            shadeIntensity: 0.9, // intensity of the gradient
-            opacityFrom: 0.1,
-            opacityTo: 0.9,
-            stops: [0, 100]
-        }
-    },
+            enabled: true // disable data labels
+        },
+        markers: {
+            size: 0 // hide data points
+        },
+        fill: {
+            type: 'gradient',
+            gradient: {
+                shadeIntensity: 0.9, // intensity of the gradient
+                opacityFrom: 0.1,
+                opacityTo: 0.9,
+                stops: [0, 100]
+            }
+        },
 
 
         colors: [
@@ -1765,21 +1716,21 @@ var todayFormatted = today.toLocaleDateString('en-US', options);
 
         },
         annotations: {
-          xaxis: [{
-            x: '00:00',
-            strokeDashArray: 0,
-            borderColor: '#f44336',
-            label: {
-              borderColor: '#f44336',
-              
-              style: {
-                color: '#fff',
-                background: '#f44336',
-                fontSize: '14px' 
-              },
-              text:todayFormatted,
-            }
-          }]
+            xaxis: [{
+                x: '00:00',
+                strokeDashArray: 0,
+                borderColor: '#f44336',
+                label: {
+                    borderColor: '#f44336',
+
+                    style: {
+                        color: '#fff',
+                        background: '#f44336',
+                        fontSize: '14px'
+                    },
+                    text: todayFormatted,
+                }
+            }]
         },
     };
 
@@ -1793,7 +1744,7 @@ var todayFormatted = today.toLocaleDateString('en-US', options);
     chartLatestRain.render();
     var screenWidth = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
 
-    
+
 
     function getDataLoc(locIndex) {
 
@@ -1840,7 +1791,7 @@ var todayFormatted = today.toLocaleDateString('en-US', options);
                 Object.entries(arrPagiMalam).forEach(function([key, item]) {
                     var card = document.createElement('div');
                     card.className = 'col-xl col-lg-4 col-md-4 col-sm-6';
-                    
+
                     var cardInner = `
                         <div class="card card-light selectCard">
                             <div class="card-header">
@@ -1881,7 +1832,7 @@ var todayFormatted = today.toLocaleDateString('en-US', options);
 
                     card.innerHTML = cardInner;
                     cardRow.appendChild(card);
-                    
+
                 });
 
                 // arrForecastPagiMalam.forEach(function (forecast, key) {
@@ -1892,7 +1843,7 @@ var todayFormatted = today.toLocaleDateString('en-US', options);
                 //     // document.getElementById('div_waktu_' + forecast.waktu + '_' + key).innerText = forecast.waktu;
                 //     // document.getElementById('div_jam_' + forecast.waktu + '_' + key).innerText = forecast.jam;
                 //     // document.getElementById('div_title_' + forecast.waktu + '_' + key).innerText = forecast.title;
-                    
+
                 // });
 
                 // var stationListContainer = document.getElementById('stationListContainer');
@@ -1912,7 +1863,7 @@ var todayFormatted = today.toLocaleDateString('en-US', options);
                 //     // Append the list item to the container
                 //     stationListContainer.appendChild(listItem);
                 // }
-                
+
                 var imageContainer = document.getElementById('imageContainer');
                 var existingImgElement = document.getElementById('weatherImage');
 
@@ -1937,15 +1888,15 @@ var todayFormatted = today.toLocaleDateString('en-US', options);
                     imgElement.src = imageSource;
                     imgElement.alt = 'no image';
                     imgElement.height = 140; // Set the desired height value
-                    imgElement.width = 140; 
+                    imgElement.width = 140;
                     imgElement.classList.add('img-fluid');
                     imageContainer.appendChild(imgElement);
                 }
 
-                
-                hitungCelToFah = ((9 * arrAktual['temp_out'] / 5 ) + 32).toFixed(1)
-                hitungCelToRea = ((4 * arrAktual['temp_out'] / 5 ) + 20).toFixed(1)
-                
+
+                hitungCelToFah = ((9 * arrAktual['temp_out'] / 5) + 32).toFixed(1)
+                hitungCelToRea = ((4 * arrAktual['temp_out'] / 5) + 20).toFixed(1)
+
                 createOrUpdateElement(document.body, 'titleCuaca', arrAktual['titleIcon']);
                 createOrUpdateElement(document.body, 'last_updates', arrAktual['date_format']);
                 createOrUpdateElement(document.body, 'celToFah', (hitungCelToFah + '°F'));
@@ -1964,15 +1915,15 @@ var todayFormatted = today.toLocaleDateString('en-US', options);
                     uvTitle = 'Sangat Tinggi';
                 }
 
-                
+
                 createOrUpdateElement(document.body, 'tempReal', arrAktual['temp_out'] + '°C');
                 createOrUpdateElement(document.body, 'humReal', arrAktual['hum_out'] + ' %');
                 createOrUpdateElement(document.body, 'chReal', arrAktual['rain_rate'] + ' mm');
                 createOrUpdateElement(document.body, 'wdReal', arrAktual['windDirIndonesian']);
                 createOrUpdateElement(document.body, 'wsReal', arrAktual['windspeedkmh'] ? arrAktual['windspeedkmh'] + ' km/jam' : '0 km/jam');
-                createOrUpdateElement(document.body, 'uvReal', uvTitle + ' (' + uvVal +  ')');
+                createOrUpdateElement(document.body, 'uvReal', uvTitle + ' (' + uvVal + ')');
                 createOrUpdateElement(document.body, 'lastIntensityRain', arrResult['lastIntensityRain'] + ' mm');
-                createOrUpdateElement(document.body, 'lastRainDateFormat', arrResult['lastRainDateFormat'] ) ;
+                createOrUpdateElement(document.body, 'lastRainDateFormat', arrResult['lastRainDateFormat']);
                 createOrUpdateElement(document.body, 'avgLatestRain', arrResult['avgLatestRain'] + ' mm');
                 createOrUpdateElement(document.body, 'rain_duration', arrResult['awalHujan'] + ' hingga ' + arrResult['akhirHujan']);
                 chartTemp.updateOptions({
@@ -2002,8 +1953,7 @@ var todayFormatted = today.toLocaleDateString('en-US', options);
 
                 if (screenWidth >= 1300 && screenWidth < 1650) {
                     newChartLatestRain = 190;
-                }
-                 else if (screenWidth >= 1650 && screenWidth < 1800) {
+                } else if (screenWidth >= 1650 && screenWidth < 1800) {
                     // If screen width is between 600 and 1200 pixels
                     newChartLatestRain = 190;
                 } else {
@@ -2016,8 +1966,8 @@ var todayFormatted = today.toLocaleDateString('en-US', options);
                         categories: arrResult['latestHourRainIntensity']
                     },
                     chart: {
-        height: newChartLatestRain // Set the new height value
-    },
+                        height: newChartLatestRain // Set the new height value
+                    },
                 });
 
                 chartLatestRain.updateSeries([{
@@ -2043,44 +1993,44 @@ var todayFormatted = today.toLocaleDateString('en-US', options);
                     });
 
 
-            createOrUpdateElement(document.body, 'tempReal', '-');
-            createOrUpdateElement(document.body, 'humReal', '-');
-            createOrUpdateElement(document.body, 'chReal', '-');
-            createOrUpdateElement(document.body, 'wdReal', '-');
-            createOrUpdateElement(document.body, 'wsReal', '-');
+                    createOrUpdateElement(document.body, 'tempReal', '-');
+                    createOrUpdateElement(document.body, 'humReal', '-');
+                    createOrUpdateElement(document.body, 'chReal', '-');
+                    createOrUpdateElement(document.body, 'wdReal', '-');
+                    createOrUpdateElement(document.body, 'wsReal', '-');
 
-            chartTemp.updateOptions({
-            xaxis: {
-                categories: []
-            }
-        });
+                    chartTemp.updateOptions({
+                        xaxis: {
+                            categories: []
+                        }
+                    });
 
-        chartTemp.updateSeries([{
-            name: 'Temperatur (°C)',
-            data: []
-        }]);
+                    chartTemp.updateSeries([{
+                        name: 'Temperatur (°C)',
+                        data: []
+                    }]);
 
-        chartCh.updateOptions({
-            xaxis: {
-                categories: []
-            }
-        });
+                    chartCh.updateOptions({
+                        xaxis: {
+                            categories: []
+                        }
+                    });
 
-        chartCh.updateSeries([{
-            name: 'Curah Hujan (mm)',
-            data: []
-        }]);
+                    chartCh.updateSeries([{
+                        name: 'Curah Hujan (mm)',
+                        data: []
+                    }]);
 
-        chartLatestRain.updateOptions({
-            xaxis: {
-                categories: []
-            }
-        });
+                    chartLatestRain.updateOptions({
+                        xaxis: {
+                            categories: []
+                        }
+                    });
 
-        chartLatestRain.updateSeries([{
-            name: 'Curah Hujan (mm)',
-            data: []
-        }]);
+                    chartLatestRain.updateSeries([{
+                        name: 'Curah Hujan (mm)',
+                        data: []
+                    }]);
                 }
             }
 
@@ -2089,65 +2039,64 @@ var todayFormatted = today.toLocaleDateString('en-US', options);
 
 
     function createOrUpdateElement(container, elementId, content) {
-    var element = document.getElementById(elementId);
+        var element = document.getElementById(elementId);
 
-    if (element) {
-        // If the element exists, update its content
-        element.textContent = content;
-    } else {
-        // If the element doesn't exist, create a new one
-        var newElement = document.createElement('div');
-        newElement.id = elementId;
-        newElement.textContent = content;
+        if (element) {
+            // If the element exists, update its content
+            element.textContent = content;
+        } else {
+            // If the element doesn't exist, create a new one
+            var newElement = document.createElement('div');
+            newElement.id = elementId;
+            newElement.textContent = content;
 
-        // Append the new element to the container (adjust the container accordingly)
-        container.appendChild(newElement);
+            // Append the new element to the container (adjust the container accordingly)
+            container.appendChild(newElement);
+        }
     }
-}
 
 
- function showCard(buttonCard) {
-    var cardMain = document.getElementById('cardMain');
-var cardSecond = document.getElementById('cardSecond');
+    function showCard(buttonCard) {
+        var cardMain = document.getElementById('cardMain');
+        var cardSecond = document.getElementById('cardSecond');
 
-var delayInMilliseconds = 300; // 300 milliseconds
+        var delayInMilliseconds = 300; // 300 milliseconds
 
-var cardMain = document.getElementById('cardMain');
-var cardSecond = document.getElementById('cardSecond');
+        var cardMain = document.getElementById('cardMain');
+        var cardSecond = document.getElementById('cardSecond');
 
-var delayInMilliseconds = 300; // 300 milliseconds
+        var delayInMilliseconds = 300; // 300 milliseconds
 
-if (buttonCard == 'cardSecond') {
-    cardMain.style.transition = 'transform 0.3s ease, opacity 0.3s ease';
-    cardMain.style.transform = 'translateX(-100%)';
-    cardMain.style.opacity = '0';
+        if (buttonCard == 'cardSecond') {
+            cardMain.style.transition = 'transform 0.3s ease, opacity 0.3s ease';
+            cardMain.style.transform = 'translateX(-100%)';
+            cardMain.style.opacity = '0';
 
-    setTimeout(function() {
-        cardMain.style.display = 'none';
+            setTimeout(function() {
+                cardMain.style.display = 'none';
 
-        cardSecond.style.display = 'block';
-        cardSecond.style.transform = 'translateX(0)';
-        cardSecond.style.opacity = '1';
-    }, delayInMilliseconds);
-} else if (buttonCard == 'cardMain') {
-    cardSecond.style.transition = 'transform 0.3s ease, opacity 0.3s ease';
-    cardSecond.style.transform = 'translateX(100%)'; // Move to the right
-    cardSecond.style.opacity = '0';
+                cardSecond.style.display = 'block';
+                cardSecond.style.transform = 'translateX(0)';
+                cardSecond.style.opacity = '1';
+            }, delayInMilliseconds);
+        } else if (buttonCard == 'cardMain') {
+            cardSecond.style.transition = 'transform 0.3s ease, opacity 0.3s ease';
+            cardSecond.style.transform = 'translateX(100%)'; // Move to the right
+            cardSecond.style.opacity = '0';
 
-    setTimeout(function() {
-        cardSecond.style.display = 'none';
+            setTimeout(function() {
+                cardSecond.style.display = 'none';
 
-        cardMain.style.display = 'block';
-        cardMain.style.transform = 'translateX(0)';
-        cardMain.style.opacity = '1';
-    }, delayInMilliseconds);
-}
+                cardMain.style.display = 'block';
+                cardMain.style.transform = 'translateX(0)';
+                cardMain.style.opacity = '1';
+            }, delayInMilliseconds);
+        }
 
 
-   
+
         // Toggle visibility of navigation buttons based on the selected card
         document.getElementById('leftButton').style.display = (buttonCard === 'cardMain') ? 'none' : 'inline-block';
         document.getElementById('rightButton').style.display = (buttonCard === 'cardSecond') ? 'none' : 'inline-block';
     }
-
 </script>

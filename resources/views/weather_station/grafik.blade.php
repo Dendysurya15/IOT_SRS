@@ -247,7 +247,13 @@
 
   var chart24hour = new ApexCharts(document.querySelector("#id_chart_24_hour"), options);
   chart24hour.render();
-
+  var today = new Date();
+  var options = {
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric'
+  };
+  var todayFormatted = today.toLocaleDateString('en-US', options);
   var options2 = {
     series: [{
       name: '',
@@ -255,29 +261,25 @@
     }],
     chart: {
       background: '#ffffff',
-      height: 350,
-      type: 'bar'
+      height: 300,
+      type: 'area',
+      toolbar: {
+        show: false
+      }
+    },
+    dataLabels: {
+      enabled: true // disable data labels
     },
     plotOptions: {
       bar: {
         distributed: true
       }
     },
+
     colors: [
-      '#00FF00',
-      '#00FF00',
-      '#00FF00',
-      '#00FF00',
-      '#3063EC',
-      '#3063EC',
-      '#3063EC',
-      '#3063EC',
-      '#FF8D1A',
-      '#FF8D1A',
-      '#FF8D1A',
-      '#FF8D1A',
-      '#9208FD'
+      '#61cdfc',
     ],
+
     stroke: {
       curve: 'smooth'
     },
@@ -288,7 +290,24 @@
       },
       type: '',
       categories: ['test']
-    }
+    },
+    annotations: {
+      xaxis: [{
+        x: '00:00',
+        strokeDashArray: 0,
+        borderColor: '#f44336',
+        label: {
+          borderColor: '#f44336',
+
+          style: {
+            color: '#fff',
+            background: '#f44336',
+            fontSize: '14px'
+          },
+          text: todayFormatted,
+        }
+      }]
+    },
   };
   var chart30days = new ApexCharts(document.querySelector("#chart_curah"), options2);
   chart30days.render();
