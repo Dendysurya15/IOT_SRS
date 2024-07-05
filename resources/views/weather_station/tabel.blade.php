@@ -58,17 +58,62 @@
                 </div>
             </div>
         </div>
+        <div class="container-fluid">
+            <div class="card p-4">
+                <div class="row">
+                    <div class="col-8">
+                        <div class="d-flex justify-content-between align-items-center">
 
 
+                        </div>
+                        <p style="color: grey">Pilih filter data yang akan ditampilkan</p>
+                        <div class="row">
+                            <div class="col-2">
+                                <select name="" id="dataloks" class="form-control">
+
+                                    @foreach($estate as $key => $items)
+                                    <option value="{{ $items['id'] }}">{{ $items['nama'] }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="col-2">
+                                <input type="month" id="tanggalcurah" class="form-control">
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="col-4 d-flex align-items-center justify-content-end pl-4">
+                        <div style="padding: 5px;">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="container-fluid">
+            <div class="card">
+
+                <div class="card-header bg-success">
+                    <h4 class="card-title"><i class="fas fa-calendar-alt"></i> Rekap data Curhat Hujan tabel</h4>
+                </div>
+                <div class="card-body" a>
+
+                    <table class="table " id="tablecurahujan">
+
+                    </table>
+
+                </div>
+            </div>
+        </div>
     </section>
     <!-- /.content -->
 </div>
 @include('layout.footer')
 
 <script>
-    function handleAjaxRequest(lokasi,tanggal) {
+    function handleAjaxRequest(lokasi, tanggal) {
 
- if (tanggal === '') {
+        if (tanggal === '') {
             const today = new Date(); // Get today's date
             const year = today.getFullYear();
             const month = String(today.getMonth() + 1).padStart(2, '0'); // Month starts from 0
@@ -77,7 +122,7 @@
         }
 
 
-        console.log(tanggal);
+        // console.log(tanggal);
         var _token = $('input[name="_token"]').val();
         // Create an object with data to be sent in the AJAX request
         const requestData = {
@@ -148,26 +193,99 @@
                 // Add logic to handle errors
             }
         });
-}
-    
+    }
+
+    function handlecurahhujan(lokasi, tanggal) {
+
+        if (tanggal === '') {
+            const today = new Date(); // Get today's date
+            const year = today.getFullYear();
+            const month = String(today.getMonth() + 1).padStart(2, '0'); // Month starts from 0
+            const day = String(today.getDate()).padStart(2, '0');
+            tanggal = `${year}-${month}`; // Format the date as YYYY-MM-DD
+        }
+
+
+        // console.log(tanggal);
+        var _token = $('input[name="_token"]').val();
+        // Create an object with data to be sent in the AJAX request
+        const requestData = {
+            lokasi: lokasi,
+            tanggal: tanggal,
+            _token: _token
+            // Add more data if needed for your AJAX request
+        };
+        if ($.fn.DataTable.isDataTable('#tablecurahujan')) {
+            $('#tablecurahujan').DataTable().destroy();
+        }
+        // AJAX request using jQuery
+        $.ajax({
+            url: 'gettablecurahujan',
+            method: 'post',
+            data: requestData,
+            success: function(result) {
+                var parseResult = JSON.parse(result);
+                var datatableweek2 = $('#tablecurahujan').DataTable({
+                    columns: [{
+                            title: 'Date',
+                            data: 'Date'
+                        },
+                        {
+                            title: 'Afdeling',
+                            data: 'Afd'
+                        },
+                        {
+                            title: 'Curah Hujan',
+                            data: 'CH'
+                        }
+                    ],
+                    dom: 'B<"top"lf>rtip',
+                    buttons: ['excel', 'pdf'],
+                    lengthMenu: [
+                        [10, 20, 50, -1],
+                        [10, 20, 50, "All"]
+                    ]
+                });
+                datatableweek2.clear().rows.add(parseResult['data']).draw();
+            },
+            error: function(xhr, status, error) {
+                console.error('AJAX Error:', status, error);
+            }
+        });
+    }
 
 
     $(document).ready(function() {
-    var defaultSelectedLocValue = $('#lokasi option:first').val();
-    var currentDate = new Date().toISOString().split('T')[0];
-        
-    $('#tanggal').val(currentDate);
-    handleAjaxRequest(defaultSelectedLocValue, currentDate);
+        var defaultSelectedLocValue = $('#lokasi option:first').val();
+        var defaultcurah = $('#dataloks option:first').val();
+        var currentDate = new Date().toISOString().split('T')[0];
 
-    $('#lokasi').on('change', function() {
+        $('#tanggal').val(currentDate);
+        handleAjaxRequest(defaultSelectedLocValue, currentDate);
+
+        $('#lokasi').on('change', function() {
             var selectedValue = $(this).val();
             handleAjaxRequest(selectedValue, currentDate);
         });
 
         $('#tanggal').on('change', function() {
-          currentDate = $(this).val(); 
+            currentDate = $(this).val();
 
-          handleAjaxRequest($('#lokasi').val(), currentDate);
+            handleAjaxRequest($('#lokasi').val(), currentDate);
         });
-  })
+
+        $('#tanggalcurah').val(currentDate);
+        handlecurahhujan(defaultcurah, currentDate);
+
+        $('#dataloks').on('change', function() {
+            var selectedValue = $(this).val();
+            handlecurahhujan(selectedValue, currentDate);
+        });
+
+        $('#tanggalcurah').on('change', function() {
+            currentDate = $(this).val();
+
+            handlecurahhujan($('#dataloks').val(), currentDate);
+        });
+    })
 </script>

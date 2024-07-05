@@ -1935,7 +1935,7 @@ class MasterController extends Controller
         $arrData['latestHourRainIntensity'] = $latestHourRainIntensity;
         $arrData['lastIntensityRain'] =  round($lastIntensityRain, 2);
         $arrData['avgLatestRain'] = $avgLatestRain;
-        $arrData['lastRainDateFormat'] = $lastRainDateFormat;
+        $arrData['lastRainDateFormat'] = $lastRainDateFormat ?? 0;
         $arrData['awalHujan'] = Carbon::parse($awalHujan)->format('H:i');
         $arrData['akhirHujan'] = Carbon::parse($akhirHujan)->format('H:i');
 
@@ -1998,6 +1998,7 @@ class MasterController extends Controller
         $startDate = Carbon::parse($date)->subDays(30)->startOfDay();
         $endDate = Carbon::parse($date)->endOfDay();
 
+        // dd($startDate, $endDate);
         // Query the database
         $query = DB::table('curah_hujan_bot')
             ->select('*')
@@ -2371,10 +2372,16 @@ class MasterController extends Controller
             ->get();
 
         // dd($listStation);
+        $estate = DB::connection('mysql3')->table('estate')
+            ->select('*')
+            ->where('emp', '!=', 1)
+            ->get();
 
+        $estate = json_decode($estate, true);
         return view('weather_station/tabel', [
             'aws' => $sel_aws,
-            'list' => $listStation
+            'list' => $listStation,
+            'estate' => $estate,
         ]);
     }
 
@@ -2391,6 +2398,28 @@ class MasterController extends Controller
 
         $data = json_decode($data, true);
 
+
+        $arr = array();
+
+        $arr['data'] = $data;
+
+
+        echo json_encode($arr); //di decode ke dalam bentuk json dalam vaiavel arrview yang dapat menampung banyak isi array
+        exit();
+    }
+    public function gettablecurahujan(Request $request)
+    {
+        $estate = $request->input('lokasi');
+        $date = $request->input('tanggal');
+
+        $data = DB::table('curah_hujan_bot')
+            ->select('*')
+            ->where('est_id', $estate)
+            ->where('date', 'LIKE', '%' . $date . '%')
+            ->get();
+
+        $data = json_decode($data, true);
+        // dd($data);
 
         $arr = array();
 
