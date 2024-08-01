@@ -3041,7 +3041,7 @@ class MasterController extends Controller
             ->get();
 
 
-
+        // dd($data);
         $listLoc = DB::table('water_level_list')->pluck('location', 'id');
         $data =  json_decode(json_encode($data), true);
         return view('water_level/tabel', [
@@ -3167,5 +3167,63 @@ class MasterController extends Controller
         } else {
             return redirect('stationList')->with('error', 'Station gagal dihapus!');
         }
+    }
+
+    public function waterlevelperbulan(Request $request)
+    {
+        $month = $request->input('month');
+        $location = $request->input('location');
+
+        $data =  DB::table('water_level_list')
+            ->join('water_level', 'water_level_list.id', '=', 'water_level.idwl')
+            ->select('water_level.*')
+            ->orderBy('water_level.datetime', 'desc')
+            ->where('datetime', 'like', '%' . $month . '%')
+            ->where('water_level_list.id', '=', $location)
+            ->get();
+
+
+
+        $groupedData = $data->map(function ($item) {
+            // Extract the hour from the date
+            $item->hour = \Carbon\Carbon::parse($item->datetime)->format('H:00');
+            return $item;
+        })->groupBy('hour');
+
+        $new_data = array();
+        $avarage = 0;
+        foreach ($groupedData as $key => $value) {
+            $lvl_in = 0;
+            $lvl_out = 0;
+            $avarage  = count($value);
+            foreach ($value as $key1 => $value1) {
+                $lvl_in += $value1->lvl_in;
+                $lvl_out += $value1->lvl_out;
+            }
+            $avarage_in = $lvl_in / $avarage;
+            $avarage_out = $lvl_out / $avarage;
+            $new_data[$key]['hour'] = $value1->hour;
+            $new_data[$key]['idwl'] = $value1->idwl;
+            $new_data[$key]['avarage_in'] = round($avarage_in, 2);
+            $new_data[$key]['avarage_out'] = round($avarage_out, 2);
+            $new_data[$key]['avarage'] = $avarage;
+        }
+        $data_ori =  DB::table('water_level_list')
+            ->join('water_level', 'water_level_list.id', '=', 'water_level.idwl')
+            ->select('water_level.*')
+            ->orderBy('water_level.datetime', 'desc')
+            ->where('datetime', 'like', '%' . $month . '%')
+            ->where('water_level_list.id', '=', $location)
+            ->get();
+
+        $data_ori = json_decode($data_ori, true);
+        // dd($data_ori);
+        $arr = [
+            'datarekap' => $new_data,
+            'data' => $data_ori,
+            'location' => $location,
+            'month' => $month,
+        ];
+        return response()->json($arr);
     }
 }

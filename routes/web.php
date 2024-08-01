@@ -68,6 +68,8 @@ Route::middleware('checksession')->group(function () {
     Route::post('gettablecurahujan', [MasterController::class, 'gettablecurahujan'])->name('gettablecurahujan');
     Route::get('/get-afdlist', [MasterController::class, 'getafdlist']);
     Route::get('/get-datacurahhujan', [MasterController::class, 'datacurahhujan']);
+
+    Route::get('/waterlevelperbulan', [MasterController::class, 'waterlevelperbulan']);
 });
 
 Route::get('/', [LoginController::class, 'index'])->name('login');
