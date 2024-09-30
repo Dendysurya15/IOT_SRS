@@ -47,11 +47,21 @@
             <div class="card">
 
                 <div class="card-header bg-success">
-                    <h4 class="card-title"><i class="fas fa-calendar-alt"></i> Rekap data secara tabel</h4>
+                    <h4 class="card-title"><i class="fas fa-calendar-alt"></i> Rekap data secara tabel Perhari</h4>
                 </div>
                 <div class="card-body" a>
 
                     <table class="table " id="tableaws">
+
+                    </table>
+
+                </div>
+                <div class="card-header bg-success">
+                    <h4 class="card-title"><i class="fas fa-calendar-alt"></i> Rekap data secara tabel Perbulan</h4>
+                </div>
+                <div class="card-body" a>
+
+                    <table class="table " id="tableaws_bulan">
 
                     </table>
 
@@ -134,6 +144,9 @@
         if ($.fn.DataTable.isDataTable('#tableaws')) {
             $('#tableaws').DataTable().destroy();
         }
+        if ($.fn.DataTable.isDataTable('#tableaws_bulan')) {
+            $('#tableaws_bulan').DataTable().destroy();
+        }
         // AJAX request using jQuery
         $.ajax({
             url: 'gettabelaws', // Replace with your server endpoint URL
@@ -173,10 +186,8 @@
                             data: 'uv'
                         },
                     ],
-                    dom: 'B<"top"lf>rtip', // Explicitly define the DOM layout
-                    buttons: [
-                        'excel' // Enable Excel export button
-                    ],
+                    dom: 'B<"top"lf>rtip',
+                    buttons: ['excel', 'pdf'],
                     lengthMenu: [
                         [10, 20, 50, -1],
                         [10, 20, 50, "All"]
@@ -184,6 +195,45 @@
                 });
 
                 datatableweek1.clear().rows.add(parseResult['data']).draw();
+                var datatableweek2 = $('#tableaws_bulan').DataTable({
+                    columns: [{
+                            title: 'Tanggal',
+                            data: 'date'
+                        },
+                        {
+                            title: 'Kecepatan Angin',
+                            data: 'windspeedkmh'
+                        },
+                        {
+                            title: 'Arah Angin',
+                            data: 'winddir'
+                        },
+                        {
+                            title: 'Curah Hujan',
+                            data: 'rain_rate'
+                        },
+                        {
+                            title: 'Suhu',
+                            data: 'temp_in'
+                        },
+                        {
+                            title: 'Kelembapan',
+                            data: 'hum_out'
+                        },
+                        {
+                            title: 'Sinar UV',
+                            data: 'uv'
+                        },
+                    ],
+                    dom: 'B<"top"lf>rtip',
+                    buttons: ['excel', 'pdf'],
+                    lengthMenu: [
+                        [10, 20, 50, -1],
+                        [10, 20, 50, "All"]
+                    ]
+                });
+
+                datatableweek2.clear().rows.add(parseResult['data_perbulan']).draw();
 
             },
             error: function(xhr, status, error) {

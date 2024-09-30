@@ -2399,9 +2399,17 @@ class MasterController extends Controller
         $data = json_decode($data, true);
 
 
+        $data_perbulan = DB::table('weather_station')
+            ->select('*')
+            ->where('idws', $loc)
+            ->where('date', 'LIKE', '%' . Carbon::parse($date)->format('Y-m') . '%')
+            ->get();
+
+
         $arr = array();
 
         $arr['data'] = $data;
+        $arr['data_perbulan'] = $data_perbulan;
 
 
         echo json_encode($arr); //di decode ke dalam bentuk json dalam vaiavel arrview yang dapat menampung banyak isi array
