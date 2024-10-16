@@ -49,7 +49,7 @@ session_start();
 
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs4/dt-1.11.5/datatables.min.css" />
 
-
+    <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
     <link rel="stylesheet" type="text/css" href="{{ asset('css/buttons.dataTables.min.css') }}" />
 
     <link rel="stylesheet" type="text/css" href="{{ asset('css/jquery.dataTables.min.css') }}" />
@@ -101,19 +101,7 @@ session_start();
                 <li class="nav-item  d-sm-inline-block">
                     <a class="nav-link">Selamat datang, {{ session('user_name') }}!</a>
                 </li>
-                {{-- <li class="nav-item dropdown ml-auto">
-                    <a href="" class="nav-link dropdown-toggle" id="navbarDropdown" data-toggle="dropdown"
-                        aria-haspopup="true" aria-expanded="false"> {{ session('user_name') }}</a>
-                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-                    <a href="{{asset('profile')}}" class="dropdown-item"> <i class="nav-icon fa fa-user"></i> <span class="ml-2"> Edit
-                            Profile</span>
-                    </a>
-                    <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-                        @csrf
-                    </form>
-                    <a href="" class="dropdown-item" onclick="event.preventDefault(); document.getElementById('logout-form').submit();"> <i class="nav-icon fa fa-sign-out-alt"></i><span class="ml-2"> Log Out</span></a>
-                </div>
-                </li> --}}
+
 
 
             </ul>

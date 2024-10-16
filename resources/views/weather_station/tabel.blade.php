@@ -1,122 +1,132 @@
 @include('layout.header')
 <div class="content-wrapper">
-    <!-- Content Header (Page header) -->
-    <section class="content-header">
-    </section>
+
+    <style>
+        /* Default styles for weather-card */
+        .weather-card {
+            margin: 20px 0;
+            background: linear-gradient(to bottom right, #74ebd5, #ACB6E5);
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transition: height 0.4s ease, box-shadow 0.4s ease, background 0.6s ease;
+            overflow: hidden;
+            position: relative;
+            padding: 20px;
+        }
+
+        .weather-info {
+            position: relative;
+            z-index: 2;
+        }
+
+        .additional-info {
+            max-height: 0;
+            overflow: hidden;
+            opacity: 0;
+            transition: max-height 0.4s ease, opacity 0.4s ease;
+            background-color: rgba(255, 255, 255, 0.9);
+            color: #333;
+            border-radius: 5px;
+            margin-top: 10px;
+            padding: 10px;
+        }
+
+        /* On hover, show the additional info */
+        .weather-card:hover .additional-info {
+            max-height: 300px;
+            opacity: 1;
+        }
+
+        /* On hover, change background */
+        .weather-card:hover {
+            background: url('/img/background.jpg') no-repeat center center;
+            background-size: cover;
+        }
+
+        /* Ensure the first card's additional info is open by default */
+        .weather-card:first-child .additional-info {
+            max-height: 300px;
+            opacity: 1;
+        }
+
+        /* Table container styling */
+        .table-container {
+            max-height: 300px;
+            overflow-y: auto;
+            background-color: #fff;
+            color: #333;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+
+        .table-striped {
+            margin: 0;
+        }
+    </style>
 
     <!-- Main content -->
     <section class="content">
-
-        <div class="container-fluid">
-            <div class="card p-4">
-                <div class="row">
-                    <div class="col-8">
-                        <div class="d-flex justify-content-between align-items-center">
-
-
+        <div class="weather-card">
+            <div class="card-content">
+                <div class="weather-info">
+                    <p style="color: white;">Pilih filter data yang akan ditampilkan</p>
+                    <div class="row">
+                        <div class="col-2">
+                            <select name="" id="lokasi" class="form-control">
+                                @foreach ($list as $item)
+                                <option value="{{$item -> id}}">{{$item -> loc}}</option>
+                                @endforeach
+                            </select>
                         </div>
-                        <p style="color: grey">Pilih filter data yang akan ditampilkan</p>
-                        <div class="row">
-                            <div class="col-2">
-                                <select name="" id="lokasi" class="form-control">
-
-                                    @foreach ($list as $item)
-                                    <option value="{{$item -> id}}">{{$item -> loc}}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                            <div class="col-2">
-                                <input type="date" id="tanggal" class="form-control">
-                            </div>
-
+                        <div class="col-2">
+                            <input type="date" id="tanggal" class="form-control">
                         </div>
                     </div>
-                    <div class="col-4 d-flex align-items-center justify-content-end pl-4">
-                        <div style="padding: 5px;">
-
-                        </div>
+                </div>
+                <div class="additional-info">
+                    <div class="table-container">
+                        <h4 class="card-title"><i class="fas fa-calendar-alt"></i> Rekap data secara tabel Perhari</h4>
+                        <table class="table table-striped" id="tableaws"></table>
+                    </div>
+                </div>
+                <div class="additional-info">
+                    <div class="table-container">
+                        <h4 class="card-title"><i class="fas fa-calendar-alt"></i> Rekap data secara tabel Perbulan</h4>
+                        <table class="table table-striped" id="tableaws_bulan"></table>
                     </div>
                 </div>
             </div>
         </div>
 
-
-
-
-        <div class="container-fluid">
-            <div class="card">
-
-                <div class="card-header bg-success">
-                    <h4 class="card-title"><i class="fas fa-calendar-alt"></i> Rekap data secara tabel Perhari</h4>
-                </div>
-                <div class="card-body" a>
-
-                    <table class="table " id="tableaws">
-
-                    </table>
-
-                </div>
-                <div class="card-header bg-success">
-                    <h4 class="card-title"><i class="fas fa-calendar-alt"></i> Rekap data secara tabel Perbulan</h4>
-                </div>
-                <div class="card-body" a>
-
-                    <table class="table " id="tableaws_bulan">
-
-                    </table>
-
-                </div>
-            </div>
-        </div>
-        <div class="container-fluid">
-            <div class="card p-4">
-                <div class="row">
-                    <div class="col-8">
-                        <div class="d-flex justify-content-between align-items-center">
-
-
+        <!-- Second card -->
+        <div class="weather-card">
+            <div class="card-content">
+                <div class="weather-info">
+                    <p style="color: white;">Pilih filter data yang akan ditampilkan</p>
+                    <div class="row">
+                        <div class="col-2">
+                            <select name="" id="dataloks" class="form-control">
+                                @foreach($estate as $key => $items)
+                                <option value="{{ $items['id'] }}">{{ $items['nama'] }}</option>
+                                @endforeach
+                            </select>
                         </div>
-                        <p style="color: grey">Pilih filter data yang akan ditampilkan</p>
-                        <div class="row">
-                            <div class="col-2">
-                                <select name="" id="dataloks" class="form-control">
-
-                                    @foreach($estate as $key => $items)
-                                    <option value="{{ $items['id'] }}">{{ $items['nama'] }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                            <div class="col-2">
-                                <input type="month" id="tanggalcurah" class="form-control">
-                            </div>
-
-                        </div>
-                    </div>
-                    <div class="col-4 d-flex align-items-center justify-content-end pl-4">
-                        <div style="padding: 5px;">
-
+                        <div class="col-2">
+                            <input type="month" id="tanggalcurah" class="form-control">
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
-        <div class="container-fluid">
-            <div class="card">
-
-                <div class="card-header bg-success">
-                    <h4 class="card-title"><i class="fas fa-calendar-alt"></i> Rekap data Curhat Hujan tabel</h4>
-                </div>
-                <div class="card-body" a>
-
-                    <table class="table " id="tablecurahujan">
-
-                    </table>
-
+                <div class="additional-info">
+                    <div class="table-container">
+                        <h4 class="card-title"><i class="fas fa-calendar-alt"></i> Rekap data secara tabel Perhari</h4>
+                        <table class="table table-striped" id="tablecurahujan"></table>
+                    </div>
                 </div>
             </div>
         </div>
     </section>
-    <!-- /.content -->
+
+
 </div>
 @include('layout.footer')
 

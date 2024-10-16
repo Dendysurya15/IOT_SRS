@@ -26,13 +26,4 @@
 <script
     src="https://cdn.datatables.net/v/dt/jq-3.7.0/jszip-3.10.1/dt-1.13.8/b-2.4.2/b-html5-2.4.2/b-print-2.4.2/r-2.5.0/datatables.min.js">
 </script>
-{{-- <script src="{{ asset('plugins/select2/js/select2.full.min.js') }}"></script> --}}
-
-
-<script>
-    // $(function() {
-    //     $('.select2').select2({
-    //         theme: 'bootstrap4'
-    //     });
-    // })
-</script>
+<script src="{{ asset('plugins/select2/js/select2.full.min.js') }}"></script>
